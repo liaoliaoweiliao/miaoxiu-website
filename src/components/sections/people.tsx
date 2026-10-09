@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Quote, Award, MapPin } from "lucide-react";
 import { INHERITORS } from "@/data/miao";
 import { cn } from "@/lib/utils";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 const LEVEL_STYLES: Record<string, string> = {
   国家级: "bg-accent/10 text-accent border-accent/30",
@@ -15,6 +16,7 @@ export function PeopleSection() {
   return (
     <section id="people" className="py-20 lg:py-32 bg-background pattern-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/people.jpg" alt="苗绣传承人氛围" caption="守艺之人 · 薪火相传" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowUpRight, Palette, Shirt, BookOpen, Home } from "lucide-react";
 import { CREATIONS } from "@/data/miao";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   数字资产: Palette,
@@ -15,6 +17,7 @@ export function CreationSection() {
   return (
     <section id="creation" className="py-20 lg:py-32 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/creation.jpg" alt="苗绣文创氛围" caption="古纹新生 · 创意无限" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,14 +43,14 @@ export function CreationSection() {
           {CREATIONS.map((item, i) => {
             const Icon = CATEGORY_ICONS[item.category] || Palette;
             return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all cursor-pointer"
-              >
+              <Link key={i} href={`/creation/${item.slug}`} className="group block">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="relative bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all cursor-pointer h-full"
+                >
                 <div className="flex flex-col sm:flex-row">
                   {/* 左侧视觉 */}
                   <div className="sm:w-2/5 aspect-square sm:aspect-auto bg-gradient-to-br from-primary/20 via-accent/15 to-primary/10 relative overflow-hidden flex items-center justify-center">
@@ -114,45 +117,10 @@ export function CreationSection() {
                   </div>
                 </div>
               </motion.div>
+              </Link>
             );
           })}
         </div>
-
-        {/* 项目立意 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 p-8 lg:p-12 bg-gradient-to-br from-primary to-primary/80 rounded-2xl text-primary-foreground relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
-            <svg viewBox="0 0 200 200" className="w-full h-full">
-              <g fill="none" stroke="currentColor" strokeWidth="1">
-                <circle cx="100" cy="100" r="80" />
-                <circle cx="100" cy="100" r="60" />
-                <circle cx="100" cy="100" r="40" />
-                <circle cx="100" cy="100" r="20" />
-              </g>
-            </svg>
-          </div>
-          <div className="relative z-10 max-w-3xl">
-            <div className="text-xs tracking-widest text-primary-foreground/60 mb-3">
-              项目立意 · PROJECT VISION
-            </div>
-            <h3 className="font-serif text-2xl lg:text-3xl font-bold mb-4 leading-tight">
-              铸牢中华民族共同体意识，
-              <br />
-              推动民族优秀文化创新表达
-            </h3>
-            <p className="text-primary-foreground/80 leading-relaxed text-sm lg:text-base">
-              本项目以苗绣为切入点，运用智能科技与数字创意，
-              构建集文化展示、互动体验、AI 创作于一体的数字文化平台。
-              通过纹样图谱数字化、虚拟刺绣体验、AI 纹样生成等创新形式，
-              让千年苗绣在数字时代焕发新生，推动民族文化的创新性传承与发展，
-              铸牢中华民族共同体意识。
-            </p>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

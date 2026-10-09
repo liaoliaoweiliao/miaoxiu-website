@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { TECHNIQUES } from "@/data/miao";
 import { cn } from "@/lib/utils";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 export function CraftSection() {
   const [activeTech, setActiveTech] = useState(0);
@@ -104,6 +105,7 @@ export function CraftSection() {
   return (
     <section id="craft" className="py-20 lg:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/craft.jpg" alt="苗绣技艺氛围" caption="一针一线 · 皆是匠心" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

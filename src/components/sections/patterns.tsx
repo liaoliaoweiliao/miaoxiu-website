@@ -9,6 +9,7 @@ import {
   type PatternKey,
 } from "@/components/miao/patterns";
 import { cn } from "@/lib/utils";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 const CATEGORY_LABELS: Record<string, string> = {
   图腾: "图腾纹样",
@@ -39,6 +40,7 @@ export function PatternSection() {
   return (
     <section id="patterns" className="py-20 lg:py-32 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/patterns.jpg" alt="苗绣纹样氛围" caption="蝴蝶妈妈 · 万纹之源" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

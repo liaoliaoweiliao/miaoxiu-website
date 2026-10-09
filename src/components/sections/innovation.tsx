@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Sparkles, Loader2, Download, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 const THEME_PRESETS = [
   "蝴蝶妈妈",
@@ -38,6 +39,8 @@ export function InnovationSection() {
     Array<{ url: string; theme: string; time: string }>
   >([]);
 
+  const [fallback, setFallback] = useState(false);
+
   const handleGenerate = async () => {
     if (!theme.trim()) {
       toast({
@@ -50,6 +53,7 @@ export function InnovationSection() {
 
     setLoading(true);
     setResultUrl(null);
+    setFallback(false);
 
     try {
       const res = await fetch("/api/pattern-generate", {
@@ -65,14 +69,22 @@ export function InnovationSection() {
       }
 
       setResultUrl(data.imageUrl);
+      setFallback(!!data.fallback);
       setHistory((prev) => [
         { url: data.imageUrl, theme, time: new Date().toLocaleTimeString("zh-CN") },
         ...prev.slice(0, 5),
       ]);
-      toast({
-        title: "纹样生成成功",
-        description: `主题：${theme}`,
-      });
+      if (data.fallback) {
+        toast({
+          title: "已生成示例纹样",
+          description: "当前为离线演示图案（未接入 AI 服务）",
+        });
+      } else {
+        toast({
+          title: "纹样生成成功",
+          description: `主题：${theme}`,
+        });
+      }
     } catch (error) {
       toast({
         title: "生成失败",
@@ -87,6 +99,7 @@ export function InnovationSection() {
   return (
     <section id="innovation" className="py-20 lg:py-32 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/innovation.jpg" alt="苗绣创新氛围" caption="AI 织梦 · 古纹新生" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -246,13 +259,20 @@ export function InnovationSection() {
                   </p>
                 </div>
               ) : resultUrl ? (
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  src={resultUrl}
-                  alt={`苗绣纹样 - ${theme}`}
-                  className="w-full h-full object-cover"
-                />
+                <div className="relative w-full h-full">
+                  <motion.img
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    src={resultUrl}
+                    alt={`苗绣纹样 - ${theme}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {fallback && (
+                    <span className="absolute top-3 left-3 px-2 py-1 text-[10px] rounded-full bg-primary/85 text-primary-foreground backdrop-blur-sm">
+                      离线示例图案
+                    </span>
+                  )}
+                </div>
               ) : (
                 <div className="text-center px-6">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">

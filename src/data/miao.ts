@@ -233,6 +233,7 @@ export interface TechniqueInfo {
   description: string;
   steps: string[];
   feature: string;
+  use: string;
 }
 
 export const TECHNIQUES: TechniqueInfo[] = [
@@ -249,6 +250,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "层层叠加，形成饱满色块",
     ],
     feature: "针脚平整、色彩均匀、适合入门",
+    use: "大面积底色铺绣，常见于盛装衣片、背扇与鞋帽的底层纹样打底，是复杂纹样的基础。",
   },
   {
     name: "破线绣",
@@ -263,6 +265,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "绣品呈现独特的丝光质感",
     ],
     feature: "丝光闪烁、极致精细、施洞绝技",
+    use: "施洞盛装核心针法，用于衣肩、袖片的高贵纹样，呈现丝光闪烁的极致细节。",
   },
   {
     name: "锁绣",
@@ -277,6 +280,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "可粗可细，灵活多变",
     ],
     feature: "线条圆润、链节相扣、古朴典雅",
+    use: "雷山苗绣代表针法，多用于纹样轮廓勾勒与边饰，线条古朴厚重。",
   },
   {
     name: "辫绣",
@@ -291,6 +295,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "形成立体浮雕效果",
     ],
     feature: "立体浮雕、装饰性强、独具匠心",
+    use: "立体浮雕效果突出，常用于儿童帽饰、胸兜的重点装饰与立体造型。",
   },
   {
     name: "打籽绣",
@@ -305,6 +310,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "密集排列形成籽粒效果",
     ],
     feature: "籽粒质感、立体突出、细节生动",
+    use: "表现花蕊、鱼眼等细节点缀，增加绣品层次与颗粒质感。",
   },
   {
     name: "挑花",
@@ -319,6 +325,7 @@ export const TECHNIQUES: TechniqueInfo[] = [
       "形成规整几何图案",
     ],
     feature: "几何规整、徒手绣制、普及广泛",
+    use: "花溪苗绣代表，依布纹经纬徒手绣制，用于服饰边饰与日常衣物，几何规整。",
   },
 ];
 
@@ -371,6 +378,8 @@ export interface CreationInfo {
   description: string;
   designer: string;
   innovation: string;
+  /** 对应子页面路由（相对于 /creation/） */
+  slug: string;
 }
 
 export const CREATIONS: CreationInfo[] = [
@@ -381,6 +390,7 @@ export const CREATIONS: CreationInfo[] = [
       "将传统苗绣纹样矢量化、参数化，构建可检索、可生成的纹样数据库，为设计师与研究者提供数字资源。",
     designer: "苗绣·生生不息项目组",
     innovation: "AI辅助纹样识别与生成",
+    slug: "pattern-library",
   },
   {
     name: "苗绣跨界时装系列",
@@ -389,6 +399,7 @@ export const CREATIONS: CreationInfo[] = [
       "将苗绣纹样与现代时装结合，保留手工刺绣的温度，融入当代剪裁与面料，让苗绣走上国际时装周。",
     designer: "新锐设计师 × 苗绣传承人",
     innovation: "传统纹样当代解构",
+    slug: "fashion",
   },
   {
     name: "苗绣AR互动绘本",
@@ -397,6 +408,7 @@ export const CREATIONS: CreationInfo[] = [
       "以AR技术呈现苗绣纹样的故事与寓意，扫描绣品即可观看纹样动画与文化解读，让儿童与青少年亲近非遗。",
     designer: "数字媒体团队",
     innovation: "AR增强现实体验",
+    slug: "ar-picturebook",
   },
   {
     name: "苗绣智能家居系列",
@@ -405,5 +417,6 @@ export const CREATIONS: CreationInfo[] = [
       "将苗绣纹样应用于抱枕、屏风、灯具等家居用品，结合智能感应，让传统纹样融入现代生活场景。",
     designer: "工业设计团队",
     innovation: "非遗+智能家居",
+    slug: "smart-home",
   },
 ];

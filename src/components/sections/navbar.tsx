@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,13 +17,21 @@ const NAV_ITEMS = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
+  const [activeSection, setActiveSection] = useState(
+    pathname.startsWith("/creation") ? "creation" : "hero"
+  );
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
+
+      // 仅在首页检测当前 section（子页面无对应锚点）
+      if (pathname !== "/") return;
 
       // 检测当前section
       const sections = NAV_ITEMS.map((item) => item.id);
@@ -40,9 +49,14 @@ export function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   const scrollToSection = (id: string) => {
+    // 子页面时跳回首页对应锚点
+    if (!isHome) {
+      window.location.href = `/#${id}`;
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       const offset = 80;
@@ -50,6 +64,14 @@ export function Navbar() {
       window.scrollTo({ top, behavior: "smooth" });
     }
     setMobileOpen(false);
+  };
+
+  const goHome = () => {
+    if (isHome) {
+      scrollToSection("hero");
+    } else {
+      router.push("/");
+    }
   };
 
   return (
@@ -66,7 +88,7 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <button
-              onClick={() => scrollToSection("hero")}
+              onClick={() => goHome()}
               className="flex items-center gap-3 group"
             >
               <div className="relative w-10 h-10 lg:w-12 lg:h-12">

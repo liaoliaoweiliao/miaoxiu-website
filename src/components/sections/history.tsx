@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { HISTORY_TIMELINE, MIAO_BRANCHES } from "@/data/miao";
 import { cn } from "@/lib/utils";
+import { SectionBanner } from "@/components/miao/section-banner";
 
 const TYPE_COLORS: Record<string, string> = {
   起源: "bg-amber-500",
@@ -19,6 +20,7 @@ export function HistorySection() {
   return (
     <section id="history" className="py-20 lg:py-32 bg-background pattern-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionBanner src="/images/history.jpg" alt="苗绣历史氛围" caption="千年迁徙 · 针线为史" />
         {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
