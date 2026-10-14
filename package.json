@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --open /dev.html",
-    "build": "vite build --outDir dist --emptyOutDir false",
-    "preview": "vite preview --host 0.0.0.0"
+    "build": "python3 scripts/build-offline.py",
+    "preview": "vite preview --host 0.0.0.0",
+    "check:game": "node scripts/check-game.mjs"
   },
   "devDependencies": {
     "vite": "^6.2.0"
