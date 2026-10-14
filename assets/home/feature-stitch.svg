@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 760" fill="none">
+ <defs><pattern id="weave" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 6H12M6 0V12" stroke="#E6B98A" stroke-opacity=".11" stroke-width=".6"/></pattern><linearGradient id="cloth" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#123A50"/><stop offset="1" stop-color="#06263D"/></linearGradient><linearGradient id="thread" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#EFBA85"/><stop offset=".5" stop-color="#CB6755"/><stop offset="1" stop-color="#F2D19F"/></linearGradient></defs>
+ <rect width="620" height="760" fill="url(#cloth)"/><rect width="620" height="760" fill="url(#weave)"/>
+ <g opacity=".18" stroke="#D29A70" stroke-width="1"><path d="M25 94H590M25 640H590M70 25V733M550 25V733"/><path d="M28 116l24 -24 24 24-24 24zM543 620l24 -24 24 24-24 24z"/></g>
+ <g transform="translate(310 420)" stroke-linecap="round" stroke-linejoin="round">
+ <circle r="167" stroke="#EAC28F" stroke-opacity=".46" stroke-width="2" stroke-dasharray="3 8"/>
+ <circle r="128" stroke="#D8AE7C" stroke-opacity=".30" stroke-width="1"/>
+ <g stroke="url(#thread)" stroke-width="9">
+ <path d="M0 -103C-18 -66 -20 -50 0 -18C20 -50 18 -66 0 -103Z"/><path d="M0 103C-18 66 -20 50 0 18C20 50 18 66 0 103Z"/>
+ <path d="M-103 0C-66 -18 -50 -20 -18 0C-50 20 -66 18 -103 0Z"/><path d="M103 0C66 -18 50 -20 18 0C50 20 66 18 103 0Z"/>
+ </g><g transform="rotate(45)" stroke="#D78367" stroke-width="7">
+ <path d="M0 -90Q-30 -55 0 -13Q30 -55 0 -90ZM0 90Q-30 55 0 13Q30 55 0 90ZM-90 0Q-55 -30 -13 0Q-55 30 -90 0ZM90 0Q55 -30 13 0Q55 30 90 0Z"/></g>
+ <circle r="19" fill="#E8C28D"/><circle r="8" fill="#9E3E37"/>
+ <path d="M-111 -111l-12 -12m234 234l12 12m-234 0l-12 12m234 -234l12 -12" stroke="#DEB58A" stroke-width="4"/>
+ </g>
+ <!-- curved embroidered thread travelling out of hoop -->
+ <path d="M419 339C483 290 504 214 472 174C446 144 410 166 431 186C445 198 471 180 478 149C490 98 542 85 576 104" stroke="url(#thread)" stroke-width="4" stroke-linecap="round" stroke-dasharray="800"/>
+ <g transform="translate(484 188) rotate(24)"><rect x="-6" y="-83" width="12" height="166" rx="6" fill="#D1DDE3"/><path d="M-6 60L0 111 6 60Z" fill="#E8E5DE"/><ellipse cy="-69" rx="2.4" ry="8" fill="#254357"/></g>
+ <g stroke="#CA8770" stroke-width="2.5" opacity=".7"><path d="M105 230l7 9 9-7 7 9M470 559l7 9 9-7 7 9M90 535l11-8 9 11 11-8"/></g>
+</svg>
