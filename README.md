@@ -1,23 +1,28 @@
-# 穿在身上的民族历史——苗绣
+# 苗绣文化网站 · 四人协作版（图片目录修复）
 
-## 使用方式
+## 打开方式
 
-- 双击 `index.html`：完整离线网站，图片、样式与脚本均已内嵌。
-- 网站打开后点击导航“互动体验”，或访问 `index.html#experience`。
-- 分文件开发：`npm install` 后 `npm run dev`，打开 `/dev.html`。
-- 修改源文件后执行 `python3 scripts/build-offline.py`，同步更新离线入口和 `dist/index.html`。
-- 互动检查：`node scripts/check-game.mjs`。
+- **直接双击 `index.html`**：正式离线演示版，CSS/JS/图片均嵌入，可直接浏览四个页面。`双击打开.html` 是同内容备用文件。
+- **日常分工开发**：终端执行 `npm install` 和 `npm run dev`，浏览器自动打开 `/dev.html`（也可手动访问 `http://localhost:5173/dev.html`）。`dev.html` 通过 ES Module 加载，必须用 Vite 服务器访问。
 
-## 模块一更新
+## 分工规则
 
-三张指定图片依次为彩色刺绣背包、红色民族服饰、手工刺绣布，每张只有一个命中区域，分别对应旋涡纹、花朵纹、回纹与线条纹。命中坐标使用原图百分比，图片始终保持完整的 3:2 比例，不裁切；手机、放大状态下共用同一判定。
+| 负责人 | JS 文件 | CSS 文件 | 图片目录 |
+|---|---|---|---|
+| 首页 | `src/pages/home.js` | `src/styles/home.css` | `assets/home/` |
+| 苗绣探源 | `src/pages/history.js` | `src/styles/history.css` | `assets/history/` |
+| 互动体验 | `src/pages/experience.js` | `src/styles/experience.css` | `assets/experience/` |
+| 作品展览 | `src/pages/gallery.js` | `src/styles/gallery.css` | `assets/gallery/` |
 
-提供关卡切换、未命中点击波纹、线索提示、放大观察、成功标记、解锁弹窗、进度显示、三关完成提示与主题服饰抽取翻牌动效。首次进入不显示目标位置；查看线索后才标出区域。键盘用户可聚焦画面，用方向键移动观察点，Enter/空格确认；弹窗支持 Escape 和 Tab 焦点循环。尊重系统“减少动态效果”设置。
+`assets/common/`、`src/main.js`、`src/shared.js`、`src/styles/base.css` 和 `src/components/` 由集成人维护。
 
-每张图只能解锁一次，每个主题只有一次抽取机会。完成情况和已抽到的部件保存在浏览器本地 `miao-decode-v1`，刷新后仍保留；存储不可用时保留当前会话进度。旧版的计数型 `miao-unlocked` 不再参与本模块判定。
+图片统一命名为英文小写，新增图片放在各自目录。JS 组件中示例：`<img src="${A}home/banner.webp">`。CSS 中样式文件位于 `src/styles/`，引用图片：`url('../../assets/home/banner.webp')`。
 
-## 传递给模块二
+修改模块源代码**不会自动同步到**`双击打开.html`。该 HTML 是当前代码打包生成的独立演示版本；最终合并后须重新构建独立版。旧 `assets/` 根目录图片暂时保留以兼容旧引用，切勿先删除。
 
-成功找到目标时，更新 `game.theme` 和 `game.progress`，衣橱根据对应主题解锁并提供一次抽取。同时在 `window` 发布 `miao:motif-found` 自定义事件，`event.detail` 包含 `levelId`、`theme`、`name`、`image`；主题 ID 为 `spiral`、`flower`、`lines`。重复点击已完成图不会再次发布事件。恢复浏览器进度时，衣橱直接读取 `game.progress`，无需重放解锁事件。
+## 非常重要：开发入口和演示入口的区别
 
-关卡配置及命中区域：`src/game.js`；互动页面：`src/pages/experience.js`；样式：`src/styles/experience.css`；点击和键盘事件：`src/main.js`。
+- `dev.html`：四人日常开发入口。修改 `src/pages/*.js`、`src/styles/*.css` 与 `assets/` 后，Vite 开发页面会更新。
+- `index.html`：已内嵌所有资源的离线快照，双击即可打开。**改源文件不会自动更新这个离线快照**。
+- 集成人在合并四个人修改后，需重新生成离线版 `index.html`；不能直接复制 `dev.html` 覆盖它。
+- 各页图片应放在 `assets/home/`、`assets/history/`、`assets/experience/`、`assets/gallery/`，公共素材放 `assets/common/`。
