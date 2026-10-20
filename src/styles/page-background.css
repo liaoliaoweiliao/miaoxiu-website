@@ -1,0 +1,23 @@
+/* ===== 统一氛围底图：首页 / 苗绣探源 / 互动体验 =====
+   底图为 assets/common/page-background.webp（深蓝花鸟暗纹），
+   叠一层自上而下的暗色蒙版，保证正文与卡片的可读性。 */
+body[data-page="home"],
+body[data-page="history"],
+body[data-page="experience"]{
+  background-color:#04182b;
+  background-image:
+    linear-gradient(180deg,rgba(3,20,36,.46) 0%,rgba(3,20,36,.34) 42%,rgba(2,14,26,.68) 100%),
+    url('../../assets/common/page-background.webp');
+  background-size:cover,cover;
+  background-position:center top,center top;
+  background-repeat:no-repeat,no-repeat;
+  background-attachment:fixed,fixed;
+}
+/* 让页面主体自身的大面积渐变让位给底图 */
+body[data-page="history"] .history-page,
+body[data-page="experience"] .experience-page{background:transparent}
+@media(max-width:900px){
+  body[data-page="home"],
+  body[data-page="history"],
+  body[data-page="experience"]{background-attachment:scroll,scroll;background-position:center top,center top}
+}

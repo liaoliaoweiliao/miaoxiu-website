@@ -1,14 +1,17 @@
 {
-  "name": "miao-embroidery-history",
+  "name": "miao-embroidery",
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "苗绣主题网站：首页 / 苗绣探源 / 互动体验 / 作品展览 / 素材来源（合并自 home、history、experience,gallery 三套分支）",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --open /dev.html",
-    "build": "vite build --outDir dist --emptyOutDir false",
-    "preview": "vite preview --host 0.0.0.0"
+    "dev": "vite --host 0.0.0.0 --open",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "build:standalone": "vite build --config vite.standalone.config.js && node scripts/standalone-post.cjs"
   },
   "devDependencies": {
-    "vite": "^6.2.0"
+    "vite": "^6.4.4",
+    "vite-plugin-singlefile": "^2.3.4"
   }
 }
