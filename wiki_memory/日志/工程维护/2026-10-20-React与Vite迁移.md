@@ -1,8 +1,8 @@
 ---
 type: log
-status: active
+status: archived
 kind: maintenance
-task_status: in_progress
+task_status: completed
 updated: 2026-10-20
 topic: react-vite-migration
 sources: ["package.json", "package-lock.json", "vite.config.js", "vite.standalone.config.js", "src/App.jsx", "src/data/catalog.js", "src/features/experience/gameModel.js", "tests/experience.test.js", "tests/history-atlas.test.js", "tests/e2e/site.spec.js", "runStart.cmd", "README.md", "AGENTS.md", ".github/workflows/ci.yml", "wiki_memory/.memory.json"]
@@ -32,7 +32,7 @@ sources: ["package.json", "package-lock.json", "vite.config.js", "vite.standalon
 
 ## 最新实际验证
 
-环境：2026-10-20，Windows PowerShell / Node v24.16.0 / npm12.0.1 / Python3.14.2 / 系统Microsoft Edge。对象为3d72daf加完整迁入82f079f业务后的本地变更，非原始基线本身。
+环境：2026-10-20，Windows PowerShell / Node v24.16.0 / npm12.0.1 / Python3.14.2 / 系统Microsoft Edge。对象为完整迁入82f079f业务后的df44a18实现（执行测试时仍是本地变更）；合并2707ee6树与之相同，非原始基线本身。
 
 | 命令或检查 | 实际结果与范围 |
 | --- | --- |
@@ -46,7 +46,7 @@ sources: ["package.json", "package-lock.json", "vite.config.js", "vite.standalon
 | PNG下载 | HTTP E2E核对PNG签名与900×1400尺寸；离线file协议实际下载我的苗绣装扮-girl.png成功 |
 | 素材完整性 | 320个上游assets的git hash-object均与origin/main对应blob一致 |
 | 视觉检查 | 已查看最终桌面首页、桌面体验和390px体验截图；临时截图不入库 |
-| 工程记忆 | 初次ready无错误/警告；结束前按最终状态刷新索引并复查 |
+| 工程记忆 | 最终ready通过，无错误/警告；启动必读约1.14万字符，未超预算 |
 
 扩展回归修复了装饰滤镜导致滚动弹层偏移、衣橱转场焦点回跳、重复同主题搜索不切换、file图片污染Canvas导致离线PNG失败。图谱测试曾误把视图切换当地域筛选，核对上游与reducer后纠正断言，保持累计年份口径；随后11条全过。开发期间旧HMR曾保留半写模块引用，最终重启后干净加载通过。
 
@@ -54,4 +54,4 @@ sources: ["package.json", "package-lock.json", "vite.config.js", "vite.standalon
 
 既有移动搜索输入隐藏限制保留；未验证其他浏览器或真实移动设备、外站所有来源/素材授权、实际托管部署与远程CI。五路内容和图谱数据按82f079f迁移，未将迁移本身表述为外部事实重新核验。
 
-实现与验证完成，尚待最终提交、合并远程祖先、推送和远程revision核对；完成后更新本日志为封存完成，并同步当前待办，不为同任务另建日志。
+已完成交付：初版3d72daf、新版业务迁移df44a18、保留远程82f079f为祖先的合并2707ee671ac03059fc95a2cce09c65314a7a8105。git merge-base确认远程祖先，合并树与已验证df44a18一致；git push origin main成功，git ls-remote确认远程main为2707ee6。此日志与当前状态的交付记录在文档收尾提交中同步，不改变已验证源码；后续HEAD可能比代码交付revision更新，接续重查实际Git状态。
