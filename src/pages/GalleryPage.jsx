@@ -1,52 +1,66 @@
 import { assetUrl } from '../utils/assets.js';
+import { galleryDisplayWorks, galleryFrameSlots, gallerySheetStep } from '../data/gallery.js';
 
-const filters = ['全部作品', '传统服饰', '现代应用', '纹样艺术'];
-const works = [
-  { title: '山野繁花', sub: '传统纹样 · 蝴蝶与花卉', src: 'gallery/pattern-butterfly.webp', group: 3 },
-  { title: '绣韵新生', sub: '现代应用 · 服饰与手袋', src: 'gallery/fashion.webp', group: 2 },
-  { title: '银饰华章', sub: '传统服饰 · 民族盛装', src: 'gallery/hero-woman.webp', group: 1 },
-  { title: '童趣苗韵', sub: '传统服饰 · 苗绣人物', src: 'gallery/character.webp', group: 1 },
-  { title: '锦绣衣裳', sub: '传统服饰 · 衣橱图鉴', src: 'gallery/fashion-card.webp', group: 1 },
-  { title: '蝴蝶妈妈', sub: '纹样艺术 · 生命符号', src: 'gallery/pattern-detail.webp', group: 3 },
-];
+function GalleryBackgrounds({ sheets }) {
+  return Array.from({ length: sheets }, (_, index) => (
+    <svg key={index} className={`jing-background${index === 0 ? ' is-first' : ''}${index === sheets - 1 ? ' is-last' : ''}`} style={{ '--sheet-y': (index * gallerySheetStep / 941).toFixed(6) }} viewBox="0 0 941 1672" aria-hidden="true">
+      <defs><mask id={`gallery-landscape-${index}`} maskUnits="userSpaceOnUse">
+        <rect width="941" height="1672" fill="white" />
+        {index > 0 && <path d="M469 115C483 125 498 130 508 140" fill="none" stroke="black" strokeWidth="7" />}
+        {index < sheets - 1 && <path d="M529 1450C548 1468 555 1490 549 1505" fill="none" stroke="black" strokeWidth="7" />}
+      </mask></defs>
+      <image href={assetUrl(index === sheets - 1 ? 'gallery/new/moonlit-scroll-ending.webp' : 'gallery/new/jing-exhibition-detail.webp')} width="941" height="1672" mask={`url(#gallery-landscape-${index})`} />
+    </svg>
+  ));
+}
 
-export default function GalleryPage({ state, onAction }) {
-  const selectedFilter = state.galleryFilter || 0;
+function GalleryThreadSeams({ sheets }) {
+  const curve = 'M529 0C542 12 545 19 533 27S488 31 497 40C501 44 504 47 508 50';
+  return Array.from({ length: Math.max(0, sheets - 1) }, (_, index) => (
+    <svg key={index} className="jing-seam" style={{ '--seam-y': ((index * gallerySheetStep + 1450) / 941).toFixed(6) }} viewBox="0 0 941 50" preserveAspectRatio="none" aria-hidden="true">
+      <path className="seam-thread-shadow" d={curve} /><path className="seam-thread-red" d={curve} /><path className="seam-thread-glint" d={curve} />
+    </svg>
+  ));
+}
+
+export default function GalleryPage({ onAction }) {
+  const works = galleryDisplayWorks();
+  const sheets = Math.ceil(works.length / 6);
+  const lastSlot = galleryFrameSlots[(works.length - 1) % 6];
+  const height = ((sheets - 1) * gallerySheetStep + (works.length % 6 === 0 ? 1672 : lastSlot.y + lastSlot.h + 20)) / 941;
 
   return (
-    <main className="container page-main">
-      <div className="section-intro">
-        <span className="eyebrow">EMBROIDERY ART GALLERY</span>
-        <h1>作品 <em>展览</em></h1>
-        <p>当传统纹样走进当代生活，古老针线便焕发崭新的生命力。</p>
-      </div>
-      <div className="gallery-filter" role="group" aria-label="作品分类">
-        {filters.map((label, index) => (
-          <button
-            type="button"
-            key={label}
-            className={selectedFilter === index ? 'active' : ''}
-            aria-pressed={selectedFilter === index}
-            onClick={() => onAction('filter', index)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className="gallery-grid">
-        {works.filter((work) => !selectedFilter || work.group === selectedFilter).map((work) => (
-          <button
-            type="button"
-            key={work.title}
-            className="gallery-card"
-            onClick={() => onAction('modal', 0, { src: work.src, title: work.title })}
-          >
-            <div><img src={assetUrl(work.src)} alt={work.title} loading="lazy" /></div>
-            <h3>{work.title}</h3>
-            <p>{work.sub}</p>
-            <span>查看作品　↗</span>
-          </button>
-        ))}
+    <main className="jing-gallery jing-long-gallery">
+      <header className="jing-heading">
+        <span className="eyebrow">MIAO EMBROIDERY EXHIBITION</span>
+        <div className="jing-title-line"><h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1></div>
+        <p className="jing-heading-poem" aria-label="循一线锦绣，赏万千绣意。"><span>循一线锦绣</span><i aria-hidden="true">·</i><span>赏万千绣意</span></p>
+        <span className="jing-title-stitches" aria-hidden="true" />
+      </header>
+      <div className="jing-sheets">
+        <GalleryBackgrounds sheets={sheets} /><GalleryThreadSeams sheets={sheets} />
+        <ol className="jing-artworks" style={{ '--scroll-height': height.toFixed(6) }}>
+          {works.map((work, index) => {
+            const slot = galleryFrameSlots[index % 6];
+            const y = (Math.floor(index / 6) * gallerySheetStep + slot.y) / 941;
+            return (
+              <li key={work.src} className={`jing-slot ${work.catalogue ? 'has-catalogue' : ''}`} style={{ '--slot-x': (slot.x / 941).toFixed(6), '--slot-y': y.toFixed(6), '--slot-w': (slot.w / 941).toFixed(6), '--slot-h': (slot.h / 941).toFixed(6) }}>
+                <button type="button" className="jing-work" onClick={() => onAction('modal', 0, { src: work.src, title: `${work.kind ? `${work.kind}｜` : ''}${work.title}`, description: work.catalogue ? work.desc : '' })} aria-label={`放大观赏${work.title}${work.kind ? `，${work.kind}` : ''}`}>
+                  <div className={`jing-work-photo ${work.detailPosition ? 'is-detail' : ''}`}>
+                    <img src={assetUrl(work.src)} style={work.detailPosition ? { objectPosition: work.detailPosition, transformOrigin: work.detailPosition } : undefined} alt={`${work.title}${work.kind ? `（${work.kind}）` : ''}`} loading="lazy" decoding="async" />
+                  </div>
+                  <div className="jing-work-copy">
+                    {!work.catalogue && <span className="jing-work-type">{work.sub}</span>}
+                    <h2>{work.title}</h2><p>{work.summary || work.desc}</p>
+                    {work.kind && <small className="jing-work-kind">{work.kind}</small>}
+                    <span className="jing-work-open">{work.catalogue ? '图赏与作品信息 ↗' : '观赏细节 ↗'}</span>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <div className="scroll-ending-mobile" role="img" aria-label="月下山水中，红绳盘结连接银饰与流苏，自然收束长卷" />
       </div>
     </main>
   );

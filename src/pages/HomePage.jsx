@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import Frame from '../components/Frame.jsx';
-import { motifs } from '../data/site.js';
+import Atlas from './AtlasPage.jsx';
+import HeritageJourney from '../features/home/HeritageJourney.jsx';
 import { assetUrl } from '../utils/assets.js';
 
 const slides = [
@@ -24,14 +24,13 @@ const features = [
   },
   {
     className: 'feature-experience',
-    artClassName: 'feature-art-illustration',
-    image: 'home/feature-experience.webp',
+    image: 'home/feature-experience-photo.jpg',
     chapter: 'CHAPTER 02',
     subtitle: 'THE CRAFT',
     icon: '✳',
     title: '互动体验',
     description: '游戏探索，感受苗绣魅力',
-    topics: ['解密小游戏', '图解抽卡', 'IP人物换装'],
+    topics: ['寻纹解密', '苗绣衣橱', '人物换装'],
     foot: ['穿针引线', '指尖生花'],
   },
   {
@@ -44,14 +43,6 @@ const features = [
     description: '欣赏匠心之作，感受艺术之美',
     foot: ['绣色万象', '匠心入画'],
   },
-];
-
-const fashionCategories = [
-  ['服饰应用', '♧'],
-  ['家居设计', '▣'],
-  ['文创产品', '◎'],
-  ['数字创意', '◩'],
-  ['非遗传承', '❀'],
 ];
 
 function HeroCarousel({ initialSlide = 0 }) {
@@ -149,7 +140,7 @@ function HeroCarousel({ initialSlide = 0 }) {
   );
 }
 
-export default function HomePage({ state, onNavigate }) {
+export default function HomePage({ state }) {
   return (
     <>
       <HeroCarousel initialSlide={state?.slide || 0} />
@@ -182,52 +173,8 @@ export default function HomePage({ state, onNavigate }) {
             </article>
           ))}
         </section>
-        <section className="dashboard">
-          <div className="map-card">
-            <Frame className="map-frame">
-              <img src={assetUrl('home/map.webp')} alt="苗绣主要流传区域示意图" />
-              <span className="section-overlay-label">苗绣文化分布</span>
-            </Frame>
-          </div>
-          <div className="stats-card">
-            <Frame className="stats-frame">
-              <div className="stats-grid">
-                <div><span aria-hidden="true">✿</span><small>苗绣纹样总数</small><strong>1,200+</strong></div>
-                <div><span aria-hidden="true">◉</span><small>作品佳作法</small><strong>6 <em>大</em></strong></div>
-                <div><span aria-hidden="true">◷</span><small>历史传承</small><strong>上千年</strong></div>
-                <div><span aria-hidden="true">▣</span><small>现代应用案例</small><strong>300+</strong></div>
-              </div>
-              <div className="hot-pattern">
-                <h3>热门纹样</h3>
-                <div className="motif-strip">
-                  {motifs.slice(0, 5).map((motif, index) => (
-                    <button
-                      type="button"
-                      key={motif.name}
-                      title={motif.name}
-                      aria-label={motif.name}
-                      onClick={() => onNavigate('experience', { motif: index })}
-                    >
-                      <span>{motif.icon}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </Frame>
-          </div>
-        </section>
-        <section className="fashion-section">
-          <Frame className="fashion-frame">
-            <img src={assetUrl('home/fashion.webp')} alt="苗绣纹样在服饰、包袋与鞋履中的时尚应用" />
-            <div className="fashion-cats">
-              {fashionCategories.map(([label, icon]) => (
-                <button type="button" key={label} onClick={() => onNavigate('gallery')}>
-                  <span aria-hidden="true">{icon}</span>{label}
-                </button>
-              ))}
-            </div>
-          </Frame>
-        </section>
+        <Atlas />
+        <HeritageJourney />
       </main>
     </>
   );

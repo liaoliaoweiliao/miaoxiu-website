@@ -1,100 +1,106 @@
 import { useEffect, useRef, useState } from 'react';
 import Frame from '../components/Frame.jsx';
-import { motifs, garments } from '../data/site.js';
+import { costumeSets } from '../data/catalog.js';
 import { assetUrl } from '../utils/assets.js';
 import DecodeGame from '../features/experience/DecodeGame.jsx';
+import DrawStage, { ThemeIcon } from '../features/experience/DrawStage.jsx';
+import LookViewer from '../features/experience/LookViewer.jsx';
+import MiaoDivider from '../features/experience/MiaoDivider.jsx';
 import UnlockDialog from '../features/experience/UnlockDialog.jsx';
 import useExperience from '../features/experience/useExperience.js';
-import { levels } from '../features/experience/gameModel.js';
-import { downloadLook, lookScale } from '../features/experience/saveLook.js';
+import { CULTURE, hasOutfit, levels, ownedSets, previewLayers, setById, themeById } from '../features/experience/gameModel.js';
+import { downloadLook } from '../features/experience/saveLook.js';
+
+const genders = [['girl', '苗绣姑娘'], ['boy', '苗绣少年']];
+
+function GenderControls({ drawing = false, game, dispatch }) {
+  return <div className={`gender-switch ${drawing ? 'draw-gender-switch character-choice' : ''}`} role="group" aria-label={drawing ? '选择你的同行角色' : '切换装扮人物'}>{genders.map(([id, name]) => <button key={id} type="button" data-action={drawing ? 'drawGender' : 'gender'} data-id={id} onClick={() => dispatch({ type: drawing ? 'drawGender' : 'gender', id })} aria-pressed={(drawing ? game.drawGender : game.collection.gender) === id} disabled={game.drawing || game.reveal}>
+    {drawing ? <><span className="choice-portrait"><img src={assetUrl(`experience/catalog/${id}-base.webp`)} alt={name} /></span><span className="choice-text"><strong>{name}</strong><small>{id === 'girl' ? '与她共赴绣衣之约' : '与他共赴绣衣之约'}</small></span><span className="choice-check" aria-hidden="true">{game.drawGender === id ? '✓' : '◇'}</span></> : name}
+  </button>)}</div>;
+}
+
+function SealTitle({ kind, image, title, heading = 'h2' }) {
+  const Heading = heading;
+  return <div className="title-with-seal"><span className={`section-seal section-seal--${kind}`}><img src={assetUrl(`experience/seals/${image}.webp`)} alt={`${kind === 'feiyi' ? '非遗' : kind === 'wardrobe' ? '绣裳' : '苗妆'}印章`} /></span><Heading>{title}</Heading></div>;
+}
 
 export default function ExperiencePage({ state = {}, onAction }) {
-  const externalMotif = Number.isInteger(state.motif) && motifs[state.motif] ? state.motif : 0;
-  const [experience, dispatch] = useExperience(externalMotif);
-  const { game, garment, look } = experience;
-  const selectedMotif = motifs[experience.motif] || motifs[0];
-  const selectedGarment = garments[garment];
-  const currentReward = game.progress[game.theme];
-  const drawn = currentReward.reward;
+  const [game, dispatch] = useExperience(state.experienceTheme, state.experienceThemeRequest);
+  const { collection } = game;
+  const theme = themeById(game.theme);
+  const unlocked = collection.unlocked.includes(game.theme);
+  const last = setById(game.lastDraw);
+  const pool = costumeSets.filter((costume) => costume.theme === game.theme && costume.gender === game.drawGender);
+  const owned = ownedSets(collection);
+  const shown = owned.filter((costume) => game.filter === 'all' || costume.theme === game.filter);
+  const selected = setById(game.selectedCard);
+  const culture = selected ? CULTURE[selected.theme] : null;
+  const equipped = setById(collection.equipped[collection.gender]);
+  const boardRef = useRef(null);
   const wardrobeRef = useRef(null);
-  const wardrobeFocusRequested = useRef(false);
-  const savingRef = useRef(null);
-  const [saveStatus, setSaveStatus] = useState('');
-  const [saving, setSaving] = useState(false);
+  const dressupRef = useRef(null);
+  const saveRef = useRef(null);
+  const [destination, setDestination] = useState(null);
 
-  useEffect(() => () => savingRef.current?.abort(), []);
-
+  useEffect(() => () => saveRef.current?.abort(), []);
   useEffect(() => {
-    if (game.unlock !== null || !wardrobeFocusRequested.current) return undefined;
-    wardrobeFocusRequested.current = false;
-    // Wait for the dialog to unmount and restore its trigger before moving on.
+    if (!destination) return undefined;
     const frame = window.requestAnimationFrame(() => {
-      const wardrobe = wardrobeRef.current;
-      wardrobe?.focus({ preventScroll: true });
-      wardrobe?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      const element = destination.kind === 'board' ? boardRef.current : destination.kind === 'wardrobe' ? wardrobeRef.current : dressupRef.current;
+      const focusTarget = destination.selector ? element?.querySelector(destination.selector) || element : element;
+      focusTarget?.focus({ preventScroll: true });
+      element?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: destination.kind === 'board' ? 'center' : 'start' });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [game.unlock]);
+  }, [destination]);
 
-  function selectMotif(index) {
-    dispatch({ type: 'motif', index });
-    onAction?.('motif', index);
-  }
-
-  async function save() {
-    if (savingRef.current) return;
-    const controller = new AbortController();
-    savingRef.current = controller;
-    setSaving(true);
-    setSaveStatus('正在生成形象图……');
-    try {
-      await downloadLook({ garment: selectedGarment, look, signal: controller.signal });
-      if (!controller.signal.aborted) setSaveStatus('形象图已生成，请在浏览器下载中查看。');
-    } catch (error) {
-      if (!controller.signal.aborted) setSaveStatus(error.message || '保存失败，请稍后重试。');
-    } finally {
-      if (!controller.signal.aborted) { savingRef.current = null; setSaving(false); }
-    }
-  }
-
+  const moveTo = (kind, selector) => setDestination({ kind, selector });
   function openWardrobe() {
-    wardrobeFocusRequested.current = true;
-    dispatch({ type: 'dismiss' });
+    if (!game.found) return;
+    dispatch({ type: 'openWardrobe' });
+    moveTo('wardrobe', '[data-action="drawGender"]');
   }
-
-  const drawNote = !currentReward.found
-    ? '先在上方找到对应纹样，即可解锁本主题的一次抽取机会。'
-    : drawn === null ? '本次抽取消耗1次机会，随机获得1件苗绣服装部件。'
-      : `恭喜获得「${garments[drawn].name}」！已为人物试穿，本主题抽取机会已使用。`;
+  function nextRound(completed) {
+    if (game.drawing || game.found && !completed || completed && (!game.dressed || !hasOutfit(collection))) return;
+    dispatch({ type: 'round', completed, random: Math.random() });
+    moveTo('board');
+  }
+  async function save() {
+    if (!hasOutfit(collection) || saveRef.current) return;
+    const controller = new AbortController();
+    saveRef.current = controller;
+    dispatch({ type: 'saveStart' });
+    try {
+      await downloadLook({ layers: previewLayers(collection), gender: collection.gender, signal: controller.signal });
+      if (!controller.signal.aborted) dispatch({ type: 'saveDone' });
+    } catch { if (!controller.signal.aborted) dispatch({ type: 'saveDone', error: true }); }
+    finally { if (!controller.signal.aborted) saveRef.current = null; }
+  }
 
   return <main className="experience-page">
-    <section className="decode-section"><div className="decode-inner">
-      <div className="side-heading"><span className="seal">非遗</span><h1>寻纹<br />解密</h1><p>在苗绣图案中，<br />寻找并点击隐藏纹样，<br />解锁专属苗绣服饰。</p></div>
-      <Frame className="pattern-image-frame"><DecodeGame game={game} dispatch={dispatch} /></Frame>
-      <p className="tip">⌕　提示：仔细观察花鸟纹样的细节，也可以使用方向键移动观察点，回车确认。</p>
-    </div></section>
-    <div className="divider-deco" aria-hidden="true">❧</div>
-    <section ref={wardrobeRef} id="wardrobe" className="wardrobe container" tabIndex={-1} aria-label="苗绣衣橱"><Frame className="wardrobe-frame"><div className="wardrobe-layout">
-      <div className="side-heading"><span className="seal">抽卡</span><h2>苗绣<br />衣橱</h2><p>解锁纹样后，<br />获得一次抽取机会，<br />领取对应的<br />传统苗绣服饰部件。</p></div>
-      <div className="wardrobe-main">
-        <div className="motif-tabs" aria-label="了解纹样文化">{motifs.map((item, index) => <button key={item.name} type="button" className={`motif-tab ${index === experience.motif ? 'selected' : ''}`} onClick={() => selectMotif(index)} aria-pressed={index === experience.motif}><span>{item.icon}</span><strong>{item.name}</strong></button>)}</div>
-        <div className="wardrobe-theme-tabs level-tabs" aria-label="切换主题衣橱">{levels.map((item, index) => <button key={item.id} type="button" className={game.theme === index ? 'active' : ''} aria-pressed={game.theme === index} onClick={() => dispatch({ type: 'theme', index })}><span>{item.icon}</span>{item.name}<small>{!game.progress[index].found ? '待解锁' : game.progress[index].reward === null ? '可抽取' : '已领取'}</small></button>)}</div>
-        <p className="wardrobe-current">当前衣橱：{levels[game.theme].name}</p>
-        <div className="card-stage">
-          <div className="side-card" aria-hidden="true">{garments[4].emoji}<span>下裙</span></div><div className="side-card" aria-hidden="true">{garments[2].emoji}<span>围腰</span></div>
-          <div className={`reward-card ${game.flipping ? 'flipping' : ''}`} aria-live="polite"><div className="reward-icon">{drawn === null ? '🦋' : garments[drawn].emoji}</div><img src={assetUrl('experience/fashion-card.webp')} alt={drawn === null ? '待抽取的苗绣服饰卡片' : `已获得${garments[drawn].name}卡片`} /><strong>{drawn === null ? '苗绣服饰' : garments[drawn].name}</strong><small>{levels[game.theme].name}</small></div>
-          <div className="side-card" aria-hidden="true">{garments[3].emoji}<span>袖片</span></div><div className="side-card" aria-hidden="true">{garments[1].emoji}<span>裙摆</span></div>
-        </div>
-        <button type="button" className="draw-btn" disabled={!currentReward.found || drawn !== null || game.flipping} onClick={() => dispatch({ type: 'draw', random: Math.random() })}>{!currentReward.found ? '寻找纹样后解锁' : drawn !== null ? '本主题已领取' : '单次抽取'}</button>
-        <p className="draw-note" role="status">{drawNote}</p>
+    <section className="decode-section container"><Frame className="pattern-image-frame"><div className="decode-inner">
+      <div className="side-heading"><SealTitle kind="feiyi" image="feiyi" heading="h1" title={<>寻纹<br />解密</>} /><p>一针一线，藏着纹样。<br />在画面中找到一处，<br />开启对应主题衣橱。</p></div>
+      <div className="decode-content"><DecodeGame ref={boardRef} game={game} dispatch={dispatch} onPreview={(artwork) => onAction?.('modal', 0, artwork)} onWardrobe={openWardrobe} onRound={nextRound} /></div>
+    </div></Frame></section>
+    <MiaoDivider />
+    <section ref={wardrobeRef} className="wardrobe container" id="miao-wardrobe" tabIndex={-1} aria-label="苗绣衣橱"><Frame className="wardrobe-frame"><div className="wardrobe-layout">
+      <div className="side-heading"><SealTitle kind="wardrobe" image="miaozhuang" title={<>苗绣<br />衣橱</>} /><p>寻纹开启主题卡池。<br />选择角色，抽取套装，<br />将针线之美收入藏品库。</p><small className="collection-total">已收藏 {collection.owned.length} 套</small></div>
+      <div className="wardrobe-main"><div className="motif-tabs">{levels.map((level) => <button key={level.id} type="button" className={`motif-tab ${game.theme === level.id ? 'selected' : ''} ${!collection.unlocked.includes(level.id) ? 'locked' : ''}`} data-action="pool" data-id={level.id} onClick={() => dispatch({ type: 'pool', id: level.id })} disabled={!collection.unlocked.includes(level.id) || game.drawing || game.reveal} aria-pressed={game.theme === level.id}><span><ThemeIcon theme={level} /></span><strong>{level.name}</strong>{!collection.unlocked.includes(level.id) && <small>🔒 寻纹后解锁</small>}</button>)}</div>
+        {unlocked ? <><div className="gender-prompt"><span className="eyebrow">绣衣之约</span><h3>与谁共赴这场绣衣之约？</h3><GenderControls drawing game={game} dispatch={dispatch} /></div>
+          {game.drawGender ? <><p className="theme-status">{game.drawGender === 'girl' ? '苗绣姑娘' : '苗绣少年'} · {theme.name}主题</p><DrawStage game={game} pool={pool} theme={theme} last={last} /><button type="button" className="draw-btn" data-action="draw" onClick={() => dispatch({ type: 'drawStart' })} disabled={game.drawing || game.reveal}>{game.drawing ? '抽取中…' : game.reveal ? '套装揭晓…' : last ? '再抽一套服装' : '抽取整套服装'}</button><p className="draw-note" role="status" aria-live="polite">{game.collectionNote || '抽到的套装自动收藏，可前往人物装扮一键穿戴。'}</p>{last && <button type="button" className="save-btn loop-step-btn" data-action="openDressup" onClick={() => moveTo('dressup', '.owned-card .wear-full')}>查看藏品并装扮 →</button>}</> : <div className="gender-await"><span>♙</span><p>请选择上方的苗绣姑娘或苗绣少年，开启专属苗绣衣橱。</p></div>}
+        </> : <div className="pool-locked"><span>♙</span><h3>{theme.name}卡池尚未解锁</h3><p>先找到对应图片中的纹样，即可进入这个主题卡池。</p><button type="button" className="save-btn" data-action="backToPuzzle" onClick={() => moveTo('board')}>返回寻纹</button></div>}
       </div>
     </div></Frame></section>
-    <div className="divider-deco" aria-hidden="true">❧</div>
-    <section className="dressup container"><Frame className="dressup-frame"><div className="dressup-layout">
-      <div className="side-heading"><span className="seal">互动</span><h2>人物<br />换装</h2><p>使用服饰部件，<br />为苗绣人物自由换装，<br />感受纹样背后的文化魅力。</p><div className="look-picker" aria-label="选择人物形象">{[0, 1, 2, 3].map((index) => <button key={index} type="button" className={look === index ? 'on' : ''} aria-pressed={look === index} onClick={() => dispatch({ type: 'look', index })}><img src={assetUrl('experience/character.webp')} alt={`人物形象${index + 1}`} /></button>)}</div></div>
-      <div className="character-stage"><div className="halo" aria-hidden="true" /><img style={{ filter: selectedGarment.filter, transform: `scale(${lookScale(look)})` }} src={assetUrl('experience/character.webp')} alt={`穿着${selectedGarment.name}的传统苗绣卡通人物`} /><div className="character-controls"><button type="button" onClick={() => dispatch({ type: 'reset' })} title="重置" aria-label="重置服饰和人物形象">↶</button><button type="button" onClick={() => dispatch({ type: 'nextLook' })} title="切换形象" aria-label="切换人物形象">⌕</button></div></div>
-      <aside className="outfit-panel"><h3>✧ 纹样文化介绍</h3><img className="detail-image" src={assetUrl('experience/pattern-detail.webp')} alt="苗绣纹样刺绣特写" /><h4>{selectedMotif.name}</h4><p>{selectedMotif.desc}</p><h3>✧ 我的服装部件</h3><div className="garment-grid">{garments.map((item, index) => <button key={item.name} type="button" className={garment === index ? 'chosen' : ''} aria-pressed={garment === index} onClick={() => dispatch({ type: 'garment', index })}><span>{item.emoji}</span><small>{item.name}</small></button>)}{[0, 1, 2].map((index) => <span key={index} className="empty-slot" aria-hidden="true">✧</span>)}</div><button type="button" className="save-btn" onClick={save} disabled={saving}>⇩　{saving ? '正在保存……' : '保存形象图'}</button><span className="save-status" role="status">{saveStatus}</span></aside>
-    </div></Frame></section>
-    {game.unlock !== null && <UnlockDialog index={game.unlock} onClose={() => dispatch({ type: 'dismiss' })} onWardrobe={openWardrobe} onContinue={() => dispatch(game.level < levels.length - 1 ? { type: 'level', index: game.level + 1 } : { type: 'dismiss' })} />}
+    <MiaoDivider />
+    <section ref={dressupRef} className="dressup container" id="miao-dressup" tabIndex={-1} aria-label="人物装扮"><Frame className="dressup-frame">
+      <div className="dressup-heading"><div><span className="eyebrow">把收藏穿在身上</span><SealTitle kind="dressup" image="xiuchang" title="人物装扮" /></div><GenderControls game={game} dispatch={dispatch} /></div>
+      <div className="atelier-grid"><div className="avatar-panel"><LookViewer collection={collection} revision={game.wearRevision} /><div className="outfit-summary"><small>当前穿戴</small><strong>{equipped ? `${equipped.name} · ${themeById(equipped.theme).name}` : 'renwu ip · 原始形象'}</strong></div><div className="avatar-actions"><button type="button" data-action="resetOutfit" onClick={() => dispatch({ type: 'reset' })} disabled={!hasOutfit(collection)}>恢复原始形象</button><button type="button" data-action="save" onClick={save} disabled={!hasOutfit(collection) || game.saving}>{game.saving ? '正在保存…' : '⇩ 保存效果图'}</button></div><p className="save-status" role="status">{game.saveNote}</p>{game.found && <><button type="button" className="save-btn loop-next-btn" data-action="finishLoop" onClick={() => nextRound(true)} disabled={!game.dressed || !hasOutfit(collection)}>完成装扮，继续寻纹 →</button>{!game.dressed && <small className="dressup-instruction">从藏品库选用一套服装，即可开启下一轮。</small>}</>}</div>
+        <div className="collection-panel"><div className="collection-heading"><h3>我的藏品库</h3><span>{collection.gender === 'girl' ? '苗绣姑娘' : '苗绣少年'} · {owned.length} 套</span></div><div className="collection-filters" role="group" aria-label="筛选藏品主题">{[{ id: 'all', name: '全部' }, ...levels].map((level) => <button key={level.id} type="button" data-action="collectionFilter" data-id={level.id} onClick={() => dispatch({ type: 'filter', id: level.id })} aria-pressed={game.filter === level.id}>{level.name}</button>)}</div>
+          {shown.length ? <div className="owned-grid">{shown.map((costume) => <article key={costume.id} className={`owned-card ${game.selectedCard === costume.id ? 'inspected' : ''} ${equipped?.id === costume.id ? 'is-equipped' : ''}`}><button type="button" className="inspect-card" data-action="equip" data-id={costume.id} onClick={() => dispatch({ type: 'equip', id: costume.id })} aria-label={`整套穿戴${costume.name}并了解纹样文化`}><img src={assetUrl(costume.card)} alt={`已收藏的${costume.name}套装`} loading="lazy" /><strong>{costume.name}</strong><small>{themeById(costume.theme).name}</small></button><button type="button" className="wear-full" data-action="equip" data-id={costume.id} onClick={() => dispatch({ type: 'equip', id: costume.id })} aria-pressed={equipped?.id === costume.id}>{equipped?.id === costume.id ? '✓ 已整套穿戴' : '整套穿戴'}</button></article>)}</div> : <div className="collection-empty"><span>✧</span><h4>{owned.length ? '暂无这个主题的藏品' : '还没有这个角色的服装卡'}</h4><p>解锁主题衣橱并选择角色抽卡，整套服装会自动出现在这里。</p><button type="button" className="save-btn" data-action="browseWardrobe" onClick={() => moveTo('wardrobe')}>前往苗绣衣橱</button></div>}
+          <aside className="motif-culture" aria-live="polite"><span className="eyebrow">纹样文化</span>{culture ? <><h3>{culture.title}</h3><p>{culture.text}</p><small>当前选中：{selected.name} · 整套服装</small></> : <><h3>从一套服装，认识一种纹样</h3><p>点击已收藏的套装，为人物整套穿戴，同时了解它对应的苗绣纹样。</p></>}</aside>
+        </div>
+      </div>
+    </Frame></section>
+    {game.unlock && <UnlockDialog theme={game.unlock} onClose={() => dispatch({ type: 'dismiss' })} onWardrobe={openWardrobe} />}
   </main>;
 }

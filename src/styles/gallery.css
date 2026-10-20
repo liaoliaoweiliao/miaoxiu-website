@@ -1,1 +1,53 @@
-/* gallery 页面专属样式：使用 body[data-page="gallery"] .xxx 选择器避免影响其他页面。 */
+/* The reference artwork continues at full width throughout one scrollable gallery. */
+body[data-page="gallery"]{background:#031b2c}body[data-page="gallery"]::before{display:none}
+.jing-gallery{position:relative;width:100%;margin:0;padding:0}.jing-heading{position:absolute;top:27px;left:7%;right:7%;text-align:center;z-index:1;color:#ead0a9;text-shadow:0 2px 14px #001526}.jing-heading .eyebrow{font-size:10px;letter-spacing:4px;color:#b99568}.jing-heading h1{font-size:48px;letter-spacing:9px;color:#f0d9bc;margin:17px 0 13px}.jing-heading h1 em{font-style:normal;color:#d5ac79}.jing-heading>p{font-size:13px;letter-spacing:4px;margin:0;color:#d4b998}
+.jing-sheets{position:relative;width:100%;container-type:inline-size;background:#031b2c}.jing-artworks{position:relative;margin:0;padding:0;list-style:none;height:calc(var(--scroll-height)*100cqw)}.jing-slot{position:absolute;min-width:0;left:calc(var(--slot-x)*100%);top:calc(var(--slot-y)*100cqw);width:calc(var(--slot-w)*100%);height:calc(var(--slot-h)*100cqw)}
+.jing-work{position:relative;display:grid;grid-template-columns:49% minmax(0,1fr);align-items:center;gap:12px;width:100%;height:100%;border:0;background:transparent;padding:4px 5px;text-align:left;color:#e9d0a7;transition:background .25s,filter .25s}.jing-work-photo{height:100%;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center}.jing-work-photo img{display:block;max-height:100%;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 8px #00131f55)}.jing-work-copy{position:relative;min-width:0;text-shadow:0 1px 8px #001421}.jing-work-type{display:block;font-size:9px;letter-spacing:.5px;line-height:1.5;color:#c2ab88}.jing-work h2{font-size:20px;letter-spacing:2px;line-height:1.4;color:#f2d2a4;margin:6px 0 8px}.jing-work-copy>p{font-size:11px;line-height:1.7;color:#b8cbd4;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.jing-work-kind{display:inline-block;font-size:8px;line-height:1.6;letter-spacing:1px;border-bottom:1px solid #b4946866;color:#c8aa7d;margin-top:5px}.jing-work-open{display:block;margin-top:8px;font-size:9px;color:#d4b07a;letter-spacing:1px}.jing-work:hover,.jing-work:focus-visible{background:#c9aa6210;filter:brightness(1.1)}.jing-work:focus-visible{outline:1px solid #e6bd81;outline-offset:3px}
+@media(min-width:1500px){.jing-heading{top:45px}.jing-heading h1{font-size:58px}.jing-work h2{font-size:26px;letter-spacing:3px}.jing-work-copy>p{font-size:14px;line-height:1.8}.jing-work-type{font-size:11px}.jing-work-kind{font-size:10px}.jing-work-open{font-size:11px}}
+@media(max-width:1000px) and (min-width:761px){.jing-heading{top:20px}.jing-heading h1{font-size:36px;letter-spacing:6px;margin:12px 0 10px}.jing-heading .eyebrow{font-size:8px}.jing-heading>p{font-size:11px}.jing-work{gap:8px;padding:2px}.jing-work h2{font-size:16px;letter-spacing:1px;margin:4px 0 6px}.jing-work-copy>p{font-size:9px;line-height:1.65;-webkit-line-clamp:3}.jing-work-type{font-size:8px}.jing-work-open{font-size:8px;margin-top:5px}.jing-work-kind{font-size:7px;margin-top:3px}}
+
+@media(min-width:761px){.jing-work:has(.jing-work-kind) .jing-work-copy>p{-webkit-line-clamp:2}}
+@media(prefers-reduced-motion:reduce){.jing-work{transition:none}}
+
+/* Overlap the painted landscapes: no solid-colour spacer or repeated detail cards. */
+.jing-sheets{overflow:hidden}.jing-artworks{z-index:2}.jing-work-photo{overflow:hidden}
+.jing-background{position:absolute;inset-inline:0;top:calc(var(--sheet-y)*100cqw);height:calc(1672/941*100cqw);width:100%;pointer-events:none;--entry:calc(90/1672*100%);--entry-end:calc(140/1672*100%);mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end));-webkit-mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end))}
+.jing-background.is-first{--entry:0%;--entry-end:0%}
+.jing-seam{position:absolute;left:0;top:calc(var(--seam-y)*100cqw);width:100%;height:calc(50/941*100cqw);z-index:1;pointer-events:none}.jing-seam path{fill:none;stroke-linecap:round;stroke-linejoin:round}.seam-thread-shadow{stroke:#071722;stroke-width:4;opacity:.55}.seam-thread-red{stroke:#c42d27;stroke-width:2.15}.seam-thread-glint{stroke:#ee6050;stroke-width:.55;opacity:.55}
+
+
+/* The supplied painting carries the entire final knot, silverwork and tassel. */
+.jing-background.is-last{mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end),#000 calc(1630/1672*100%),transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end),#000 calc(1630/1672*100%),transparent 100%)}
+.scroll-ending-mobile{display:none}.has-catalogue .jing-work-copy>p{display:block;overflow:visible}.has-catalogue .jing-work-open{margin-top:7px}
+
+
+/* Keep both photos and type inside the embroidered frame's clear interior. */
+.jing-work{grid-template-columns:40% minmax(0,1fr);gap:clamp(10px,1.4cqw,22px);padding:clamp(9px,1.3cqw,22px) clamp(18px,2.1cqw,36px)}.jing-work-photo{height:82%;width:88%;justify-self:center;align-self:center}.jing-work h2{margin:4px 0 6px;line-height:1.35}.jing-work-copy{max-height:100%;overflow:hidden}.jing-work-copy>p{-webkit-line-clamp:2}.has-catalogue .jing-work-copy>p{display:-webkit-box;-webkit-line-clamp:3;overflow:hidden}.jing-work-open,.has-catalogue .jing-work-open{margin-top:5px;line-height:1.4}
+
+
+/* A scroll title sits beside the needlework, within the open upper-right landscape. */
+.jing-heading{top:3.8vw;left:60%;right:auto;width:30%;z-index:3;text-align:center;padding:0;color:#e7c9a0;text-shadow:0 2px 12px #001525,0 0 22px #001525}.jing-heading .eyebrow{display:block;font-size:clamp(7px,.7vw,11px);font-weight:400;letter-spacing:clamp(1px,.16vw,2.6px);line-height:1.6;color:#ba9d79;white-space:nowrap}.jing-title-line{display:flex;align-items:center;justify-content:center;gap:clamp(9px,1.1vw,18px);margin:clamp(9px,1.1vw,20px) 0 clamp(8px,1vw,17px)}.jing-heading h1{display:flex;align-items:baseline;gap:.24em;margin:0;font-family:'STKaiti','KaiTi','Noto Serif SC','Songti SC',serif;font-size:clamp(32px,4.2vw,70px);font-weight:400;line-height:1.35;letter-spacing:.13em;white-space:nowrap;color:#ecd0a5}.jing-heading h1 span,.jing-heading h1 em{font-style:normal;color:inherit}.jing-heading h1 em{color:#d4ad79}.jing-title-seal{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:clamp(18px,1.9vw,29px);height:clamp(22px,2.35vw,36px);border:1px solid #a95948;outline:1px solid #a9594829;outline-offset:2px;color:#c27460;font-family:'STKaiti','KaiTi',serif;font-size:clamp(12px,1.25vw,18px);line-height:1;transform:rotate(-4deg);text-shadow:none}.jing-heading .jing-heading-poem{display:flex;align-items:center;justify-content:center;gap:clamp(7px,.8vw,13px);margin:0;font-family:'STKaiti','KaiTi','Noto Serif SC',serif;font-size:clamp(11px,1.05vw,17px);font-weight:400;letter-spacing:clamp(1px,.17vw,2.7px);line-height:1.9;color:#cbb394;white-space:nowrap}.jing-heading-poem i{font-style:normal;color:#ab8156;font-size:11px}.jing-title-stitches{position:relative;display:block;width:74px;max-width:32%;height:1px;margin:clamp(11px,1.2vw,20px) auto 0;background:linear-gradient(90deg,transparent,#b48c5a88,transparent)}.jing-title-stitches::after{content:'';position:absolute;width:4px;height:4px;top:-1.5px;left:calc(50% - 2px);border:1px solid #b48c5a;transform:rotate(45deg);background:#062337}
+
+
+/* Let the exhibition's deep-blue ground continue into the footer. */
+body[data-page="gallery"] .footer{border-top:0;background:linear-gradient(180deg,#031b2c 0%,#031b2c 28%,#031a30 100%)}
+body[data-page="gallery"] .footer-pattern{mask-image:linear-gradient(to bottom,transparent 0%,#000 48%,#000 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 48%,#000 100%)}
+
+
+/* The same painted scroll, frame coordinates and red thread scale on phones. */
+@media(max-width:760px){
+ .jing-heading .eyebrow{font-size:1.05vw;letter-spacing:.16vw;line-height:1.6}
+ .jing-title-line{gap:1.1vw;margin:1.1vw 0 1vw}
+ .jing-heading h1{font-size:4.2vw;letter-spacing:.13em;line-height:1.35}
+ .jing-heading .jing-heading-poem{font-size:1.35vw;letter-spacing:.17vw;gap:.8vw;line-height:1.9}
+ .jing-heading-poem i{font-size:1.1vw}
+ .jing-title-stitches{width:7.8vw;height:1px;margin:1.2vw auto 0}
+ .jing-title-stitches::after{width:2px;height:2px;top:-.5px;left:calc(50% - 1px)}
+ .jing-work{gap:1.2cqw;padding:1.2cqw 2.1cqw}
+ .jing-work-copy{max-height:100%;overflow:hidden}
+ .jing-work-type{font-size:.95cqw;letter-spacing:.05cqw;line-height:1.5}
+ .jing-work h2{font-size:2cqw;letter-spacing:.15cqw;line-height:1.35;margin:.4cqw 0 .6cqw}
+ .jing-work-copy>p,.has-catalogue .jing-work-copy>p{font-size:1.1cqw;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .jing-work-open,.has-catalogue .jing-work-open{font-size:.95cqw;letter-spacing:.08cqw;line-height:1.4;margin-top:.5cqw}
+ .jing-work-kind{font-size:.8cqw;letter-spacing:.1cqw;margin-top:.3cqw}
+}

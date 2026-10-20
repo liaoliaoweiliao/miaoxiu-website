@@ -17,6 +17,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - run: npm run build:standalone
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: python wiki_memory/工具/memory.py check --project . --require-ready

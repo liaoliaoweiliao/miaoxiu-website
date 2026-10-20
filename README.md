@@ -1,6 +1,6 @@
 # 苗绣文化网站 · 穿在身上的民族历史
 
-基于 React + Vite 的苗绣文化展示与互动网站，包含首页、苗绣探源、互动体验、作品展览四个页面。互动体验包括三关纹样解密、衣橱抽卡、人物换装与形象导出；解密进度和换装选择保存在当前浏览器中。
+基于 React + Vite 的苗绣文化展示与互动网站，包含首页、苗绣探源、互动体验、作品展览四个主页面，以及素材来源页。首页提供地域看板与小鸟长卷，探源页支持故事阅读、针法演示和三色配色；互动体验提供随机寻纹、男女角色整套服饰抽取、收藏、穿戴与形象导出。衣橱藏品和穿戴信息保存在当前浏览器中。
 
 ## 快速开始
 
@@ -28,6 +28,14 @@ npm run preview
 
 CI 使用 `npm ci` 按 `package-lock.json` 安装依赖；日常添加或升级依赖时，将 `package.json` 和更新后的锁文件一并提交。
 
+需要离线演示时执行：
+
+```powershell
+npm run build:standalone
+```
+
+该命令在 `standalone/` 内生成内联 JavaScript/CSS 的 HTML 和配套素材。保留整个目录，即可双击 `standalone/index.html`，或使用根目录的 `双击打开.html`。这是从当前 React 源码重新构建的演示，和历史归档不同；`standalone/` 是忽略的构建产物。
+
 ## 目录管理
 
 ```text
@@ -37,6 +45,7 @@ miaoxiu-website/
 ├─ package.json
 ├─ package-lock.json
 ├─ vite.config.js             # React 插件、资源基路径与端口
+├─ vite.standalone.config.js  # 离线演示构建
 ├─ playwright.config.js       # 浏览器测试配置
 ├─ src/
 │  ├─ main.jsx                # React 挂载与样式入口
@@ -44,6 +53,9 @@ miaoxiu-website/
 │  ├─ pages/                  # 四个 React 页面
 │  ├─ components/             # Header、Footer、装饰框等公共组件
 │  ├─ features/experience/    # 解密、抽卡、换装状态与交互组件
+│  ├─ features/history/       # 故事阅读、针法与配色状态
+│  ├─ features/home/          # 小鸟长卷与地域看板交互
+│  ├─ features/cursor/        # 蝴蝶光标和粒子动画
 │  ├─ data/site.js            # 纹样与服饰公共数据
 │  ├─ utils/assets.js         # public 图片 URL 生成
 │  └─ styles/                 # 统一入口、公共样式与各页样式
@@ -57,7 +69,7 @@ miaoxiu-website/
 └─ AGENTS.md                  # 项目协作和提交推送约束
 ```
 
-`node_modules/`、`dist/`、`playwright-report/`、`test-results/` 是依赖或生成目录，已列入 `.gitignore`。
+`node_modules/`、`dist/`、`standalone/`、`playwright-report/`、`test-results/` 是依赖或生成目录，已列入 `.gitignore`。远程旧版本中曾误提交的依赖和产物不作为源码维护，使用上述命令重新生成。
 
 ## 模块协作
 
@@ -67,6 +79,7 @@ miaoxiu-website/
 | 苗绣探源 | `src/pages/HistoryPage.jsx` | `src/styles/history.css` | `public/assets/history/` |
 | 互动体验 | `src/pages/ExperiencePage.jsx`、`src/features/experience/` | `src/styles/experience.css` | `public/assets/experience/` |
 | 作品展览 | `src/pages/GalleryPage.jsx` | `src/styles/gallery.css` | `public/assets/gallery/` |
+| 素材来源 | `src/pages/SourcesPage.jsx`、`src/data/sources.js` | `src/styles/sources.css` | 复用来源数据 |
 | 公共集成 | `src/App.jsx`、`src/components/`、`src/data/`、`src/utils/` | `src/styles/base.css`、`src/styles/index.css` | `public/assets/common/` |
 
 页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
@@ -83,7 +96,7 @@ import { assetUrl } from '../utils/assets.js';
 
 `assetUrl` 使用 Vite 的 `BASE_URL` 并对每段路径编码。公共 CSS 图片采用 `url('/assets/...')`，由 Vite 在构建时处理；不要在 JSX 中写死主机地址或把 `public/` 写入浏览器 URL。
 
-`vite.config.js` 默认 `base: './'`，路由使用 `#home`、`#history`、`#experience`、`#gallery`。部署到仓库子路径时可按站点需要指定基路径，例如：
+`vite.config.js` 默认 `base: './'`，路由使用 `#home`、`#history`、`#experience`、`#gallery`、`#sources`。地域看板嵌入首页。部署到仓库子路径时可按站点需要指定基路径，例如：
 
 ```powershell
 npm run build -- --base=/miaoxiu-website/

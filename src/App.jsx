@@ -1,54 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useState } from 'react';
 import { Header, Footer } from './components/Layout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
 import ExperiencePage from './pages/ExperiencePage.jsx';
 import GalleryPage from './pages/GalleryPage.jsx';
+import SourcesPage from './pages/SourcesPage.jsx';
+import ImageLightbox from './components/ImageLightbox.jsx';
+import MoonCursor from './features/cursor/MoonCursor.jsx';
 import { motifs } from './data/site.js';
-import { assetUrl } from './utils/assets.js';
 
-const pages = { home: HomePage, history: HistoryPage, experience: ExperiencePage, gallery: GalleryPage };
-const titles = { home: '首页', history: '苗绣探源', experience: '互动体验', gallery: '作品展览' };
+const pages = { home: HomePage, history: HistoryPage, experience: ExperiencePage, gallery: GalleryPage, sources: SourcesPage };
+const titles = { home: '首页', history: '苗绣探源', experience: '互动体验', gallery: '作品展览', sources: '素材来源' };
 
 function currentPage() {
   const page = window.location.hash.slice(1).split('/')[0];
   return Object.hasOwn(pages, page) ? page : 'home';
-}
-
-function ArtworkModal({ artwork, onClose }) {
-  const closeButton = useRef(null);
-
-  useEffect(() => {
-    const previous = document.activeElement;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButton.current?.focus();
-    function onKeyDown(event) {
-      if (event.key === 'Escape') onClose();
-      if (event.key === 'Tab') {
-        event.preventDefault();
-        closeButton.current?.focus();
-      }
-    }
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-      previous?.focus();
-    };
-  }, [onClose]);
-
-  return createPortal(
-    <div className="modal" onClick={onClose}>
-      <section className="modal-body" role="dialog" aria-modal="true" aria-labelledby="artwork-title" onClick={(event) => event.stopPropagation()}>
-        <button type="button" ref={closeButton} onClick={onClose} aria-label="关闭作品预览">✕</button>
-        <img src={assetUrl(artwork.src)} alt={artwork.title} />
-        <h2 id="artwork-title">{artwork.title}</h2>
-      </section>
-    </div>,
-    document.body,
-  );
 }
 
 export default function App() {
@@ -74,7 +40,10 @@ export default function App() {
 
   const onNavigate = useCallback((page, extra = {}) => {
     if (!Object.hasOwn(pages, page)) return;
-    setState((previous) => ({ ...previous, ...extra, page, nav: false, modal: null }));
+    setState((previous) => ({
+      ...previous, ...extra, page, nav: false, modal: null,
+      experienceThemeRequest: extra.experienceTheme ? (previous.experienceThemeRequest || 0) + 1 : previous.experienceThemeRequest,
+    }));
     if (window.location.hash !== `#${page}`) window.location.hash = page;
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   }, []);
@@ -85,11 +54,15 @@ export default function App() {
     if (action === 'search') {
       const query = state.query.trim();
       if (!query) return;
+      if (/素材|来源/.test(query)) { onNavigate('sources'); return; }
+      const themes = [{ id: 'star', name: '八角星纹' }, { id: 'peony', name: '牡丹花纹' }, { id: 'swirl', name: '水涡纹' }];
+      const theme = themes.find((item) => item.name.includes(query) || query.includes(item.name));
+      if (theme) { onNavigate('experience', { experienceTheme: theme.id }); return; }
       const motif = motifs.findIndex((item) => item.name.includes(query) || query.includes(item.name));
-      if (motif >= 0) onNavigate('experience', { motif });
+      if (motif >= 0 || /互动|衣橱|装扮/.test(query)) onNavigate('experience', { motif: Math.max(0, motif) });
       else if (/作品|展览|设计|服饰/.test(query)) onNavigate('gallery');
       else if (/苗绣|历史|文化|技艺|针法/.test(query)) onNavigate('history');
-      else window.alert('暂无匹配内容，试试搜索“蝴蝶纹”“苗绣”或“作品”。');
+      else window.alert('暂无匹配内容，试试搜索“水涡纹”“牡丹花纹”或“作品”。');
       return;
     }
     setState((previous) => {
@@ -111,7 +84,8 @@ export default function App() {
       <Header {...state} onQueryChange={(query) => setState((previous) => ({ ...previous, query }))} onAction={onAction} onNavigate={onNavigate} />
       <Page state={state} onAction={onAction} onNavigate={onNavigate} />
       <Footer onNavigate={onNavigate} />
-      {state.modal && <ArtworkModal artwork={state.modal} onClose={closeModal} />}
+      <MoonCursor />
+      {state.modal && <ImageLightbox artwork={state.modal} onClose={closeModal} />}
     </>
   );
 }

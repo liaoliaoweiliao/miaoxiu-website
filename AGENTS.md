@@ -4,18 +4,18 @@
 
 ## 开始工作
 
-1. 先检查 `git status --short`、当前分支、`git remote -v` 与 `git branch -vv`，确认实际 upstream 和已有本地改动。核对改动归属，保全用户及其他任务的工作，不使用重置或覆盖来清理未知变更。
+1. 先检查 `git status --short`、当前分支、`git remote -v` 与 `git branch -vv`，确认 upstream 和已有本地改动；涉及工程交付时读取远程实际引用，必要时 fetch 后盘点差异，不能把缓存的跟踪引用当作远程最新状态。核对改动归属，保全用户及其他任务的工作，不使用重置或覆盖来清理未知变更。
 2. 阅读根 `README.md`、下方工程记忆接入协议及相关状态页，明确本次范围、现行架构和未完成事项。历史测试不能代替当前工作区验证。
 3. 使用 React + Vite 的现有结构开发。HTML 入口为 `index.html`，挂载入口为 `src/main.jsx`；路由和公共交互由 `src/App.jsx` 管理。页面、公共组件、互动体验逻辑、数据、工具和样式分别放入对应目录。
 
 ## 开发与验证
 
-- 保持四个页面的既有内容与可访问交互。使用 JSX、props、hooks 和 reducer；不要重新引入 HTML 字符串渲染、`innerHTML` 或 `dangerouslySetInnerHTML`。
+- 保持四个主页面、素材来源页和已接入交互。使用 JSX、props、hooks 和 reducer；不要重新引入 HTML 字符串渲染、`innerHTML` 或 `dangerouslySetInnerHTML`。合并远程更新时先盘点新版行为，不能用旧版本的测试或实现覆盖新业务。
 - 公共数据放在 `src/data/`；图片放在 `public/assets/`，JSX 使用 `src/utils/assets.js` 的 `assetUrl`，兼顾文件名编码和 Vite 基路径。改动公共组件、数据和基础样式时检查相关页面。
 - 开发使用 `npm install` 与 `npm run dev`，生产构建使用 `npm run build`。保持 `runStart.cmd` 可从自身目录启动，首次缺少依赖时能安装依赖。
 - 每次工程修改运行适当验证；状态逻辑改动运行 `npm test`，页面和交互改动运行构建及相关浏览器测试。完整交付前至少完成 `npm run build`，有失败、阻塞或未验证范围时如实记录。浏览器测试按 README 准备浏览器并在构建后运行。
 - 依赖更改同步更新并提交 `package.json` 与 `package-lock.json`。启动脚本 `runStart.cmd`、必要配置和文档属于版本管理范围。
-- 不提交 `node_modules/`、`dist/`、`playwright-report/`、`test-results/`、本地缓存、密钥或临时输出。`docs/archive/legacy-offline.html` 是历史快照，不作为开发入口或重新生成的交付产物。
+- 不提交 `node_modules/`、`dist/`、`standalone/`、`playwright-report/`、`test-results/`、本地缓存、密钥或临时输出。`docs/archive/legacy-offline.html` 是历史快照；当前离线演示使用 `npm run build:standalone` 重新生成，保留与当前源码一致的流程。
 - 完成或中断有持久价值的工作时，按 `wiki_memory/AGENTS.md` 更新相关事实、实际验证与下一步；标准模式保留五页实质状态和六类日志目录。运行索引刷新与 `check --require-ready`，检查内容及来源，不能仅以工具通过宣称事实正确。
 
 ## 每次修改后的提交与推送
