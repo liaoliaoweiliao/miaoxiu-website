@@ -1,2 +1,9 @@
 import { defineConfig } from 'vite';
-export default defineConfig({ build: { rollupOptions: { input: 'dev.html' } } });
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  base: './',
+  server: { port: 5173 },
+  preview: { port: 4173 },
+});

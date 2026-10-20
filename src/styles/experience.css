@@ -1,1 +1,42 @@
-/* experience 页面专属样式：使用 body[data-page="experience"] .xxx 选择器避免影响其他页面。 */
+/* Interactive experience: photograph coordinates stay relative to the full image. */
+.decode-game{padding:10px;color:#e6e2dc;min-width:0}
+.decode-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;padding:4px 0 14px}
+.level-label{color:#f0bd89}.decode-counter{font-size:12px;color:#b6cbd8;white-space:nowrap}
+.level-tabs{display:flex;gap:7px;margin-bottom:15px}
+.level-tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #476375;background:#082c44;color:#d4dfe4;padding:11px 8px;border-radius:5px;font-size:12px;min-width:0}
+.level-tabs button.active{border-color:#e2af7b;background:#563e3a;color:#ffe1bb}
+.level-tabs button small{font-size:10px;opacity:.7}.level-tabs button>span:last-child{margin-left:auto}
+.target-brief{display:flex;align-items:center;gap:16px;padding:2px 0 14px;font-size:12px;color:#afc5d2}
+.target-brief strong{color:#f5c994;font-size:18px}.target-brief small{margin-left:auto;font-size:10px}
+.decode-viewport{overflow:auto;max-height:530px;border:1px solid #68818b;background:#041a2c;scrollbar-color:#b98b66 #07273d}
+.decode-board{position:relative;width:100%;outline-offset:-3px;cursor:crosshair;touch-action:pan-y}
+.decode-board:focus-visible{outline:2px solid #ffd79c}.decode-board.solved{cursor:default}
+.decode-board>img{width:100%;height:auto;user-select:none;pointer-events:none}
+.decode-viewport.zoomed .decode-board{width:150%;max-width:none}
+.target-outline{position:absolute;border:2px dashed #ffe0a1;box-shadow:0 0 0 100vmax #01172b35;pointer-events:none;z-index:1;border-radius:7px;background:#f0bf7520}
+.target-outline.found{border:2px solid #b2dba3;background:#79b9872b;box-shadow:0 0 20px #adeb9b55}
+.target-outline b{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);background:#28563d;color:#f3ffe7;font-size:12px;white-space:nowrap;padding:4px 8px;border-radius:5px}
+.click-ripple,.observation-cursor{position:absolute;transform:translate(-50%,-50%);pointer-events:none;line-height:1;z-index:3}
+.click-ripple{width:35px;height:35px;display:grid;place-items:center;font-size:28px;border-radius:50%;background:#061b32cf;border:1px solid currentColor}
+.click-ripple.hit{color:#c7e9ab}.click-ripple.miss{color:#ffba9d}.observation-cursor{color:#fff2bf;font-size:30px;text-shadow:0 0 4px #000,1px 1px #000}
+.decode-actions{display:flex;gap:10px;margin-top:13px;flex-wrap:wrap}
+.decode-actions button{border:1px solid #a77d5e;background:#102f43;color:#edc49b;border-radius:20px;padding:8px 14px;font-size:12px}
+.experience-page button:disabled{cursor:default;opacity:.5;transform:none;filter:none}
+.decode-feedback{font-size:12px;color:#becfdb;margin:14px 0 0;min-height:24px}.decode-feedback.success{color:#bee0a5}
+.hint-copy{border-left:2px solid #e5b07a;padding:6px 12px;margin:8px 0 0;font-size:12px;color:#f0d3ae;background:#e5b07a0d}
+.all-complete{color:#d4e4ad;border:1px solid #769b6a;background:#59884915;padding:12px;margin-top:12px;text-align:center;font-size:12px}
+.experience-page .pattern-image-frame{overflow:hidden;min-height:0}
+.experience-page .tip{margin-top:0;line-height:1.8}
+.wardrobe{scroll-margin-top:100px}.wardrobe-theme-tabs{margin:18px auto 0;max-width:620px}
+.wardrobe-theme-tabs button{flex-wrap:wrap}.wardrobe-theme-tabs button>span:last-child{margin-left:0}.wardrobe-theme-tabs small{white-space:nowrap}
+.wardrobe-current{font-size:12px;color:#eac29a;margin:12px 0 0}
+.reward-card.flipping{animation:reward-reveal .65s ease-out}.save-status{font-size:11px;line-height:1.6;color:#ebcda8;margin-top:8px}
+.unlock-overlay{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:24px;background:#010f20df;backdrop-filter:blur(7px);overflow:auto}
+.unlock-dialog{position:relative;width:min(490px,100%);max-height:calc(100dvh - 48px);overflow:auto;padding:35px 32px;border:1px solid #d6a273;border-radius:12px;background:radial-gradient(ellipse at top,#17415a,#06253c 75%);box-shadow:0 15px 90px #0009;text-align:center;color:#e3e6df}
+.unlock-symbol{font-size:62px;color:#fac68f;margin-bottom:12px}.unlock-dialog h2{font-size:26px;color:#f5cd9e;margin:16px 0 12px}.unlock-dialog p{font-size:13px;color:#c5d5df}
+.unlock-close{position:absolute;right:12px;top:9px;border:0;background:none;color:#edd5ba;font-size:30px}
+.unlock-ticket{border:1px dashed #c49b72;background:#d9b2810e;color:#f4d0a5;padding:18px 12px;line-height:1.8;margin:20px 0}.unlock-ticket small{font-size:12px;color:#d5e2ca}
+.unlock-dialog .primary-btn{width:100%;font-size:15px}.unlock-continue{display:block;margin:18px auto 0;border:0;background:none;color:#c5d2dc;font-size:12px}
+@keyframes reward-reveal{0%{transform:rotateY(0) scale(.92)}50%{transform:rotateY(90deg) scale(1.04)}100%{transform:rotateY(0) scale(1)}}
+@media(max-width:760px){.decode-game{padding:4px}.decode-toolbar{font-size:11px}.decode-counter{font-size:10px}.level-tabs{gap:4px;margin-bottom:12px}.level-tabs button{gap:4px;font-size:10px;padding:9px 4px;flex-wrap:wrap}.level-tabs button>span:last-child{margin-left:0}.target-brief{gap:10px}.target-brief strong{font-size:16px}.target-brief small{font-size:9px}.decode-viewport{max-height:440px}.decode-actions{gap:5px}.decode-actions button{padding:7px 10px;font-size:11px}.decode-feedback,.hint-copy{font-size:11px}.wardrobe-theme-tabs button{font-size:10px}.wardrobe-theme-tabs small{font-size:9px}.unlock-dialog{padding:30px 20px}.unlock-dialog h2{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.reward-card.flipping{animation:none}.character-stage>img{transition:none}}

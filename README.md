@@ -1,28 +1,125 @@
-# 苗绣文化网站 · 四人协作版（图片目录修复）
+# 苗绣文化网站 · 穿在身上的民族历史
 
-## 打开方式
+基于 React + Vite 的苗绣文化展示与互动网站，包含首页、苗绣探源、互动体验、作品展览四个页面。互动体验包括三关纹样解密、衣橱抽卡、人物换装与形象导出；解密进度和换装选择保存在当前浏览器中。
 
-- **直接双击 `index.html`**：正式离线演示版，CSS/JS/图片均嵌入，可直接浏览四个页面。`双击打开.html` 是同内容备用文件。
-- **日常分工开发**：终端执行 `npm install` 和 `npm run dev`，浏览器自动打开 `/dev.html`（也可手动访问 `http://localhost:5173/dev.html`）。`dev.html` 通过 ES Module 加载，必须用 Vite 服务器访问。
+## 快速开始
 
-## 分工规则
+需要 Node.js 20.19 及以上的 20.x 版本，或 22.12 及以上版本，并确保终端能够运行 `node` 和 `npm`。版本范围以 [package.json](package.json) 的 `engines` 为准。
 
-| 负责人 | JS 文件 | CSS 文件 | 图片目录 |
-|---|---|---|---|
-| 首页 | `src/pages/home.js` | `src/styles/home.css` | `assets/home/` |
-| 苗绣探源 | `src/pages/history.js` | `src/styles/history.css` | `assets/history/` |
-| 互动体验 | `src/pages/experience.js` | `src/styles/experience.css` | `assets/experience/` |
-| 作品展览 | `src/pages/gallery.js` | `src/styles/gallery.css` | `assets/gallery/` |
+在工程根目录执行：
 
-`assets/common/`、`src/main.js`、`src/shared.js`、`src/styles/base.css` 和 `src/components/` 由集成人维护。
+```powershell
+npm install
+npm run dev
+```
 
-图片统一命名为英文小写，新增图片放在各自目录。JS 组件中示例：`<img src="${A}home/banner.webp">`。CSS 中样式文件位于 `src/styles/`，引用图片：`url('../../assets/home/banner.webp')`。
+`npm install` 安装项目依赖；`npm run dev` 启动 Vite 开发服务器并自动打开浏览器，默认地址为 [http://localhost:5173](http://localhost:5173)。端口被占用时，以终端输出的实际地址为准。修改 React 组件或样式后，开发页面会自动更新。
 
-修改模块源代码**不会自动同步到**`双击打开.html`。该 HTML 是当前代码打包生成的独立演示版本；最终合并后须重新构建独立版。旧 `assets/` 根目录图片暂时保留以兼容旧引用，切勿先删除。
+Windows 用户也可双击根目录的 [runStart.cmd](runStart.cmd)。脚本会切换到自身所在目录，检查 Node.js 与 npm；首次启动缺少本地 Vite 依赖时自动执行 `npm install`，随后执行 `npm run dev`。停止服务时在终端按 `Ctrl+C`。`runStart.cmd` 是受 Git 跟踪的工程启动入口。
 
-## 非常重要：开发入口和演示入口的区别
+## 构建与预览
 
-- `dev.html`：四人日常开发入口。修改 `src/pages/*.js`、`src/styles/*.css` 与 `assets/` 后，Vite 开发页面会更新。
-- `index.html`：已内嵌所有资源的离线快照，双击即可打开。**改源文件不会自动更新这个离线快照**。
-- 集成人在合并四个人修改后，需重新生成离线版 `index.html`；不能直接复制 `dev.html` 覆盖它。
-- 各页图片应放在 `assets/home/`、`assets/history/`、`assets/experience/`、`assets/gallery/`，公共素材放 `assets/common/`。
+```powershell
+npm run build
+npm run preview
+```
+
+`npm run build` 生成生产文件到 `dist/`，入口为 `dist/index.html`。`npm run preview` 启动本地生产预览，默认地址为 [http://localhost:4173](http://localhost:4173)。发布时上传整个 `dist/` 目录。当前开发入口 `index.html` 与生产文件均通过 HTTP 服务使用。
+
+CI 使用 `npm ci` 按 `package-lock.json` 安装依赖；日常添加或升级依赖时，将 `package.json` 和更新后的锁文件一并提交。
+
+## 目录管理
+
+```text
+miaoxiu-website/
+├─ index.html                 # Vite HTML 入口
+├─ runStart.cmd               # Windows 一键开发启动
+├─ package.json
+├─ package-lock.json
+├─ vite.config.js             # React 插件、资源基路径与端口
+├─ playwright.config.js       # 浏览器测试配置
+├─ src/
+│  ├─ main.jsx                # React 挂载与样式入口
+│  ├─ App.jsx                 # Hash 导航、搜索、主题、作品弹窗
+│  ├─ pages/                  # 四个 React 页面
+│  ├─ components/             # Header、Footer、装饰框等公共组件
+│  ├─ features/experience/    # 解密、抽卡、换装状态与交互组件
+│  ├─ data/site.js            # 纹样与服饰公共数据
+│  ├─ utils/assets.js         # public 图片 URL 生成
+│  └─ styles/                 # 统一入口、公共样式与各页样式
+├─ public/assets/             # 图片原文件，按页面和用途分类
+├─ tests/                     # 状态逻辑测试与 e2e 浏览器测试
+├─ docs/
+│  ├─ archive/legacy-offline.html  # 原站离线快照
+│  └─ references/             # 素材来源与设计参考说明
+├─ wiki_memory/               # standard 工程记忆
+├─ .github/workflows/ci.yml   # 安装、测试、构建与记忆检查
+└─ AGENTS.md                  # 项目协作和提交推送约束
+```
+
+`node_modules/`、`dist/`、`playwright-report/`、`test-results/` 是依赖或生成目录，已列入 `.gitignore`。
+
+## 模块协作
+
+| 模块 | 主要入口 | 页面样式 | 图片目录 |
+| --- | --- | --- | --- |
+| 首页 | `src/pages/HomePage.jsx` | `src/styles/home.css` | `public/assets/home/` |
+| 苗绣探源 | `src/pages/HistoryPage.jsx` | `src/styles/history.css` | `public/assets/history/` |
+| 互动体验 | `src/pages/ExperiencePage.jsx`、`src/features/experience/` | `src/styles/experience.css` | `public/assets/experience/` |
+| 作品展览 | `src/pages/GalleryPage.jsx` | `src/styles/gallery.css` | `public/assets/gallery/` |
+| 公共集成 | `src/App.jsx`、`src/components/`、`src/data/`、`src/utils/` | `src/styles/base.css`、`src/styles/index.css` | `public/assets/common/` |
+
+页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
+
+## 图片与子路径
+
+新增图片放入 `public/assets/` 对应目录，优先使用英文小写、连字符文件名。现有中文、空格及特殊字符文件保留原名；JSX 中统一通过工具函数生成 URL：
+
+```jsx
+import { assetUrl } from '../utils/assets.js';
+
+<img src={assetUrl('home/map.webp')} alt="苗绣主要流传区域示意图" />
+```
+
+`assetUrl` 使用 Vite 的 `BASE_URL` 并对每段路径编码。公共 CSS 图片采用 `url('/assets/...')`，由 Vite 在构建时处理；不要在 JSX 中写死主机地址或把 `public/` 写入浏览器 URL。
+
+`vite.config.js` 默认 `base: './'`，路由使用 `#home`、`#history`、`#experience`、`#gallery`。部署到仓库子路径时可按站点需要指定基路径，例如：
+
+```powershell
+npm run build -- --base=/miaoxiu-website/
+```
+
+更改基路径后检查 HTML、CSS 背景、页面图片与互动体验原始素材均能加载。
+
+## 验证
+
+```powershell
+npm test
+npm run build
+npm run test:e2e
+python "wiki_memory/工具/memory.py" check --project "." --require-ready
+```
+
+`npm test` 检查独立状态逻辑；浏览器测试检查真实页面与交互，使用构建后的 `dist/` 并自动启动 4173 端口的预览服务器。运行 `test:e2e` 前先完成生产构建。Windows 默认使用已安装的 Microsoft Edge；其他平台默认使用 Playwright Chromium。
+
+没有 Edge 或需要统一使用 Chromium 时，先安装浏览器并设置通道。PowerShell 示例：
+
+```powershell
+npx playwright install chromium
+$env:PLAYWRIGHT_CHANNEL = 'chromium'
+npm run test:e2e
+```
+
+其他终端使用其对应方式设置 `PLAYWRIGHT_CHANNEL=chromium`。检查失败时保留失败说明与可执行下一步，测试报告留在本地忽略目录。
+
+## 历史归档
+
+[docs/archive/legacy-offline.html](docs/archive/legacy-offline.html) 保存重构前内嵌资源的离线演示快照，可供历史查阅。该归档不会随 React 源码更新。旧 `dev.html`、原生脚本入口和 Python 离线打包脚本已退出当前开发流程。
+
+首页第二板块的素材说明见 [docs/references/首页第二板块素材说明.txt](docs/references/首页第二板块素材说明.txt)。
+
+## 工程记忆与交付
+
+工程使用 `standard` 模式记忆。阅读入口为 [wiki_memory/README.md](wiki_memory/README.md)，维护协议为 [wiki_memory/AGENTS.md](wiki_memory/AGENTS.md)，项目协作规则为 [AGENTS.md](AGENTS.md)。当前事实以记忆中的状态页和实际源码、配置为依据。
+
+用户于 2026-10-20 已授权并要求：每次完整对话中修改了本工程，完成相应验证和工程记忆同步后，必须提交本次改动并推送到实际 upstream。只读工作不产生提交，不创建空提交；提交范围、远程核对与失败处理遵循 `AGENTS.md`。
