@@ -1,17 +1,15 @@
-import { useEffect, useId, useMemo, useReducer, useRef, useState } from 'react';
-import { ATLAS_RECORDS, initialAtlasState, REGIONS, TIMES } from '../data/atlas.js';
+import { useEffect, useId, useMemo, useReducer, useRef } from 'react';
+import { ATLAS_RECORDS } from '../data/atlas.js';
 import { BRANCHES, DISTRIBUTION_POINTS, DISTRIBUTION_SOURCES, INITIAL_DISTRIBUTION, PROVINCE_LABELS } from '../data/distribution.js';
 import { PROVINCE_PATHS } from '../data/atlasGeography.js';
-import { atlasReducer, filteredAtlas } from '../features/history/atlasModel.js';
 import { distributionPoints, distributionReducer, distributionStats, heatCells, projectPoint } from '../features/home/distributionModel.js';
-import { assetUrl } from '../utils/assets.js';
 import '../styles/distribution.css';
 
 let sessionState = INITIAL_DISTRIBUTION;
 const format = (number) => String(number).padStart(2, '0');
 const branchFor = (point) => BRANCHES.find((branch) => branch.id === point?.branch);
 const sourceFor = (id) => DISTRIBUTION_SOURCES.find((source) => source.id === id);
-const heatColors = ['#aa985b', '#e5b45f', '#df804d', '#d4483b'];
+const heatColors = ['#b09165', '#e8b872', '#e68557', '#d54b3b'];
 
 function Motif({ kind = 'butterfly', className = '' }) {
   return <svg className={`thread-motif ${className}`} viewBox="0 0 100 100" fill="none" aria-hidden="true">
@@ -35,13 +33,12 @@ function Motif({ kind = 'butterfly', className = '' }) {
 function DistributionMap({ state, points, focus, dispatch }) {
   const prefix = useId().replace(/:/g, '');
   const scrollRef = useRef(null);
-  const [peek, setPeek] = useState(null);
   const cells = useMemo(() => heatCells(points), [points]);
   const visibleIds = new Set(points.map((point) => point.id));
   const previous = DISTRIBUTION_POINTS.find((point) => point.id === state.visited.at(-2));
   const from = previous ? projectPoint(previous.coordinates) : null;
   const to = focus ? projectPoint(focus.coordinates) : null;
-  const hovered = DISTRIBUTION_POINTS.find((point) => point.id === peek && visibleIds.has(point.id)) || focus;
+  const focusPosition = focus ? projectPoint(focus.coordinates) : null;
 
   useEffect(() => {
     const scroller = scrollRef.current;
@@ -49,7 +46,8 @@ function DistributionMap({ state, points, focus, dispatch }) {
     function centerSelection() {
       if (scroller.scrollWidth <= scroller.clientWidth) return;
       const position = projectPoint(focus.coordinates);
-      scroller.scrollTo({ left: position.x / 820 * scroller.scrollWidth - scroller.clientWidth / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      const anchor = position.y < 105 ? .35 : .5;
+      scroller.scrollTo({ left: position.x / 820 * scroller.scrollWidth - scroller.clientWidth * anchor, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     }
     centerSelection();
     const observer = new ResizeObserver(centerSelection);
@@ -59,14 +57,14 @@ function DistributionMap({ state, points, focus, dispatch }) {
 
   return <div className="thread-map-panel">
     <div className="thread-map-toolbar">
-      <div><span className="thread-kicker">01 / 落针山川</span><h3>每一处苗乡，都值得细看</h3></div>
+      <div><span className="thread-kicker">01 / 支系分布地图</span><h3>每一处苗乡，都值得细看</h3></div>
       <button type="button" className={`thread-heat-toggle ${state.heat ? 'on' : ''}`} aria-pressed={state.heat} onClick={() => dispatch({ type: 'heat' })}><span aria-hidden="true">◉</span> 热力显影</button>
     </div>
     <div className="thread-map-scroll" ref={scrollRef}>
       <div className="thread-map-canvas">
         <svg className="thread-map-svg" viewBox="0 0 820 460" role="img" aria-label="苗族地域支系代表分布点地图，热度表示本页收录点的集中程度">
           <defs>
-            <pattern id={`${prefix}-weave`} width="12" height="12" patternUnits="userSpaceOnUse"><path d="m3 3 6 6m0-6L3 9" stroke="#b9c2ad" strokeWidth=".4" opacity=".14" /></pattern>
+            <pattern id={`${prefix}-weave`} width="12" height="12" patternUnits="userSpaceOnUse"><path d="m3 3 6 6m0-6L3 9" stroke="#b1bfd2" strokeWidth=".4" opacity=".14" /></pattern>
             <filter id={`${prefix}-soft`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8" /></filter>
           </defs>
           <rect width="820" height="460" fill={`url(#${prefix}-weave)`} />
@@ -86,21 +84,23 @@ function DistributionMap({ state, points, focus, dispatch }) {
           const selected = point.id === state.selected;
           const visible = visibleIds.has(point.id);
           const visited = state.visited.includes(point.id);
-          const label = selected || ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id);
-          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%` }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} onMouseEnter={() => setPeek(point.id)} onMouseLeave={() => setPeek(null)} onFocus={() => setPeek(point.id)} onBlur={() => setPeek(null)} onClick={() => dispatch({ type: 'point', value: point.id })}>
-            <span className="thread-pin-ring" /><span className="thread-pin-core" /><span className="thread-point-label">{point.name}</span>
+          const near = !selected && focusPosition && Math.hypot(position.x - focusPosition.x, position.y - focusPosition.y) < 45;
+          const label = selected || (!near && ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id));
+          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''} ${position.y < 105 ? 'is-north' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%` }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
+            {selected ? <svg className="thread-selected-pin" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 2 32 11v14L18 44 4 25V11Z" fill="#aa362d" stroke="#ffe0a6" strokeWidth="2" /><path d="m18 10 9 9-9 9-9-9Z" fill="none" stroke="#f7d5a0" strokeWidth="1.3" /><path d="m18 15 4 4-4 4-4-4Z" fill="#ffe7be" /></svg> : <span className="thread-pin-core" />}
+            <span className="thread-point-label">{selected && <small>已选中</small>}{point.name}</span>
           </button>;
         })}</div>
         <div className="thread-map-caption"><span>西南与武陵山区</span><small>省级轮廓作定位 · 县级中心作示意</small></div>
-        {hovered && <div className="thread-map-peek"><span>{branchFor(hovered).name}地域导览</span><strong>{hovered.name}<small>{hovered.province} · {hovered.zone}</small></strong></div>}
+        {focus && <div className="thread-map-peek"><span>当前选择 · {branchFor(focus).name}</span><strong>{focus.name}<small>{focus.province} · {focus.zone}</small></strong></div>}
       </div>
     </div>
     <div className="thread-map-legend"><span><i className="thread-legend-dot" /> 已收录分布点</span><div className={state.heat ? '' : 'is-dim'}><span>收录点集中程度</span><i className="thread-heat-ramp" /><span>疏 → 密</span></div><small className="thread-pan-hint">左右滑动地图，或从下方选择地点</small></div>
     <div className="thread-map-controls">
-      <label><span>选一处苗乡</span><select aria-label="选择苗乡地点" value={state.selected || ''} onChange={(event) => dispatch({ type: 'point', value: event.target.value })}>{points.map((point) => <option key={point.id} value={point.id}>{point.province} · {point.name}</option>)}</select></label>
-      <button type="button" className="thread-wander" onClick={() => dispatch({ type: 'wander', sample: Math.random() })}><span aria-hidden="true">✧</span> 随绣线去一处 <span aria-hidden="true">↗</span></button>
+      <label><span>选择地点</span><select aria-label="选择苗乡地点" value={state.selected || ''} onChange={(event) => dispatch({ type: 'point', value: event.target.value })}>{points.map((point) => <option key={point.id} value={point.id}>{point.province} · {point.name}</option>)}</select></label>
+      <button type="button" className="thread-wander" onClick={() => dispatch({ type: 'wander', sample: Math.random() })}><span aria-hidden="true">✧</span> 随机探索一个地点 <span aria-hidden="true">↗</span></button>
     </div>
-    <div className="thread-exploration"><div className="thread-progress" aria-hidden="true"><i style={{ width: `${state.visited.length / DISTRIBUTION_POINTS.length * 100}%` }} /></div><span aria-live="polite">{state.visited.length === DISTRIBUTION_POINTS.length ? '这一幅苗乡绣卷，已被你点亮。' : `已落针 ${format(state.visited.length)} / ${DISTRIBUTION_POINTS.length} 处，绣出你的苗乡足迹。`}</span></div>
+    <div className="thread-exploration"><div className="thread-progress" aria-hidden="true"><i style={{ width: `${state.visited.length / DISTRIBUTION_POINTS.length * 100}%` }} /></div><span aria-live="polite">{state.visited.length === DISTRIBUTION_POINTS.length ? '已探索全部20个地点，可切换支系继续查看。' : `已探索 ${format(state.visited.length)} / ${DISTRIBUTION_POINTS.length} 个地点`}</span></div>
   </div>;
 }
 
@@ -121,7 +121,7 @@ function CoreDashboard({ state, points, stats, focus, dispatch }) {
     {metric && <section className="thread-metric-list" aria-label="数据对应清单"><div><strong>{metrics.find(([id]) => id === metric)?.[2]}</strong><button type="button" aria-label="收起数据清单" onClick={() => dispatch({ type: 'metric', value: metric })}>×</button></div><p>{list.length ? list.join('　/　') : '当前筛选暂无关联国家级档案。'}</p></section>}
     <div className="thread-chart"><div className="thread-chart-title"><strong>分区内各省收录</strong><small>点击省份筛选</small></div>{provinceCounts.map((province) => <button type="button" key={province.name} className={`thread-province-bar ${state.province === province.name ? 'is-active' : ''}`} aria-label={`筛选${province.name}，${province.count}处分布点`} aria-pressed={state.province === province.name} onClick={() => dispatch({ type: 'province', value: province.name })}><span>{province.name}</span><i><b style={{ width: `${province.count / maximum * 100}%` }} /></i><small>{province.count} 处</small></button>)}</div>
     {focus && <article className="thread-place-card" key={focus.id} aria-live="polite" style={{ '--branch-color': activeBranch.color }}>
-      <div className="thread-place-header"><Motif kind={activeBranch.motif} /><div><span>{activeBranch.full}</span><h4>{focus.name}<small>{focus.province} · {focus.zone}</small></h4></div><span className="thread-place-stamp">{state.visited.includes(focus.id) ? '已落针' : '待探访'}</span></div>
+      <div className="thread-place-header"><Motif kind={activeBranch.motif} /><div><span>{activeBranch.full}</span><h4>{focus.name}<small>{focus.province} · {focus.zone}</small></h4></div><span className="thread-place-stamp">当前选择</span></div>
       <p>{focus.description}</p>
       <div className="thread-place-links"><a href={sourceFor(focus.source).url} target="_blank" rel="noopener noreferrer">阅读地域资料 ↗</a>{related && <a href={related.source} target="_blank" rel="noopener noreferrer">{related.year} · 非遗档案 ↗</a>}</div>
     </article>}
@@ -129,40 +129,18 @@ function CoreDashboard({ state, points, stats, focus, dispatch }) {
   </aside>;
 }
 
-function OfficialArchive({ onAction }) {
-  const [state, dispatch] = useReducer(atlasReducer, { ...initialAtlasState, selected: 'leishan' });
-  const items = filteredAtlas(state);
-  const record = items.find((item) => item.id === state.selected) || items[0];
-  return <details className="thread-archive">
-    <summary><span>循迹溯源 <b>国家级苗绣档案</b></span><small>保留 7 条地区记录与名录年份 <span aria-hidden="true">＋</span></small></summary>
-    <div className="thread-archive-body">
-      <p>同一个国家级项目编号 Ⅶ-22 下的 7 条申报地区记录，与上方的支系导览点分别统计。年份指名录公布时间。</p>
-      <div className="thread-archive-filters"><label>地区<select aria-label="筛选非遗档案地区" value={state.area} onChange={(event) => dispatch({ type: 'area', value: event.target.value })}><option value="all">全部地区</option>{REGIONS.map(([zone]) => <option key={zone}>{zone}</option>)}</select></label><div role="group" aria-label="按名录公布年份筛选"><button type="button" aria-pressed={state.year === 'all'} onClick={() => dispatch({ type: 'year', value: 'all' })}>全部年份</button>{TIMES.map((time) => <button type="button" key={time.year} aria-pressed={state.year === String(time.year)} onClick={() => dispatch({ type: 'year', value: String(time.year) })}>{time.year}</button>)}</div><strong className="thread-archive-count">{items.length} 条记录</strong></div>
-      {!items.length && <p role="status">所选条件暂无档案，切换“全部年份”可继续查看其他记录。</p>}
-      <div className="thread-archive-layout"><div className="thread-archive-list">{items.map((item) => <button type="button" key={item.id} aria-label={`查看${item.name}非遗档案`} aria-pressed={record?.id === item.id} onClick={() => dispatch({ type: 'point', value: item.id })}>{item.name}<span>{item.year}</span></button>)}</div>{record && <div className="thread-archive-record" aria-live="polite">{record.image && <button type="button" className="thread-archive-photo" aria-label={`放大${record.name}服饰参考图`} onClick={() => onAction?.('modal', 0, { src: record.image, title: record.imageCaption, description: `${record.imageAuthor} · ${record.imageLicense}` })}><img src={assetUrl(record.image)} alt={record.imageAlt} loading="lazy" /></button>}<div><span>{record.province} · {record.zone}</span><h4>{record.full}</h4><p>{record.place}<br />{record.year} · {record.batch} · {record.type}</p><a href={record.source} target="_blank" rel="noopener noreferrer">查看官方档案 ↗</a>{record.image && <a href={record.imageSource} target="_blank" rel="noopener noreferrer">配图：{record.imageAuthor} · {record.imageLicense} ↗</a>}</div></div>}</div>
-      <div className="thread-archive-timeline">{TIMES.map((time) => <span key={time.year}><b>{time.year}</b>该批新增 {time.num} 条<small>截至该年累计 {time.total} 条</small></span>)}</div>
-    </div>
-  </details>;
-}
-
-export default function AtlasPage({ onAction, onNavigate }) {
+export default function AtlasPage() {
   const [state, dispatch] = useReducer(distributionReducer, undefined, () => sessionState);
   useEffect(() => { sessionState = state; }, [state]);
   const points = useMemo(() => distributionPoints(state), [state.branch, state.province]);
   const stats = distributionStats(points);
   const focus = points.find((point) => point.id === state.selected);
-  const gallery = ATLAS_RECORDS.filter((record) => record.image);
 
   return <section id="miaoxiu-atlas" className="thread-atlas" aria-labelledby="thread-atlas-title">
     <div className="thread-top-border" aria-hidden="true" />
     <header className="thread-section-heading"><div><span className="thread-kicker">一针一地 · 苗绣文化地图</span><h2 id="thread-atlas-title">苗绣支系分布<span>循山川，识绣色</span></h2><p>让山川成为绣布，循着一处处苗乡，认识不同支系的服饰与苗绣。</p></div><div className="thread-heading-art" aria-hidden="true"><Motif kind="diamond" /><Motif /><Motif kind="flower" /></div></header>
-    <div className="thread-filter-row"><div className="thread-branch-tabs" role="group" aria-label="选择地域支系"><button type="button" className={state.branch === 'all' ? 'is-active' : ''} aria-pressed={state.branch === 'all'} onClick={() => dispatch({ type: 'branch', value: 'all' })}><span className="thread-all-icon" aria-hidden="true">✳</span><span>全部支系<small>一幅绣卷</small></span></button>{BRANCHES.map((branch) => <button type="button" key={branch.id} className={state.branch === branch.id ? 'is-active' : ''} style={{ '--branch-color': branch.color }} aria-pressed={state.branch === branch.id} onClick={() => dispatch({ type: 'branch', value: branch.id })}><Motif kind={branch.motif} /><span>{branch.name}<small>{branch.subtitle.split(' · ')[0]}</small></span></button>)}</div><span className="thread-filter-hint">点选支系，绣线随你显影 <i aria-hidden="true">↙</i></span></div>
+    <div className="thread-filter-row"><div className="thread-branch-tabs" role="group" aria-label="选择地域支系"><button type="button" className={state.branch === 'all' ? 'is-active' : ''} aria-pressed={state.branch === 'all'} onClick={() => dispatch({ type: 'branch', value: 'all' })}><span className="thread-all-icon" aria-hidden="true">✳</span><span>全部支系<small>一幅绣卷</small></span></button>{BRANCHES.map((branch) => <button type="button" key={branch.id} className={state.branch === branch.id ? 'is-active' : ''} style={{ '--branch-color': branch.color }} aria-pressed={state.branch === branch.id} onClick={() => dispatch({ type: 'branch', value: branch.id })}><Motif kind={branch.motif} /><span>{branch.name}<small>{branch.subtitle.split(' · ')[0]}</small></span></button>)}</div><span className="thread-filter-hint">切换支系，查看分布与数据 <i aria-hidden="true">↙</i></span></div>
     <div className="thread-workspace"><DistributionMap state={state} points={points} focus={focus} dispatch={dispatch} /><CoreDashboard state={state} points={points} stats={stats} focus={focus} dispatch={dispatch} /></div>
-    <div className="thread-garment-heading"><div><span className="thread-kicker">03 / 细看一针一线</span><h3>从地图，走进一件衣裳</h3></div><p>黔东南三地服饰参考 · 点击图片放大细看</p></div>
-    <div className="thread-garment-grid">{gallery.map((record, index) => <figure key={record.id} className="thread-garment"><button type="button" className="thread-garment-image" aria-label={`放大${record.name}服饰参考图`} onClick={() => onAction?.('modal', 0, { src: record.image, title: record.imageCaption, description: `${record.imageAuthor} · ${record.imageLicense}。${record.imageAlt}` })}><img src={assetUrl(record.image)} alt={record.imageAlt} loading="lazy" /><span className="thread-garment-zoom" aria-hidden="true">＋ 细看针线</span><span className="thread-garment-number" aria-hidden="true">0{index + 1}</span></button><figcaption><div><span>贵州 · 黔东南</span><h4>{record.imageCaption}</h4></div><a href={record.imageSource} target="_blank" rel="noopener noreferrer">{record.imageAuthor} · {record.imageLicense} ↗</a></figcaption></figure>)}</div>
-    <button type="button" className="thread-story-link" onClick={() => onNavigate?.('history')}>再走近一些：认识苗绣的纹样与针法 <span aria-hidden="true">→</span></button>
-    <OfficialArchive onAction={onAction} />
-    <details className="thread-sources"><summary>地域分类与数据依据 <span aria-hidden="true">＋</span></summary><div><p>本页以湘西、黔东南、川黔滇三个地域分区组织支系导览，参考民族博物馆的介绍及国家民委的方言、服饰资料；并非完整支系分类或精确边界。各分区内部仍有多种地方支系、服饰类型及方言。分布点按县级地区去重，每点等权；热力图使用同一距离范围及固定色阶，展示本页样本的空间集中程度。地点取县级中心近似定位，地图空白表示未收录。资料核对：2026-10-21。</p><div className="thread-source-grid">{DISTRIBUTION_SOURCES.map((source) => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.title} ↗</strong><span>{source.note}</span></a>)}</div></div></details>
     <div className="thread-bottom-border" aria-hidden="true" />
   </section>;
 }

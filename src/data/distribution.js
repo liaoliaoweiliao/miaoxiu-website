@@ -17,7 +17,7 @@ export const BRANCHES = [
   { id: 'central', name: '黔东南', full: '黔东南地域支系', subtitle: '苗岭深处 · 绣与银相映', color: '#e1856e', motif: 'butterfly',
     description: '从黔东南延伸到桂北、湘西南的代表地区。百褶裙、刺绣与织锦，展现出村寨之间丰富的服饰变化。',
     tags: ['百褶裙', '刺绣织锦', '银饰相映'], source: 'dress' },
-  { id: 'west', name: '川黔滇', full: '川黔滇地域支系', subtitle: '高原相连 · 经纬成花', color: '#79bcb1', motif: 'diamond',
+  { id: 'west', name: '川黔滇', full: '川黔滇地域支系', subtitle: '高原相连 · 经纬成花', color: '#a9b8d2', motif: 'diamond',
     description: '沿川南、黔西与云南寻找苗乡。挑花、刺绣与蜡染并见，服饰形制随地方变化，各有自己的细节。',
     tags: ['挑花', '刺绣', '蜡染'], source: 'dress' },
 ];
