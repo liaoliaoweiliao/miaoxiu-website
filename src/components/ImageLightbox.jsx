@@ -43,6 +43,14 @@ export default function ImageLightbox({ artwork, onClose }) {
 
   useEffect(() => { setView(initialView); setDragging(false); dragRef.current = null; }, [artwork.src]);
 
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      if (imageRef.current && stageRef.current) setView((previous) => constrain(previous));
+    });
+    observer.observe(stageRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   function constrain(next) {
     const image = imageRef.current;
     const stage = stageRef.current;

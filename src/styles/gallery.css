@@ -52,3 +52,35 @@ body[data-page="gallery"] .footer-pattern{mask-image:linear-gradient(to bottom,t
  .jing-work-open,.has-catalogue .jing-work-open{font-size:.95cqw;letter-spacing:.08cqw;line-height:1.4;margin-top:.5cqw}
  .jing-work-kind{font-size:.8cqw;letter-spacing:.1cqw;margin-top:.3cqw}
 }
+
+/* Compact windows use readable rows; wide screens retain the painted long scroll. */
+.jing-gallery { max-width: 1800px; margin-inline: auto; container-type: inline-size; }
+.jing-heading { top: 3.8cqw; }
+@media (max-width: 760px) {
+ .jing-heading { position: relative; top: auto; left: auto; width: auto; padding: 36px 16px 28px; }
+ .jing-heading .eyebrow { font-size: 9px; letter-spacing: 2px; white-space: normal; }
+ .jing-heading h1 { font-size: clamp(30px, 7vw, 44px); }
+ .jing-title-line { margin: 12px 0; }
+ .jing-heading .jing-heading-poem { font-size: 12px; letter-spacing: 1px; gap: 8px; white-space: normal; }
+ .jing-heading-poem i { font-size: 11px; }
+ .jing-title-stitches { width: 74px; margin-top: 14px; }
+ .jing-background, .jing-seam { display: none; }
+ .jing-sheets {
+   --gallery-photo-size: clamp(88px, 26cqw, 160px);
+   background: linear-gradient(#031b2ce8, #031b2ce8), url('/assets/gallery/new/jing-exhibition-detail.webp') center top / 100% auto repeat-y;
+ }
+ .jing-artworks { height: auto; display: grid; gap: 18px; max-width: 640px; margin-inline: auto; padding: 4px 16px 36px; }
+ .jing-slot { position: relative; left: auto; top: auto; width: 100%; height: auto; }
+ .jing-work {
+   min-height: 156px; height: auto; gap: 14px; padding: 18px 14px;
+   border: 1px solid #96754b; background: #06243be6;
+   box-shadow: inset 0 0 0 4px #06243b, inset 0 0 0 5px #a789592b;
+ }
+ .jing-work-photo { width: var(--gallery-photo-size); height: var(--gallery-photo-size); }
+ .jing-work-copy { overflow: visible; max-height: none; }
+ .jing-work-type { font-size: 10px; line-height: 1.6; }
+ .jing-work h2 { font-size: clamp(16px, 3vw, 21px); line-height: 1.5; margin: 5px 0; letter-spacing: 1px; }
+ .jing-work-copy > p, .has-catalogue .jing-work-copy > p { font-size: 12px; line-height: 1.8; -webkit-line-clamp: 2; }
+ .jing-work-open, .has-catalogue .jing-work-open { font-size: 11px; line-height: 1.6; margin-top: 8px; }
+ .jing-work-kind { font-size: 10px; line-height: 1.7; margin-top: 5px; }
+}

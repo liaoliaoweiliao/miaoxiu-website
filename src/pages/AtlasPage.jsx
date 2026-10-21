@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useReducer, useRef } from 'react';
+import { useEffect, useId, useMemo, useReducer } from 'react';
 import { ATLAS_RECORDS } from '../data/atlas.js';
 import { BRANCHES, DISTRIBUTION_POINTS, DISTRIBUTION_SOURCES, INITIAL_DISTRIBUTION, PROVINCE_LABELS } from '../data/distribution.js';
 import { PROVINCE_PATHS } from '../data/atlasGeography.js';
@@ -32,7 +32,6 @@ function Motif({ kind = 'butterfly', className = '' }) {
 
 function DistributionMap({ state, points, focus, dispatch }) {
   const prefix = useId().replace(/:/g, '');
-  const scrollRef = useRef(null);
   const cells = useMemo(() => heatCells(points), [points]);
   const visibleIds = new Set(points.map((point) => point.id));
   const previous = DISTRIBUTION_POINTS.find((point) => point.id === state.visited.at(-2));
@@ -40,28 +39,14 @@ function DistributionMap({ state, points, focus, dispatch }) {
   const to = focus ? projectPoint(focus.coordinates) : null;
   const focusPosition = focus ? projectPoint(focus.coordinates) : null;
 
-  useEffect(() => {
-    const scroller = scrollRef.current;
-    if (!scroller || !focus) return;
-    function centerSelection() {
-      if (scroller.scrollWidth <= scroller.clientWidth) return;
-      const position = projectPoint(focus.coordinates);
-      const anchor = position.y < 105 ? .35 : .5;
-      scroller.scrollTo({ left: position.x / 820 * scroller.scrollWidth - scroller.clientWidth * anchor, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-    }
-    centerSelection();
-    const observer = new ResizeObserver(centerSelection);
-    observer.observe(scroller);
-    return () => observer.disconnect();
-  }, [focus]);
-
   return <div className="thread-map-panel">
     <div className="thread-map-toolbar">
       <div><span className="thread-kicker">01 / 支系分布地图</span><h3>每一处苗乡，都值得细看</h3></div>
       <button type="button" className={`thread-heat-toggle ${state.heat ? 'on' : ''}`} aria-pressed={state.heat} onClick={() => dispatch({ type: 'heat' })}><span aria-hidden="true">◉</span> 热力显影</button>
     </div>
-    <div className="thread-map-scroll" ref={scrollRef}>
+    <div className="thread-map-scroll">
       <div className="thread-map-canvas">
+        <div className="thread-map-geography">
         <svg className="thread-map-svg" viewBox="0 0 820 460" role="img" aria-label="苗族地域支系代表分布点地图，热度表示本页收录点的集中程度">
           <defs>
             <pattern id={`${prefix}-weave`} width="12" height="12" patternUnits="userSpaceOnUse"><path d="m3 3 6 6m0-6L3 9" stroke="#b1bfd2" strokeWidth=".4" opacity=".14" /></pattern>
@@ -86,16 +71,17 @@ function DistributionMap({ state, points, focus, dispatch }) {
           const visited = state.visited.includes(point.id);
           const near = !selected && focusPosition && Math.hypot(position.x - focusPosition.x, position.y - focusPosition.y) < 45;
           const label = selected || (!near && ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id));
-          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''} ${position.y < 105 ? 'is-north' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%` }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
+          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''} ${position.y < 105 ? 'is-north' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%`, '--point-x': position.x / 820 }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
             {selected ? <svg className="thread-selected-pin" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 2 32 11v14L18 44 4 25V11Z" fill="#aa362d" stroke="#ffe0a6" strokeWidth="2" /><path d="m18 10 9 9-9 9-9-9Z" fill="none" stroke="#f7d5a0" strokeWidth="1.3" /><path d="m18 15 4 4-4 4-4-4Z" fill="#ffe7be" /></svg> : <span className="thread-pin-core" />}
             <span className="thread-point-label">{selected && <small>已选中</small>}{point.name}</span>
           </button>;
         })}</div>
+        </div>
         <div className="thread-map-caption"><span>西南与武陵山区</span><small>省级轮廓作定位 · 县级中心作示意</small></div>
         {focus && <div className="thread-map-peek"><span>当前选择 · {branchFor(focus).name}</span><strong>{focus.name}<small>{focus.province} · {focus.zone}</small></strong></div>}
       </div>
     </div>
-    <div className="thread-map-legend"><span><i className="thread-legend-dot" /> 已收录分布点</span><div className={state.heat ? '' : 'is-dim'}><span>收录点集中程度</span><i className="thread-heat-ramp" /><span>疏 → 密</span></div><small className="thread-pan-hint">左右滑动地图，或从下方选择地点</small></div>
+    <div className="thread-map-legend"><span><i className="thread-legend-dot" /> 已收录分布点</span><div className={state.heat ? '' : 'is-dim'}><span>收录点集中程度</span><i className="thread-heat-ramp" /><span>疏 → 密</span></div><small className="thread-pan-hint">点击地图上的地点，或从下方选择</small></div>
     <div className="thread-map-controls">
       <label><span>选择地点</span><select aria-label="选择苗乡地点" value={state.selected || ''} onChange={(event) => dispatch({ type: 'point', value: event.target.value })}>{points.map((point) => <option key={point.id} value={point.id}>{point.province} · {point.name}</option>)}</select></label>
       <button type="button" className="thread-wander" onClick={() => dispatch({ type: 'wander', sample: Math.random() })}><span aria-hidden="true">✧</span> 随机探索一个地点 <span aria-hidden="true">↗</span></button>

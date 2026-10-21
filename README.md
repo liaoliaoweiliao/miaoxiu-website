@@ -2,6 +2,8 @@
 
 基于 React + Vite 的苗绣文化展示与互动网站，包含首页、苗绣探源、互动体验、作品展览四个主页面，以及素材来源页。首页提供支系地域热力图、联动数据看板与小鸟长卷：可筛选湘西、黔东南、川黔滇三个导览分区，探访20处代表地点。选择后以朱红定位针和“已选中”地名突出显示，支持随机探索与会话内探索进度。热度表示本页收录点的集中程度；七条国家级非遗记录用于关联计数和地点的官方档案链接。探源页支持故事阅读、针法演示和三色配色；互动体验提供随机寻纹、男女角色整套服饰抽取、收藏、穿戴与形象导出。衣橱藏品和穿戴信息保存在当前浏览器中。
 
+全站支持窗口大小变化与浏览器页面缩放。地图按可用宽度完整显示，看板和互动区自动调整列数；760px及以下的作品展览改为可阅读的图文列表，18张缩略图仍保持相同的正方形尺寸。窄屏点击搜索图标可输入关键词；图片、故事和人物弹窗随窗口高度调整，内容较长时可在弹窗内滚动。人物观看区保留滚轮缩放人物，Ctrl＋滚轮及Ctrl＋加减号用于浏览器页面缩放。
+
 ## 快速开始
 
 需要 Node.js 20.19 及以上的 20.x 版本，或 22.12 及以上版本，并确保终端能够运行 `node` 和 `npm`。版本范围以 [package.json](package.json) 的 `engines` 为准。
@@ -80,7 +82,7 @@ miaoxiu-website/
 | 互动体验 | `src/pages/ExperiencePage.jsx`、`src/features/experience/` | `src/styles/experience.css` | `public/assets/experience/` |
 | 作品展览 | `src/pages/GalleryPage.jsx` | `src/styles/gallery.css` | `public/assets/gallery/` |
 | 素材来源 | `src/pages/SourcesPage.jsx`、`src/data/sources.js` | `src/styles/sources.css` | 复用来源数据 |
-| 公共集成 | `src/App.jsx`、`src/components/`、`src/data/`、`src/utils/` | `src/styles/base.css`、`src/styles/index.css` | `public/assets/common/` |
+| 公共集成 | `src/App.jsx`、`src/components/`、`src/data/`、`src/utils/` | `src/styles/base.css`、`src/styles/responsive.css`、`src/styles/index.css` | `public/assets/common/` |
 
 页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
 
@@ -124,6 +126,8 @@ npm run test:e2e
 ```
 
 其他终端使用其对应方式设置 `PLAYWRIGHT_CHANNEL=chromium`。检查失败时保留失败说明与可执行下一步，测试报告留在本地忽略目录。
+
+`tests/e2e/responsive.spec.js` 覆盖五页宽窄窗口、地图标签、小鸟三段互动、窄屏搜索及矮窗口弹窗；另使用临时浏览器配置测试50%、80%、125%、150%、200%、300%、400%的原生页面缩放，并核对浏览器实际缩放值。临时配置位于系统临时目录，不改个人浏览器设置，完成后清理。
 
 ## 历史归档
 

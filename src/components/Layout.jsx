@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { assetUrl } from '../utils/assets.js';
 
 const navigation = [
@@ -9,6 +9,21 @@ const navigation = [
 ];
 
 export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }) {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef(null);
+  const searchButtonRef = useRef(null);
+  useEffect(() => { if (searchOpen) searchRef.current?.focus(); }, [searchOpen]);
+  useEffect(() => { setSearchOpen(false); }, [page]);
+
+  function search() {
+    if (window.matchMedia('(max-width: 760px)').matches && !searchOpen) {
+      if (nav) onAction('nav');
+      setSearchOpen(true);
+      return;
+    }
+    onAction('search');
+  }
+
   return (
     <header className="topbar">
       <div className="nav-inner">
@@ -39,8 +54,9 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
           ))}
         </nav>
         <div className="nav-tools">
-          <div className="search">
+          <div className={`search ${searchOpen ? 'is-open' : ''}`}>
             <input
+              ref={searchRef}
               id="search"
               type="search"
               value={query}
@@ -48,13 +64,17 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
               aria-label="搜索苗绣内容"
               onChange={(event) => onQueryChange(event.target.value)}
               onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                  setSearchOpen(false);
+                  searchButtonRef.current?.focus();
+                }
                 if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
                   event.preventDefault();
                   onAction('search');
                 }
               }}
             />
-            <button type="button" onClick={() => onAction('search')} aria-label="搜索">⌕</button>
+            <button ref={searchButtonRef} type="button" onClick={search} aria-label="搜索" aria-controls="search" aria-expanded={searchOpen || undefined}>⌕</button>
           </div>
           <button
             type="button"
@@ -68,7 +88,7 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
           <button
             type="button"
             className="hamburger"
-            onClick={() => onAction('nav')}
+            onClick={() => { setSearchOpen(false); onAction('nav'); }}
             aria-label={nav ? '收起导航' : '展开导航'}
             aria-expanded={Boolean(nav)}
             aria-controls="primary-navigation"

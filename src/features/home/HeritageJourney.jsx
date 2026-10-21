@@ -73,11 +73,10 @@ export default function HeritageJourney() {
       const viewport = viewportRef.current;
       if (!viewport) return;
       const model = modelRef.current;
-      const fraction = model.maxPan > 0 ? model.pan / model.maxPan : 0;
       model.artWidth = Math.max(viewport.clientHeight * 2172 / 724, viewport.clientWidth / 0.65);
       model.worldWidth = viewport.clientWidth * 2172 / model.artWidth;
       model.maxPan = Math.max(0, 2172 - model.worldWidth);
-      model.pan = model.stage === 0 ? 0 : clamp(fraction * model.maxPan, 0, model.maxPan);
+      model.pan = clamp(model.x - model.worldWidth * .52, 0, model.maxPan);
       paint();
     }
     resize();
@@ -133,7 +132,7 @@ export default function HeritageJourney() {
     if (model.stage === 0) {
       Object.assign(model, { flyingLeft: true, number: 1, message: '小鸟循着针线，从绣片飞向绣娘指尖。' });
       paint();
-      if (!(await animate(2600, (time) => { Object.assign(model, sample(paths[0], time)); paint(); }))) return;
+      if (!(await animate(2600, (time) => { const point = sample(paths[0], time); Object.assign(model, point, { pan: clamp(point.x - model.worldWidth * .52, 0, model.maxPan) }); paint(); }))) return;
       Object.assign(model, { x: 249, y: 367, stage: 1, number: 2, message: '小鸟停在指尖的针线处，轻轻扇动翅膀。' });
       ready('再次点击小鸟 · 飞往本子鸟纹');
     } else if (model.stage === 1) {
@@ -150,8 +149,9 @@ export default function HeritageJourney() {
       paint();
       if (!(await delay(550))) return;
       const from = model.pan;
-      if (!(await animate(1600, (time) => { model.pan = from * (1 - ease(time)); paint(); }))) return;
-      Object.assign(model, { stage: 0, x: 585, y: 535, pan: 0, number: 1, message: '绣片上的小鸟又回到了起点。' });
+      const startPan = clamp(585 - model.worldWidth * .52, 0, model.maxPan);
+      if (!(await animate(1600, (time) => { model.pan = from + (startPan - from) * ease(time); paint(); }))) return;
+      Object.assign(model, { stage: 0, x: 585, y: 535, pan: startPan, number: 1, message: '绣片上的小鸟又回到了起点。' });
       ready('点击小鸟 · 重新唤醒绣纹');
     }
   }
@@ -176,7 +176,7 @@ export default function HeritageJourney() {
       <div ref={viewportRef} className="heritage-viewport" tabIndex={0} aria-label="轻触绣布上的小鸟体验三段故事，键盘可使用回车或空格继续" onKeyDown={(event) => { if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowLeft'].includes(event.key)) { event.preventDefault(); advance(); } }} onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={() => { touchRef.current = null; }}>
         <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px` }}>
           <img className="heritage-panorama" src={assetUrl('home/heritage-long-panorama-wide.webp')} alt="连续的苗绣长卷：绣娘、绵延的绣布与右侧现代设计作品" loading="lazy" draggable={false} />
-          <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px` }}>
+          <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px`, '--bird-screen-x': `${(view.x - view.pan) * view.artWidth / 2172}px`, '--journey-width': `${view.worldWidth * view.artWidth / 2172}px` }}>
             <img className="heritage-bird-img" src={assetUrl('home/bird-flap-clean.png')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
           </button>
         </div>

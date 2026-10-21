@@ -1,0 +1,189 @@
+/* Shared viewport rules come last so every page reflows at browser zoom levels. */
+:root {
+  --page-gutter: clamp(12px, 2.5vw, 36px);
+  --header-height: 75px;
+}
+html { scroll-padding-top: calc(var(--header-height) + 16px); }
+#root, main, section, article, aside { min-width: 0; }
+.container, .history-page .container {
+  width: calc(100% - 2 * var(--page-gutter));
+}
+button, input, select, textarea { max-width: 100%; }
+.nav-inner { position: relative; gap: clamp(12px, 1.8vw, 30px); }
+.nav-tools { flex-shrink: 0; }
+.brand { min-width: 0; }
+.brand-mark { flex: 0 0 50px; width: 50px; height: 52px; }
+.nav { gap: clamp(10px, 2vw, 32px); }
+.footer-links { flex-wrap: wrap; row-gap: 12px; }
+.source-overview, .source-group-heading { flex-wrap: wrap; }
+.source-credit, .source-reference { overflow-wrap: anywhere; }
+
+.hero { height: clamp(280px, 52vw, 740px); min-height: 0; }
+.heritage-journey { width: auto; margin-inline: calc(-1 * var(--page-gutter)); }
+.heritage-viewport { height: clamp(440px, 52vw, 740px); min-height: 0; }
+.heritage-whisper { width: min(92%, 760px); }
+.heritage-bird-hint {
+  --hint-width: min(260px, calc(100vw - 24px));
+  width: var(--hint-width); max-width: none; white-space: normal; text-align: center;
+  left: clamp(calc(var(--hint-width) / 2 - var(--bird-screen-x) + 50% + 12px), 50%, calc(var(--journey-width) - var(--bird-screen-x) - var(--hint-width) / 2 + 50% - 12px));
+}
+
+/* The map and its HTML markers share one proportional coordinate surface. */
+.thread-map-canvas { min-width: 0; aspect-ratio: auto; container-type: inline-size; }
+.thread-map-geography { position: relative; width: 100%; aspect-ratio: 820 / 460; }
+.thread-map-scroll { overflow: visible; }
+.thread-pan-hint { display: none; }
+.thread-place-header h4 { flex-wrap: wrap; }
+.thread-map-controls label { flex: 1; }
+.thread-map-controls select { flex: 1; }
+
+/* Keep overlays inside the current viewport, including short zoomed windows. */
+.image-lightbox { padding: clamp(12px, 2vw, 28px); }
+.image-lightbox-body {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 2 * clamp(12px, 2vw, 28px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 4px 12px;
+}
+.image-lightbox-body .image-viewer-close {
+  position: sticky; top: 0; right: auto; align-self: flex-end;
+  flex: 0 0 40px; margin: 0 0 -40px auto;
+}
+.image-lightbox .image-viewer-stage {
+  flex: 0 0 auto; height: min(65dvh, 850px);
+}
+.image-lightbox-body.has-details .image-viewer-stage { height: min(52dvh, 700px); }
+.image-viewer-caption { flex-shrink: 0; flex-wrap: wrap; }
+.image-lightbox-body h2 { min-width: 0; overflow-wrap: anywhere; }
+.image-viewer-details, .image-viewer-hint { flex-shrink: 0; }
+.story-reader { padding: clamp(12px, 2vw, 32px); }
+.story-reader-panel {
+  height: min(720px, calc(100dvh - 2 * clamp(12px, 2vw, 32px)));
+  min-height: 0; max-height: none;
+}
+.story-reader-body { min-width: 0; min-height: 0; overscroll-behavior: contain; }
+.unlock-dialog {
+  max-height: calc(100dvh - 44px);
+  padding: clamp(20px, 4vw, 36px);
+  overscroll-behavior: contain;
+}
+.look-viewer.viewer-expanded { overflow-y: auto; }
+.viewer-expanded .viewer-viewport { min-height: 80px; }
+.viewer-header, .viewer-caption, .viewer-tools, .viewer-hint { flex-shrink: 0; }
+.viewer-tools { flex-wrap: wrap; }
+.viewer-viewport { height: clamp(300px, 42vw, 490px); }
+.avatar-panel { top: calc(var(--header-height) + 16px); }
+
+@media (min-width: 1472px) {
+  /* Full-bleed artwork still reaches both edges of a capped content column. */
+  .heritage-journey { margin-inline: calc((1400px - 100vw) / 2); }
+}
+@media (max-width: 1100px) {
+  .thread-workspace { grid-template-columns: minmax(0, 1fr); }
+  .thread-map-controls { flex-direction: row; align-items: center; }
+  .thread-wander { width: auto; }
+  .thread-dashboard .thread-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .thread-chart { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  .thread-chart-title { grid-column: 1 / -1; }
+  .thread-map-legend { flex-wrap: wrap; }
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding: 54px 32px !important; }
+  .atelier-grid { grid-template-columns: minmax(230px, .9fr) minmax(0, 1.1fr); }
+}
+@media (max-width: 900px) {
+  .story-reader-panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(70px, 25%) minmax(0, 1fr); }
+  .story-reader-art { min-height: 0; max-height: none; }
+  .atelier-grid { grid-template-columns: minmax(0, 1fr); }
+  .avatar-panel { position: static; width: 100%; max-width: 430px; margin-inline: auto; }
+  .experience-page .wardrobe-layout { grid-template-columns: minmax(0, 1fr); }
+  .wardrobe-layout > .side-heading br { display: none; }
+}
+@media (max-width: 760px) {
+  :root { --header-height: 62px; }
+  .nav-inner { height: auto; min-height: 62px; padding-inline: var(--page-gutter); gap: 8px; }
+  .brand { font-size: clamp(12px, 3.4vw, 17px); gap: 7px; }
+  .brand-mark { flex-basis: 36px; width: 36px; height: 40px; }
+  .nav-tools { gap: 8px; }
+  .nav { top: 100%; max-height: calc(100dvh - 62px); overflow-y: auto; }
+  .search { flex-shrink: 0; }
+  .search.is-open input {
+    display: block; position: absolute; left: var(--page-gutter); top: calc(100% + 8px);
+    width: calc(100% - 2 * var(--page-gutter)); height: 46px; padding: 0 16px;
+    border: 1px solid #bd9867; border-radius: 6px; background: #06243d;
+    font-size: 16px; box-shadow: 0 8px 24px #00101be6;
+  }
+  .search.is-open input:focus { outline: 2px solid #f3d09b; outline-offset: 2px; }
+  .hero-dots { bottom: 28px; }
+  .hero-controls { bottom: 14px; }
+  .feature-editorial .feature-content { padding-inline: clamp(16px, 5vw, 25px); }
+  .thread-section-heading h2 { font-size: clamp(24px, 5vw, 29px); }
+  .thread-map-toolbar { flex-wrap: wrap; row-gap: 10px; }
+  .thread-dashboard .thread-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding: 46px 22px !important; }
+  .experience-page .decode-inner { display: block; }
+  .experience-page .decode-inner > .side-heading { margin-bottom: 20px; }
+  .experience-page .side-heading h1 br { display: none; }
+  .decode-toolbar, .target-brief, .collection-heading, .dressup-heading { flex-wrap: wrap; }
+  .target-brief { gap: 6px; }
+  .target-brief small { margin-left: 0; }
+  .decode-actions button { flex: 1 1 125px; margin-left: 0; }
+  .decode-image-preview { right: 6px; bottom: 6px; font-size: 11px; padding: 6px 9px; }
+  .costume-draw-stage { min-height: 360px; }
+  .costume-draw-stage > .draw-card, .has-result > .draw-card { height: 360px; }
+  .costume-draw-stage > .draw-card > img, .costume-draw-stage .reveal-front > img { height: 250px; }
+  .mystery-costume { height: 230px; }
+  .owned-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .collection-heading { gap: 8px; }
+  .color-lab { grid-template-columns: minmax(0, 1fr); }
+  .color-meaning-panel { grid-column: auto; }
+  .history-heading > div { min-width: 0; }
+  .history-heading p { overflow-wrap: anywhere; }
+}
+@media (max-width: 680px) {
+  .thread-map-canvas { padding-block: 48px 40px; }
+  .thread-map-peek { display: none; }
+  .thread-map-caption { left: 10px; bottom: 7px; }
+  .thread-map-caption > span { font-size: 10px; }
+  .thread-map-point .thread-selected-pin { width: 30px; height: 38px; }
+  .thread-map-point.is-selected .thread-point-label,
+  .thread-map-point.is-selected.is-north .thread-point-label {
+    left: clamp(calc(65px - var(--point-x) * 100cqw + 12.5px), 50%, calc((1 - var(--point-x)) * 100cqw - 65px + 12.5px));
+    bottom: calc(50% + 43px); top: auto; transform: translateX(-50%);
+    font-size: 13px; padding: 5px 8px; letter-spacing: 0; gap: 5px;
+  }
+  .thread-map-point.is-selected.is-north .thread-point-label { top: 26px; bottom: auto; }
+  .thread-map-controls { flex-direction: column; align-items: stretch; }
+  .thread-map-controls label { justify-content: space-between; }
+  .thread-map-controls select { max-width: none; }
+  .thread-wander { width: 100%; }
+  .thread-pan-hint { display: block; }
+}
+@media (max-width: 380px) {
+  .thread-heading-art { display: none; }
+  .thread-place-header { flex-wrap: wrap; }
+  .thread-place-header h4 { gap: 5px; }
+  .thread-place-header h4 small { white-space: normal; }
+  .thread-map-legend > div { flex-wrap: wrap; }
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding-inline: 18px !important; }
+  .owned-grid { grid-template-columns: minmax(0, 1fr); }
+  .avatar-actions { flex-wrap: wrap; }
+  .avatar-actions > button { flex: 1 1 130px; }
+  .color-swatch span { width: min(54px, 100%); height: auto; aspect-ratio: 1; }
+  .story-reader-body { padding-inline: 16px; }
+}
+@media (max-height: 500px) {
+  .topbar { position: relative; }
+  .avatar-panel { position: static; }
+  .image-lightbox .image-viewer-stage,
+  .image-lightbox-body.has-details .image-viewer-stage { height: 50dvh; }
+  .story-reader-panel { grid-template-columns: .65fr 1.35fr; grid-template-rows: minmax(0, 1fr); }
+  .story-reader-body { padding: 24px 16px 14px; }
+  .viewer-expanded .viewer-hint { display: none; }
+}
