@@ -1,0 +1,105 @@
+/* Location-specific garment references inside the interactive map record. */
+.atlas-record {
+  height: auto;
+  min-height: 148px;
+  overflow: visible;
+}
+
+.atlas-record.has-image {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 12px;
+}
+
+.atlas-record-photo {
+  min-width: 0;
+  margin: 0;
+}
+
+.atlas-record-photo img {
+  display: block;
+  width: 100%;
+  height: 164px;
+  border: 1px solid #355b68;
+  background: #041d30;
+  object-fit: contain;
+}
+
+.atlas-record-photo figcaption {
+  display: grid;
+  gap: 2px;
+  margin-top: 5px;
+  color: #b8c7c9;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.atlas-record-photo figcaption a {
+  width: fit-content;
+  color: #d5ad7c;
+  text-decoration: none;
+}
+
+.atlas-record-photo figcaption a:hover {
+  text-decoration: underline;
+}
+
+.atlas-record-photo figcaption a:focus-visible {
+  outline: 2px solid #edc28b;
+  outline-offset: 2px;
+}
+
+.atlas-record-details {
+  min-width: 0;
+}
+
+.atlas-record-no-photo {
+  margin: 7px 0 0;
+  color: #8ca9b4;
+  font-size: 10px;
+}
+
+@media (max-width: 1090px) {
+  .atlas-record.has-image {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 790px) {
+  .atlas-record.has-image {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: 14px;
+  }
+
+  .atlas-record-photo img {
+    height: 190px;
+  }
+}
+
+@media (max-width: 430px) {
+  .atlas-topline {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .atlas-topline-side {
+    max-width: none;
+    text-align: left;
+  }
+
+  .atlas-record.has-image {
+    grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+    gap: 8px;
+  }
+
+  .atlas-record-photo img {
+    height: 150px;
+  }
+
+  .atlas-record-photo figcaption {
+    font-size: 9px;
+  }
+}
