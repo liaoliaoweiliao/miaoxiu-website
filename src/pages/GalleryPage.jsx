@@ -25,9 +25,9 @@ function NeedleScene({ anchorRef }) {
             <stop offset="1" stopColor="#697680" />
           </linearGradient>
           <linearGradient id="thread-silk" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#9e302c" />
-            <stop offset=".52" stopColor="#cf493e" />
-            <stop offset="1" stopColor="#a82e2c" />
+            <stop offset="0" stopColor="#bc4b43" />
+            <stop offset=".52" stopColor="#f29375" />
+            <stop offset="1" stopColor="#c85446" />
           </linearGradient>
         </defs>
         <path className="needle-thread-prelude" d="M 9 77 C 39 76 65 69 88 63 C 103 59 111 56 120 59 C 131 63 135 72 152 72 C 174 72 176 52 199 52 C 215 52 222 59 237 62" />
@@ -35,7 +35,7 @@ function NeedleScene({ anchorRef }) {
           <path d="M 120 59 L 278 46" fill="none" stroke="url(#needle-silver)" strokeWidth="3.2" strokeLinecap="round" />
           <path d="M 276 45.5 L 290 44.5 L 278 49.5 Z" fill="#9aa6ac" />
           <path d="M 126 56.4 L 270 44.5" fill="none" stroke="#fff" strokeWidth=".7" opacity=".85" />
-          <ellipse cx="120" cy="59" rx="8.4" ry="3.5" transform="rotate(-4.7 120 59)" fill="#f5f0e5" stroke="#75838b" strokeWidth="1.6" />
+          <ellipse cx="120" cy="59" rx="8.4" ry="3.5" transform="rotate(-4.7 120 59)" fill="#0b293e" stroke="#b2c5cf" strokeWidth="1.6" />
           <ellipse cx="120" cy="59" rx="4.5" ry="1.6" transform="rotate(-4.7 120 59)" fill="none" />
         </g>
       </svg>
@@ -236,7 +236,6 @@ export default function GalleryPage({ onAction }) {
                 >
                   <span className={`jing-work-photo${work.detailPosition ? ' is-detail' : ''}`}>
                     <img src={assetUrl(work.src)} style={work.detailPosition ? { objectPosition: work.detailPosition, transformOrigin: work.detailPosition } : undefined} alt={`${work.title}${work.kind ? `（${work.kind}）` : ''}`} loading="lazy" decoding="async" />
-                    <span className="photo-caption" aria-hidden="true">苗绣 · {String(index + 1).padStart(2, '0')}</span>
                   </span>
                   <span className="jing-work-copy">
                     <span className="jing-work-type">{work.sub}</span>
