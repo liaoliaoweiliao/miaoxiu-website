@@ -179,3 +179,79 @@ body.look-viewer-open{overflow:hidden}.look-viewer.viewer-expanded{position:fixe
 @media(max-width:760px){.experience-page .section-seal,.experience-page .dressup-heading .section-seal{flex-basis:40px;width:40px;height:40px}.decode-image-preview{right:8px;bottom:8px;padding:7px 10px;font-size:11px}}
 
 .wardrobe-peony-icon{display:block;width:48px;height:48px;object-fit:contain}.card-back>span:has(.wardrobe-peony-icon){display:flex;justify-content:center;align-items:center}@media(max-width:760px){.motif-tab .wardrobe-peony-icon{width:32px;height:32px}}
+
+/* Enlarge experience copy by 20%, including its portaled dialogs and viewer. */
+.experience-page,.unlock-dialog,.look-viewer{font-size:19.2px}
+.experience-page .side-heading p{font-size:18px}
+.experience-page .eyebrow,.unlock-dialog .eyebrow{font-size:14.4px}
+.experience-page .motif-tab strong,.viewer-header>span,.outfit-summary strong,
+.motif-culture p,.pool-locked p{font-size:16.8px}
+.experience-page .motif-tab small,.viewer-header small,.viewer-hint{font-size:12px}
+.decode-toolbar,.target-brief,.decode-actions button,.decode-feedback,.theme-status,
+.round-outfit p,.avatar-actions button,.collection-empty p,.carousel-caption{font-size:15.6px}
+.decode-counter,.found-label,.draw-note,.draw-card>small,.card-back small,
+.save-status,.collection-heading>span,.collection-filters button,.wear-full,
+.carousel-group span,.viewer-tools button,.prize-footer,.decode-image-preview{font-size:14.4px}
+.decode-help,.dressup-instruction,.inspect-card small,.motif-culture small,
+.outfit-summary small,.carousel-group small,.viewer-scale,.choice-text small{font-size:13.2px}
+.target-brief strong,.choice-text strong{font-size:22.8px}
+.experience-page .save-btn,.inspect-card strong{font-size:18px}
+.experience-page .draw-btn{font-size:26.4px}
+.gender-prompt h3{font-size:28.8px}
+.choice-check{font-size:16.8px}
+.draw-card>strong,.reveal-front>strong,.viewer-caption{font-size:20.4px}
+.reveal-front>small{font-size:14.4px}
+.draw-reveal-label{font-size:16.8px}
+.has-result .draw-reveal-label{font-size:22.8px}
+.has-result .draw-card>strong,.has-result .reveal-front>strong{font-size:30px}
+.has-result .draw-card>small,.has-result .reveal-front>small{font-size:15.6px}
+.dressup-heading h2{font-size:45.6px}
+.collection-heading h3{font-size:27.6px}
+.collection-empty h4{font-size:21.6px}
+.motif-culture h3{font-size:25.2px}
+.viewer-expanded .viewer-caption{font-size:24px}
+.unlock-dialog h2{font-size:31.2px}
+.unlock-dialog p{font-size:16.8px}
+.unlock-dialog .primary-btn{font-size:19.2px}
+.experience-page .side-heading .title-with-seal h1,
+.experience-page .side-heading .title-with-seal h2{font-size:clamp(45.6px,4.8vw,62.4px)}
+.experience-page .decode-inner,.experience-page .wardrobe-layout{grid-template-columns:215px minmax(0,1fr)}
+.decode-toolbar,.target-brief,.collection-heading{flex-wrap:wrap}
+.choice-text strong{white-space:normal}
+.viewer-tools{flex-wrap:wrap}
+.draw-card{height:auto;min-height:350px}
+.has-result>.draw-card{height:auto;min-height:465px}
+
+@media(max-width:1050px) and (min-width:761px){
+ .experience-page .decode-inner,.experience-page .wardrobe-layout{grid-template-columns:175px minmax(0,1fr)}
+ .experience-page .decode-inner .title-with-seal h1{font-size:50.4px}
+ .character-choice{grid-template-columns:1fr;max-width:340px}
+}
+@media(max-width:760px){
+ .experience-page .decode-inner,.experience-page .wardrobe-layout{grid-template-columns:1fr}
+ .experience-page .side-heading p{font-size:14.4px}
+ body[data-page="experience"] .decode-inner>.side-heading p{font-size:15.6px}
+ .experience-page .side-heading .title-with-seal h1,
+ .experience-page .side-heading .title-with-seal h2,
+ .experience-page .dressup-heading .title-with-seal h2,
+ .experience-page .decode-inner .title-with-seal h1{font-size:clamp(36px,6.6vw,48px);line-height:1.4}
+ .experience-page .motif-tab strong{font-size:12px}
+ .experience-page .motif-tab small{font-size:9.6px}
+ .decode-toolbar,.decode-actions button{font-size:14.4px}
+ .decode-counter,.decode-image-preview{font-size:13.2px}
+ .target-brief strong{font-size:19.2px}
+ .target-brief small,.decode-help,.found-label,.choice-text small{font-size:12px}
+ .experience-page .draw-btn{font-size:20.4px}
+ .experience-page .save-btn{font-size:13.2px}
+ .collection-total{font-size:14.4px}
+ .has-result .draw-reveal-label{font-size:19.2px}
+ .has-result .draw-card>strong,.has-result .reveal-front>strong{font-size:26.4px}
+ .card-back small{font-size:12px}
+ .card-back strong,.choice-text strong{font-size:20.4px}
+ .gender-prompt h3{font-size:21.6px}
+ .collection-heading h3{font-size:25.2px}
+ .prize-footer{font-size:13.2px}
+ .unlock-dialog h2{font-size:27.6px}
+ .costume-draw-stage>.draw-card{height:auto;min-height:395px}
+ .has-result>.draw-card{min-height:410px}
+}
