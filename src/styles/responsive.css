@@ -22,6 +22,11 @@ button, input, select, textarea { max-width: 100%; }
 .heritage-journey { width: auto; margin-inline: calc(-1 * var(--page-gutter)); }
 .heritage-viewport { height: clamp(440px, 52vw, 740px); min-height: 0; }
 .heritage-whisper { width: min(92%, 760px); }
+.heritage-bird-hint {
+  --hint-width: min(190px, calc(100vw - 24px));
+  width: max-content; max-width: var(--hint-width); white-space: normal; text-align: center;
+  left: clamp(calc(var(--hint-width) / 2 - var(--bird-screen-x) + 50% + 12px), 50%, calc(var(--journey-width) - var(--bird-screen-x) - var(--hint-width) / 2 + 50% - 12px));
+}
 
 /* The map and its HTML markers share one proportional coordinate surface. */
 .thread-map-canvas { min-width: 0; aspect-ratio: auto; container-type: inline-size; }

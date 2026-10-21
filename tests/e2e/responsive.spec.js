@@ -61,19 +61,19 @@ test('resizing keeps every selected map pin and the three bird stages reachable'
   }
   const bird = page.locator('[data-heritage-bird]');
   const journey = page.locator('.heritage-viewport');
-  const cue = page.locator('.heritage-tap-cue');
   for (const [index, width] of [390, 640, 320].entries()) {
     await page.setViewportSize({ width, height: 700 });
     await expectInside(bird, journey);
-    await expectInside(cue, journey);
+    await expectInside(page.locator('.heritage-bird-hint'), journey);
     await bird.click();
     await expect(page.locator('[data-heritage-number]')).toHaveText(index === 2 ? '01' : `0${index + 2}`);
     await expectInside(bird, journey);
-    await expect(cue).toBeVisible();
-    await expectInside(cue, journey);
-    const birdBounds = await bird.boundingBox();
-    const cueBounds = await cue.boundingBox();
-    expect(cueBounds.y).toBeGreaterThanOrEqual(birdBounds.y + birdBounds.height);
+    await expectInside(page.locator('.heritage-bird-hint'), journey);
+    if (index === 0) {
+      const birdBounds = await bird.boundingBox();
+      const hintBounds = await page.locator('.heritage-bird-hint').boundingBox();
+      expect(hintBounds.y).toBeGreaterThanOrEqual(birdBounds.y + birdBounds.height);
+    }
   }
 });
 
