@@ -151,6 +151,11 @@ export default function HomePage({ state }) {
               <div className={`feature-art ${feature.artClassName || ''}`.trim()} aria-hidden="true">
                 <img src={assetUrl(feature.image)} alt="" loading="lazy" />
               </div>
+              <span className="feature-embroidered-frame" aria-hidden="true">
+                {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((corner) => (
+                  <i key={corner} className={`feature-stitch-knot ${corner}`} />
+                ))}
+              </span>
               <div className="feature-content">
                 <span className="feature-index">
                   {feature.chapter} <span className="feature-sep" /> {feature.subtitle}
