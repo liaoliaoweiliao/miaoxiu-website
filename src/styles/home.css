@@ -4,7 +4,6 @@
 .heritage-viewport:focus-visible{outline:2px solid #f0d0a8}
 .heritage-art{position:absolute;z-index:0;left:0;top:50%;width:var(--heritage-art-width,2172px);aspect-ratio:2172/724;transform:translate3d(calc(-1 * var(--heritage-shift,0px)),-50%,0);will-change:transform}
 .heritage-panorama{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;pointer-events:none;-webkit-user-drag:none}
-.heritage-target-motif{position:absolute;z-index:1;left:95.72%;top:58.15%;width:calc(var(--heritage-art-width,2172px)*.026);height:calc(var(--heritage-art-width,2172px)*.027);object-fit:contain;transform:translate(-50%,-50%);opacity:.82;filter:drop-shadow(0 0 2px rgba(3,18,32,.85));mix-blend-mode:screen;pointer-events:none;-webkit-user-drag:none}
 .heritage-route{display:none!important;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .heritage-route-ghost,.heritage-route-line{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .heritage-route-ghost{stroke:#c9d5cf;stroke-width:1.1;stroke-dasharray:1 13;opacity:.3}
@@ -15,7 +14,7 @@
 .heritage-bird-img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 0 2px rgba(6,22,41,.55))}
 .heritage-bird.is-flying-left .heritage-bird-img{transform:scaleX(-1)}
 .heritage-bird-drawing{width:100%;height:100%;overflow:visible;transition:filter .3s}.heritage-wing{transform-box:fill-box;transform-origin:50% 85%;animation:heritage-flutter 1.6s ease-in-out infinite alternate}.wing-front{animation-direction:alternate-reverse}.is-flying .heritage-wing{animation-duration:.24s}.is-perched .heritage-wing{animation-duration:1.9s}
-.heritage-bird-hint{position:absolute;z-index:12;left:50%;top:calc(100% + 14px);bottom:auto;white-space:nowrap;transform:translateX(-50%);font-size:clamp(12px,1vw,16px);font-weight:700;letter-spacing:2px;line-height:1.55;font-family:serif;color:#fffaf0;text-shadow:0 2px 12px rgba(0,10,22,.98),0 0 16px rgba(5,18,34,.95);background:rgba(2,21,37,.96);border:1px solid rgba(244,205,160,.55);border-radius:999px;padding:8px 18px;pointer-events:none;opacity:1;transition:opacity .2s;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.heritage-bird-hint{position:absolute;z-index:12;left:50%;bottom:calc(100% + 16px);top:auto;white-space:nowrap;transform:translateX(-50%);font-size:clamp(12px,1vw,16px);font-weight:700;letter-spacing:2px;line-height:1.55;font-family:serif;color:#fffaf0;text-shadow:0 2px 12px rgba(0,10,22,.98),0 0 16px rgba(5,18,34,.95);background:rgba(2,21,37,.96);border:1px solid rgba(244,205,160,.55);border-radius:999px;padding:8px 18px;pointer-events:none;opacity:1;transition:opacity .2s;box-shadow:0 8px 20px rgba(0,0,0,.28)}
 .heritage-bird-hint::after{content:'';display:none}.is-flying .heritage-bird-hint,.is-hidden .heritage-bird-hint{opacity:0}
 .heritage-ink-top{z-index:2;position:absolute;top:0;left:0;width:100%;height:clamp(170px,20%,200px);pointer-events:none;background:linear-gradient(180deg,rgba(3,20,38,.99) 1%,rgba(3,22,38,.94) 32%,rgba(3,23,41,.62) 70%,transparent 100%)}
 .heritage-shimmer{z-index:2;position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse at 59% 58%,rgba(144,190,199,.07),transparent 48%)}

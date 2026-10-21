@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-10-20
+updated: 2026-10-21
 topic: memory-entry
 sources: []
 ---

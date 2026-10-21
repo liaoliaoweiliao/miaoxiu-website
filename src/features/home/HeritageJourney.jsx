@@ -176,9 +176,8 @@ export default function HeritageJourney() {
       <div ref={viewportRef} className="heritage-viewport" tabIndex={0} aria-label="轻触绣布上的小鸟体验三段故事，键盘可使用回车或空格继续" onKeyDown={(event) => { if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowLeft'].includes(event.key)) { event.preventDefault(); advance(); } }} onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={() => { touchRef.current = null; }}>
         <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px` }}>
           <img className="heritage-panorama" src={assetUrl('home/heritage-long-panorama-wide.webp')} alt="连续的苗绣长卷：绣娘、绵延的绣布与右侧现代设计作品" loading="lazy" draggable={false} />
-          <img className="heritage-target-motif" src={assetUrl('home/bird-motif-target.png')} alt="" aria-hidden="true" />
           <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px` }}>
-            <img className="heritage-bird-img" src={assetUrl('home/bird-flap.gif')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
+            <img className="heritage-bird-img" src={assetUrl('home/bird-flap-clean.png')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
           </button>
         </div>
         <div className="heritage-ink-top" aria-hidden="true" /><div className="heritage-shimmer" aria-hidden="true" /><div className="heritage-floor" aria-hidden="true" />
