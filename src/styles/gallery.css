@@ -1,61 +1,918 @@
-/* The reference artwork continues at full width throughout one scrollable gallery. */
-body[data-page="gallery"]{background:#031b2c}body[data-page="gallery"]::before{display:none}
-.jing-gallery{position:relative;width:100%;margin:0;padding:0}.jing-heading{position:absolute;top:27px;left:7%;right:7%;text-align:center;z-index:1;color:#ead0a9;text-shadow:0 2px 14px #001526}.jing-heading .eyebrow{font-size:12px;letter-spacing:4px;color:#b99568}.jing-heading h1{font-size:57.6px;letter-spacing:9px;color:#f0d9bc;margin:17px 0 13px}.jing-heading h1 em{font-style:normal;color:#d5ac79}.jing-heading>p{font-size:15.6px;letter-spacing:4px;margin:0;color:#d4b998}
-.jing-sheets{position:relative;width:100%;container-type:inline-size;--gallery-photo-size:11.5cqw;background:#031b2c}.jing-artworks{position:relative;margin:0;padding:0;list-style:none;height:calc(var(--scroll-height)*100cqw)}.jing-slot{position:absolute;min-width:0;left:calc(var(--slot-x)*100%);top:calc(var(--slot-y)*100cqw);width:calc(var(--slot-w)*100%);height:calc(var(--slot-h)*100cqw)}
-.jing-work{position:relative;display:grid;grid-template-columns:49% minmax(0,1fr);align-items:center;gap:12px;width:100%;height:100%;border:0;background:transparent;padding:4px 5px;text-align:left;color:#e9d0a7;transition:background .25s,filter .25s}.jing-work-photo{height:100%;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center}.jing-work-photo img{display:block;max-height:100%;width:100%;height:100%;object-fit:cover;object-position:center;filter:drop-shadow(0 4px 8px #00131f55)}.jing-work-copy{position:relative;min-width:0;text-shadow:0 1px 8px #001421}.jing-work-type{display:block;font-size:10.8px;letter-spacing:.5px;line-height:1.5;color:#c2ab88}.jing-work h2{font-size:24px;letter-spacing:2px;line-height:1.4;color:#f2d2a4;margin:6px 0 8px}.jing-work-copy>p{font-size:13.2px;line-height:1.7;color:#b8cbd4;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.jing-work-kind{display:inline-block;font-size:9.6px;line-height:1.6;letter-spacing:1px;border-bottom:1px solid #b4946866;color:#c8aa7d;margin-top:5px}.jing-work-open{display:block;margin-top:8px;font-size:10.8px;color:#d4b07a;letter-spacing:1px}.jing-work:hover,.jing-work:focus-visible{background:#c9aa6210;filter:brightness(1.1)}.jing-work:focus-visible{outline:1px solid #e6bd81;outline-offset:3px}
-@media(min-width:1500px){.jing-heading{top:45px}.jing-heading h1{font-size:69.6px}.jing-work h2{font-size:31.2px;letter-spacing:3px}.jing-work-copy>p{font-size:16.8px;line-height:1.8}.jing-work-type{font-size:13.2px}.jing-work-kind{font-size:12px}.jing-work-open{font-size:13.2px}}
-@media(max-width:1000px) and (min-width:761px){.jing-heading{top:20px}.jing-heading h1{font-size:43.2px;letter-spacing:6px;margin:12px 0 10px}.jing-heading .eyebrow{font-size:9.6px}.jing-heading>p{font-size:13.2px}.jing-work{gap:8px;padding:2px}.jing-work h2{font-size:19.2px;letter-spacing:1px;margin:4px 0 6px}.jing-work-copy>p{font-size:10.8px;line-height:1.65;-webkit-line-clamp:3}.jing-work-type{font-size:9.6px}.jing-work-open{font-size:9.6px;margin-top:5px}.jing-work-kind{font-size:8.4px;margin-top:3px}}
-
-@media(min-width:761px){.jing-work:has(.jing-work-kind) .jing-work-copy>p{-webkit-line-clamp:2}}
-@media(prefers-reduced-motion:reduce){.jing-work{transition:none}}
-
-/* Overlap the painted landscapes: no solid-colour spacer or repeated detail cards. */
-.jing-sheets{overflow:hidden}.jing-artworks{z-index:2}.jing-work-photo{overflow:hidden}
-.jing-background{position:absolute;inset-inline:0;top:calc(var(--sheet-y)*100cqw);height:calc(1672/941*100cqw);width:100%;pointer-events:none;--entry:calc(90/1672*100%);--entry-end:calc(140/1672*100%);mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end));-webkit-mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end))}
-.jing-background.is-first{--entry:0%;--entry-end:0%}
-.jing-seam{position:absolute;left:0;top:calc(var(--seam-y)*100cqw);width:100%;height:calc(50/941*100cqw);z-index:1;pointer-events:none}.jing-seam path{fill:none;stroke-linecap:round;stroke-linejoin:round}.seam-thread-shadow{stroke:#071722;stroke-width:4;opacity:.55}.seam-thread-red{stroke:#c42d27;stroke-width:2.15}.seam-thread-glint{stroke:#ee6050;stroke-width:.55;opacity:.55}
-
-
-/* The supplied painting carries the entire final knot, silverwork and tassel. */
-.jing-background.is-last{mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end),#000 calc(1630/1672*100%),transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent var(--entry),#000 var(--entry-end),#000 calc(1630/1672*100%),transparent 100%)}
-.scroll-ending-mobile{display:none}.has-catalogue .jing-work-copy>p{display:block;overflow:visible}.has-catalogue .jing-work-open{margin-top:7px}
-
-
-/* Keep both photos and type inside the embroidered frame's clear interior. */
-/* One shared square size keeps all thumbnails equal as the scroll scales. */
-.jing-work{grid-template-columns:var(--gallery-photo-size) minmax(0,1fr);gap:clamp(10px,1.4cqw,22px);padding:clamp(9px,1.3cqw,22px) clamp(18px,2.1cqw,36px)}.jing-work-photo{height:var(--gallery-photo-size);width:var(--gallery-photo-size);justify-self:center;align-self:center}.jing-work h2{margin:4px 0 6px;line-height:1.35}.jing-work-copy{max-height:100%;overflow:hidden}.jing-work-copy>p{-webkit-line-clamp:2}.has-catalogue .jing-work-copy>p{display:-webkit-box;-webkit-line-clamp:3;overflow:hidden}.jing-work-open,.has-catalogue .jing-work-open{margin-top:5px;line-height:1.4}
-
-
-/* A scroll title sits beside the needlework, within the open upper-right landscape. */
-.jing-heading{top:3.8vw;left:60%;right:auto;width:30%;z-index:3;text-align:center;padding:0;color:#e7c9a0;text-shadow:0 2px 12px #001525,0 0 22px #001525}.jing-heading .eyebrow{display:block;font-size:clamp(8.4px,0.84vw,13.2px);font-weight:400;letter-spacing:clamp(1px,.16vw,2.6px);line-height:1.6;color:#ba9d79;white-space:nowrap}.jing-title-line{display:flex;align-items:center;justify-content:center;gap:clamp(9px,1.1vw,18px);margin:clamp(9px,1.1vw,20px) 0 clamp(8px,1vw,17px)}.jing-heading h1{display:flex;align-items:baseline;gap:.24em;margin:0;font-family:'STKaiti','KaiTi','Noto Serif SC','Songti SC',serif;font-size:clamp(38.4px,5.04vw,84px);font-weight:400;line-height:1.35;letter-spacing:.13em;white-space:nowrap;color:#ecd0a5}.jing-heading h1 span,.jing-heading h1 em{font-style:normal;color:inherit}.jing-heading h1 em{color:#d4ad79}.jing-title-seal{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:clamp(18px,1.9vw,29px);height:clamp(22px,2.35vw,36px);border:1px solid #a95948;outline:1px solid #a9594829;outline-offset:2px;color:#c27460;font-family:'STKaiti','KaiTi',serif;font-size:clamp(14.4px,1.5vw,21.6px);line-height:1;transform:rotate(-4deg);text-shadow:none}.jing-heading .jing-heading-poem{display:flex;align-items:center;justify-content:center;gap:clamp(7px,.8vw,13px);margin:0;font-family:'STKaiti','KaiTi','Noto Serif SC',serif;font-size:clamp(13.2px,1.26vw,20.4px);font-weight:400;letter-spacing:clamp(1px,.17vw,2.7px);line-height:1.9;color:#cbb394;white-space:nowrap}.jing-heading-poem i{font-style:normal;color:#ab8156;font-size:13.2px}.jing-title-stitches{position:relative;display:block;width:74px;max-width:32%;height:1px;margin:clamp(11px,1.2vw,20px) auto 0;background:linear-gradient(90deg,transparent,#b48c5a88,transparent)}.jing-title-stitches::after{content:'';position:absolute;width:4px;height:4px;top:-1.5px;left:calc(50% - 2px);border:1px solid #b48c5a;transform:rotate(45deg);background:#062337}
-
-
-/* Let the exhibition's deep-blue ground continue into the footer. */
-body[data-page="gallery"] .footer{border-top:0;background:linear-gradient(180deg,#031b2c 0%,#031b2c 28%,#031a30 100%)}
-body[data-page="gallery"] .footer-pattern{mask-image:linear-gradient(to bottom,transparent 0%,#000 48%,#000 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 48%,#000 100%)}
-
-
-/* The same painted scroll, frame coordinates and red thread scale on phones. */
-@media(max-width:760px){
- .jing-heading .eyebrow{font-size:1.26vw;letter-spacing:.16vw;line-height:1.6}
- .jing-title-line{gap:1.1vw;margin:1.1vw 0 1vw}
- .jing-heading h1{font-size:5.04vw;letter-spacing:.13em;line-height:1.35}
- .jing-heading .jing-heading-poem{font-size:1.62vw;letter-spacing:.17vw;gap:.8vw;line-height:1.9}
- .jing-heading-poem i{font-size:1.32vw}
- .jing-title-stitches{width:7.8vw;height:1px;margin:1.2vw auto 0}
- .jing-title-stitches::after{width:2px;height:2px;top:-.5px;left:calc(50% - 1px)}
- .jing-work{gap:1.2cqw;padding:1.2cqw 2.1cqw}
- .jing-work-copy{max-height:100%;overflow:hidden}
- .jing-work-type{font-size:1.14cqw;letter-spacing:.05cqw;line-height:1.5}
- .jing-work h2{font-size:2.4cqw;letter-spacing:.15cqw;line-height:1.35;margin:.4cqw 0 .6cqw}
- .jing-work-copy>p,.has-catalogue .jing-work-copy>p{font-size:1.32cqw;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
- .jing-work-open,.has-catalogue .jing-work-open{font-size:1.14cqw;letter-spacing:.08cqw;line-height:1.4;margin-top:.5cqw}
- .jing-work-kind{font-size:0.96cqw;letter-spacing:.1cqw;margin-top:.3cqw}
+body[data-page="gallery"] {
+  background: #f3eee3;
+  background-image: none;
 }
 
-/* Keep the larger labels and viewing links inside the narrower painted frames. */
-@media(min-width:761px) and (max-width:1100px){
- .jing-work h2{line-height:1.3;margin:2px 0 3px}
- .jing-work-copy>p,.has-catalogue .jing-work-copy>p{line-height:1.55;-webkit-line-clamp:2}
- .jing-work-open,.has-catalogue .jing-work-open{margin-top:3px}
+body[data-page="gallery"]::before {
+  display: none;
+}
+
+.jing-gallery {
+  --thread-red: #b53c35;
+  --thread-dark: #8f2d2b;
+  --ink: #433c35;
+  --muted-ink: #776b5e;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--ink);
+  background-color: #f4efe5;
+  background-image:
+    radial-gradient(ellipse at 16% 5%, #fffaf0 0, transparent 46%),
+    repeating-linear-gradient(0deg, #886a430a 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, #fffdf655 0 1px, transparent 1px 4px);
+  box-shadow: inset 0 1px #fff9ee;
+}
+
+.jing-gallery::before,
+.jing-gallery::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.jing-gallery::before {
+  opacity: .26;
+  background-image: radial-gradient(#806b50 0.55px, transparent .75px);
+  background-size: 7px 7px;
+}
+
+.jing-gallery::after {
+  inset: 12px;
+  border: 1px solid #b5997650;
+}
+
+.jing-heading {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 490px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px 38px;
+  text-align: center;
+}
+
+.jing-eyebrow {
+  color: #96754f;
+  font: 10px/1.5 Arial, sans-serif;
+  letter-spacing: 3px;
+}
+
+.jing-heading h1 {
+  display: flex;
+  align-items: baseline;
+  gap: .18em;
+  margin: 13px 0 4px;
+  color: #4a4136;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(46px, 6.6vw, 82px);
+  font-weight: 400;
+  letter-spacing: .12em;
+  line-height: 1.22;
+}
+
+.jing-heading h1 em {
+  color: #a84238;
+  font-style: normal;
+}
+
+.jing-heading-poem {
+  margin: 6px 0 0;
+  color: #826c54;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+}
+
+.jing-heading-note {
+  max-width: 550px;
+  margin: 12px 0 0;
+  color: #817769;
+  font-size: 13px;
+  letter-spacing: .4px;
+  line-height: 1.9;
+}
+
+.needle-scene {
+  position: relative;
+  width: min(320px, 70vw);
+  margin: 5px auto -1px;
+  aspect-ratio: 320 / 112;
+}
+
+.needle-scene svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.needle-thread-prelude {
+  fill: none;
+  stroke: url(#thread-silk);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 270;
+  stroke-dashoffset: 270;
+  filter: drop-shadow(0 1px 1px #7c292433);
+  animation: thread-through 1.05s cubic-bezier(.25,.58,.25,1) .14s forwards;
+}
+
+.needle-body {
+  transform-box: fill-box;
+  transform-origin: 37.5% 52.7%;
+  animation: needle-settle .8s ease-out .2s both;
+}
+
+.thread-anchor-start {
+  position: absolute;
+  top: 52.7%;
+  left: 37.5%;
+  width: 1px;
+  height: 1px;
+}
+
+.jing-scroll-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 11px;
+  color: #9b8060;
+  font-size: 11px;
+  letter-spacing: 1.3px;
+}
+
+.jing-scroll-prompt i {
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b84b40);
+}
+
+.thread-exhibition {
+  position: relative;
+  z-index: 1;
+  padding: 10px 30px 30px;
+}
+
+.thread-rail-entry {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+
+.thread-drawing {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.thread-drawing path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.thread-route {
+  stroke: var(--thread-red);
+  stroke-width: 2.15px;
+  opacity: .74;
+  filter: drop-shadow(0 1px 1px #5b201b24);
+}
+
+.thread-glint {
+  stroke: #f18b78;
+  stroke-width: .62px;
+  opacity: .55;
+}
+
+.jing-artworks {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  max-width: 1280px;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.thread-story {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 380px;
+  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(64px, 8vw, 132px);
+  padding: 34px 0;
+}
+
+.jing-work {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: 570px;
+  min-width: 0;
+  grid-template-columns: minmax(135px, .82fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 26px);
+  padding: 15px;
+  border: 1px solid #b8a58b66;
+  background: #fffcf5b8;
+  box-shadow: 0 12px 32px #60482b0c, 0 2px 5px #60482b08;
+  color: var(--ink);
+  text-align: left;
+  grid-column: 1;
+  grid-row: 1;
+  opacity: .62;
+  filter: saturate(.8);
+  transform: translateY(10px);
+  transition: opacity .75s ease, filter .75s ease, transform .75s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.thread-story.is-left .jing-work {
+  justify-self: end;
+}
+
+.thread-story.is-right .jing-work {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.jing-work.is-visible {
+  opacity: 1;
+  filter: none;
+  transform: translateY(0);
+}
+
+.jing-work:hover,
+.jing-work:focus-visible {
+  border-color: #a84a3e99;
+  box-shadow: 0 15px 34px #60482b16, 0 0 0 3px #b8463c0d;
+}
+
+.jing-work:focus-visible {
+  outline: 2px solid #9f4037;
+  outline-offset: 4px;
+}
+
+.jing-work-photo {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #bca78a88;
+  background: linear-gradient(145deg, #eee6d8, #ded3c1);
+}
+
+.jing-work-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 3px 5px #382b1d20);
+  transition: transform .7s ease;
+}
+
+.jing-work:hover .jing-work-photo img {
+  transform: scale(1.035);
+}
+
+.jing-work-photo.is-detail img {
+  object-fit: cover;
+}
+
+.photo-caption {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+  padding: 3px 6px;
+  background: #f5efe3d9;
+  color: #7f6c55;
+  font-size: 9px;
+  letter-spacing: .8px;
+}
+
+.jing-work-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.jing-work-type {
+  color: #987653;
+  font-size: 11px;
+  letter-spacing: .7px;
+  line-height: 1.6;
+}
+
+.work-chapter {
+  margin: 8px 0 2px;
+  color: #b1a28e;
+  font: 9px/1.4 Arial, sans-serif;
+  letter-spacing: 1.5px;
+}
+
+.work-title {
+  color: #473d32;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(21px, 2.1vw, 29px);
+  letter-spacing: 1px;
+  line-height: 1.38;
+}
+
+.work-description {
+  display: -webkit-box;
+  margin-top: 8px;
+  overflow: hidden;
+  color: #746a5f;
+  font-size: 13px;
+  line-height: 1.8;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.has-catalogue .work-description {
+  -webkit-line-clamp: 3;
+}
+
+.jing-work-kind {
+  display: inline-block;
+  margin-top: 7px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #a7835b55;
+  color: #957750;
+  font-size: 10px;
+  letter-spacing: .6px;
+}
+
+.jing-work-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 11px;
+  color: #a33b34;
+  font-size: 11px;
+  letter-spacing: .8px;
+}
+
+.jing-work-open i {
+  font-size: 14px;
+  font-style: normal;
+  transition: transform .2s ease;
+}
+
+.jing-work:hover .jing-work-open i {
+  transform: translate(2px, -2px);
+}
+
+.thread-story.is-featured {
+  min-height: 440px;
+}
+
+.thread-story.is-featured .jing-work {
+  grid-template-columns: minmax(165px, 1fr) minmax(0, 1.05fr);
+  padding: 17px;
+}
+
+.thread-story.is-featured .jing-work-photo {
+  aspect-ratio: 3.5 / 4.8;
+}
+
+.thread-stitch {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border: 1px solid #ab493c33;
+  border-radius: 50%;
+  background: #f4efe5;
+  color: #a04439;
+  font: 8px/1 Arial, sans-serif;
+  letter-spacing: .5px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: border-color .3s ease, background .3s ease, box-shadow .3s ease;
+}
+
+.thread-stitch > span {
+  position: relative;
+  z-index: 1;
+}
+
+.stitch-cross,
+.stitch-needle {
+  position: absolute;
+  display: block;
+  width: 13px;
+  height: 1.8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #9f302d, #d45c4e 52%, #922d2b);
+  box-shadow: 0 1px 1px #7b2b222d;
+}
+
+.stitch-cross {
+  transform: rotate(45deg) scaleX(.2);
+  opacity: 0;
+  transition: transform .4s ease, opacity .25s ease;
+}
+
+.stitch-needle {
+  width: 17px;
+  height: 2px;
+  background: linear-gradient(90deg, #98a1a2, #f6f6f2, #77838a);
+  opacity: 0;
+  transform: translate(-12px, -4px) rotate(-38deg);
+}
+
+.thread-stitch.is-stitched {
+  border-color: transparent;
+  background: transparent;
+}
+
+.thread-stitch.is-stitched .stitch-cross {
+  transform: rotate(45deg) scaleX(1);
+  opacity: 1;
+}
+
+.thread-stitch.is-stitched .stitch-needle {
+  animation: needle-drop .48s cubic-bezier(.2,.7,.25,1) both;
+}
+
+.thread-stitch.is-active {
+  box-shadow: 0 0 0 5px #ad45300d;
+}
+
+.thread-colophon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 235px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 47px 24px 65px;
+  color: #514439;
+  text-align: center;
+}
+
+.closing-knot {
+  position: relative;
+  display: block;
+  width: 38px;
+  height: 25px;
+  margin-bottom: 14px;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.knot-loop,
+.knot-tail {
+  position: absolute;
+  display: block;
+  border: 1.8px solid var(--thread-red);
+}
+
+.knot-loop {
+  top: 6px;
+  left: 12px;
+  width: 13px;
+  height: 10px;
+  border-radius: 60% 40% 55% 45%;
+  transform: rotate(28deg) scale(.45);
+  opacity: .3;
+  transition: transform .45s ease, opacity .45s ease;
+}
+
+.knot-tail {
+  top: 12px;
+  left: 19px;
+  width: 15px;
+  height: 1px;
+  border-width: 0 0 1.8px;
+  transform: scaleX(1);
+  transform-origin: left center;
+  opacity: .3;
+  transition: transform .45s ease .08s, opacity .45s ease .08s;
+}
+
+.closing-needle {
+  position: absolute;
+  top: 0;
+  left: 3px;
+  width: 58px;
+  height: 18px;
+  overflow: visible;
+  opacity: .38;
+  transform: translate(-9px, -5px) rotate(-7deg);
+  transform-origin: 5px 13px;
+}
+
+.closing-needle path {
+  fill: none;
+  stroke: #89949a;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.closing-needle ellipse {
+  fill: none;
+  stroke: #89949a;
+  stroke-width: 1.2;
+}
+
+.thread-colophon p {
+  margin: 0;
+  color: #564638;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  font-size: 23px;
+  letter-spacing: 3px;
+}
+
+.colophon-caption {
+  margin-top: 9px;
+  color: #9b8466;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.is-finished .knot-loop {
+  transform: rotate(28deg) scale(1);
+  opacity: 1;
+}
+
+.is-finished .knot-tail {
+  transform: scaleX(.28);
+  opacity: 1;
+}
+
+.is-finished .closing-knot {
+  opacity: 1;
+}
+
+.is-finished .closing-needle {
+  animation: needle-withdraw .55s ease-out both;
+  opacity: 1;
+}
+
+body[data-page="gallery"] .footer {
+  border-top: 1px solid #b59b7850;
+  background: #efe8dc;
+  color: #685a49;
+}
+
+body[data-page="gallery"] .footer .motto,
+body[data-page="gallery"] .footer p,
+body[data-page="gallery"] .footer-links button {
+  color: #766650;
+}
+
+body[data-page="gallery"] .footer .motto span {
+  color: #a34037;
+}
+
+body[data-page="gallery"] .footer-pattern {
+  opacity: .17;
+  filter: sepia(1) saturate(.45);
+}
+
+@media (min-width: 1500px) {
+  .jing-heading {
+    min-height: 540px;
+  }
+
+  .thread-story {
+    min-height: 420px;
+  }
+
+  .thread-story.is-featured {
+    min-height: 485px;
+  }
+
+  .jing-work {
+    max-width: 600px;
+    padding: 18px;
+  }
+
+  .work-description {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 761px) {
+  .jing-heading {
+    min-height: 440px;
+  }
+
+  .thread-story {
+    column-gap: 58px;
+    min-height: 350px;
+    padding: 28px 0;
+  }
+
+  .thread-story.is-featured {
+    min-height: 395px;
+  }
+
+  .jing-work,
+  .thread-story.is-featured .jing-work {
+    grid-template-columns: minmax(120px, .78fr) minmax(0, 1fr);
+    gap: 12px;
+    padding: 11px;
+  }
+
+  .work-title {
+    font-size: 21px;
+  }
+
+  .work-description {
+    font-size: 12px;
+    line-height: 1.65;
+    -webkit-line-clamp: 2;
+  }
+
+  .jing-work-type {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .jing-gallery::after {
+    inset: 7px;
+  }
+
+  .jing-heading {
+    min-height: 395px;
+    padding: 46px 30px 29px;
+  }
+
+  .jing-eyebrow {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+
+  .jing-heading h1 {
+    margin-top: 12px;
+    font-size: clamp(44px, 12vw, 66px);
+  }
+
+  .jing-heading-poem {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  .jing-heading-note {
+    max-width: 340px;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .needle-scene {
+    width: min(270px, 78vw);
+    margin-top: 4px;
+  }
+
+  .jing-scroll-prompt {
+    margin-top: 10px;
+    font-size: 10px;
+  }
+
+  .thread-exhibition {
+    padding: 7px 18px 10px;
+  }
+
+  .jing-artworks {
+    display: flex;
+    max-width: 620px;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .thread-story,
+  .thread-story.is-featured {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    padding: 24px 0 35px 39px;
+  }
+
+  .jing-work,
+  .thread-story.is-featured .jing-work {
+    grid-column: 1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    max-width: 100%;
+    padding: 11px;
+  }
+
+  .jing-work-photo,
+  .thread-story.is-featured .jing-work-photo {
+    width: 100%;
+    aspect-ratio: 1.18 / 1;
+  }
+
+  .jing-work-photo img {
+    object-fit: contain;
+  }
+
+  .jing-work-copy {
+    padding: 13px 5px 4px;
+  }
+
+  .jing-work-type {
+    font-size: 10px;
+  }
+
+  .work-chapter {
+    margin-top: 5px;
+    font-size: 8px;
+  }
+
+  .work-title {
+    font-size: 22px;
+  }
+
+  .work-description,
+  .has-catalogue .work-description {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.7;
+    -webkit-line-clamp: 3;
+  }
+
+  .jing-work-open {
+    margin-top: 9px;
+    font-size: 10px;
+  }
+
+  .thread-stitch {
+    top: 50%;
+    left: 19px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .thread-rail-entry {
+    left: 19px;
+  }
+
+  .thread-colophon {
+    min-height: 205px;
+    align-items: flex-start;
+    padding: 38px 0 55px 57px;
+    text-align: left;
+  }
+
+  .closing-knot {
+    margin-left: -15px;
+  }
+
+  .thread-colophon p {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .colophon-caption {
+    margin-left: 2px;
+  }
+}
+
+@media (max-width: 370px) {
+  .jing-heading {
+    min-height: 370px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .jing-heading-note {
+    font-size: 11px;
+  }
+
+  .thread-exhibition {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .thread-story,
+  .thread-story.is-featured {
+    padding-left: 35px;
+  }
+
+  .jing-work,
+  .thread-story.is-featured .jing-work {
+    padding: 8px;
+  }
+
+  .work-title {
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(body[data-page="gallery"]) {
+    scroll-behavior: auto;
+  }
+
+  .needle-thread-prelude {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .needle-body,
+  .stitch-needle,
+  .closing-needle {
+    animation: none !important;
+  }
+
+  .jing-work {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+
+  .stitch-cross,
+  .knot-loop,
+  .knot-tail,
+  .closing-needle,
+  .jing-work-open i {
+    transition: none;
+  }
+
+  .stitch-cross {
+    transform: rotate(45deg) scaleX(1);
+    opacity: 1;
+  }
+
+  .thread-stitch {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .knot-loop {
+    transform: rotate(28deg) scale(1);
+    opacity: 1;
+  }
+
+  .knot-tail {
+    transform: scaleX(.28);
+    opacity: 1;
+  }
+
+  .closing-knot {
+    opacity: 1;
+  }
+
+  .closing-needle {
+    opacity: .75;
+    transform: translate(0, 0) rotate(-7deg);
+  }
+}
+
+@keyframes thread-through {
+  0% { stroke-dashoffset: 270; }
+  70% { stroke-dashoffset: 70; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes needle-settle {
+  0% { transform: rotate(2deg); }
+  72% { transform: rotate(-5.8deg); }
+  100% { transform: rotate(-4.7deg); }
+}
+
+@keyframes needle-drop {
+  0% { opacity: 0; transform: translate(-12px, -4px) rotate(-38deg); }
+  45% { opacity: 1; transform: translate(0, 0) rotate(8deg); }
+  100% { opacity: 0; transform: translate(10px, 4px) rotate(26deg); }
+}
+
+@keyframes needle-withdraw {
+  0% { transform: translate(-5px, -2px) rotate(-7deg); }
+  38% { transform: translate(2px, 1px) rotate(0deg); }
+  100% { transform: translate(17px, -8px) rotate(-12deg); opacity: .15; }
 }
