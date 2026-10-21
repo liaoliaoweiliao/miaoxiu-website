@@ -1,73 +1,168 @@
-import { useEffect, useId, useReducer } from 'react';
-import { ATLAS_RECORDS, initialAtlasState, TIMES, REGIONS } from '../data/atlas.js';
-import { atlasAllowed, atlasReducer, filteredAtlas } from '../features/history/atlasModel.js';
+import { useEffect, useId, useMemo, useReducer, useRef, useState } from 'react';
+import { ATLAS_RECORDS, initialAtlasState, REGIONS, TIMES } from '../data/atlas.js';
+import { BRANCHES, DISTRIBUTION_POINTS, DISTRIBUTION_SOURCES, INITIAL_DISTRIBUTION, PROVINCE_LABELS } from '../data/distribution.js';
+import { PROVINCE_PATHS } from '../data/atlasGeography.js';
+import { atlasReducer, filteredAtlas } from '../features/history/atlasModel.js';
+import { distributionPoints, distributionReducer, distributionStats, heatCells, projectPoint } from '../features/home/distributionModel.js';
 import { assetUrl } from '../utils/assets.js';
-import '../styles/atlas.css';
-import '../styles/atlas-media.css';
+import '../styles/distribution.css';
 
-let sessionAtlasState = initialAtlasState;
+let sessionState = INITIAL_DISTRIBUTION;
+const format = (number) => String(number).padStart(2, '0');
+const branchFor = (point) => BRANCHES.find((branch) => branch.id === point?.branch);
+const sourceFor = (id) => DISTRIBUTION_SOURCES.find((source) => source.id === id);
+const heatColors = ['#aa985b', '#e5b45f', '#df804d', '#d4483b'];
 
-function Flower() {
-  return <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M16 15C8 3 2 8 10 16 0 14 1 24 13 19 8 30 20 32 17 20 24 30 32 24 19 17 30 13 27 3 17 15Z" /><circle cx="16" cy="17" r="2.4" fill="currentColor" stroke="none" /></g></svg>;
-}
-function AbstractField() {
-  const prefix = useId().replace(/:/g, '');
-  return <svg className="atlas-field-svg" viewBox="0 0 680 390" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs><radialGradient id={`${prefix}-cloth`}><stop stopColor="#174b58" stopOpacity=".58" /><stop offset="1" stopColor="#071d31" stopOpacity="0" /></radialGradient><pattern id={`${prefix}-weave`} width="17" height="17" patternUnits="userSpaceOnUse"><path d="M0 0L17 17M17 0L0 17" stroke="#ad9a79" strokeWidth=".3" opacity=".18" /></pattern></defs>
-    <rect width="680" height="390" fill={`url(#${prefix}-weave)`} /><circle cx="316" cy="196" r="190" fill={`url(#${prefix}-cloth)`} /><circle cx="316" cy="196" r="168" fill="none" stroke="#b58b5d" strokeOpacity=".37" strokeWidth="1" /><circle cx="316" cy="196" r="176" fill="none" stroke="#b58b5d" strokeOpacity=".22" strokeDasharray="2 8" />
-    <path d="M21 258Q112 186 174 227T322 213T510 146T691 168 M-25 300Q91 216 174 282T334 260T502 195T699 199 M-25 340Q90 260 169 320T337 309T509 253T703 246 M16 96Q91 62 151 107T282 91T455 67T668 104" fill="none" stroke="#77969c" strokeOpacity=".18" strokeWidth="1.1" /><path d="M74 25L74 365 M170 25L170 365 M266 25L266 365 M362 25L362 365 M458 25L458 365 M554 25L554 365 M24 83H660 M24 164H660 M24 245H660 M24 326H660" stroke="#9aa7a9" strokeOpacity=".12" strokeDasharray="3 7" /><g fill="#d4b084" opacity=".45"><path d="M54 45h9m-4.5-4.5v9 M610 336h9m-4.5-4.5v9" stroke="#d4b084" /></g>
+function Motif({ kind = 'butterfly', className = '' }) {
+  return <svg className={`thread-motif ${className}`} viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <g stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M50 3 97 50 50 97 3 50Z M50 10 90 50 50 90 10 50Z" strokeDasharray="2 4" opacity=".55" />
+      {kind === 'butterfly' ? <>
+        <path d="M49 49C34 14 10 18 20 40c4 10 18 14 29 12-28 0-28 31-10 23 8-3 9-13 11-22M51 49c15-35 39-31 29-9-4 10-18 14-29 12 28 0 28 31 10 23-8-3-9-13-11-22M50 39v37M49 40l-8-9m10 9 8-9" />
+        <path d="M43 47C29 29 23 30 29 39l14 8Zm14 0c14-18 20-17 14-8l-14 8Z" strokeDasharray="2 3" />
+      </> : kind === 'flower' ? <>
+        <path d="M50 48C27 25 49 10 50 42c1-32 23-17 0 6 23-23 38-1 6 2 32 1 17 23-6 2 23 23 1 38 0 6-1 32-23 17 0-6-23 23-38 1-6-2-32-1-17-23 6-2Z" />
+        <circle cx="50" cy="50" r="7" /><circle cx="50" cy="50" r="3" />
+      </> : <>
+        <path d="M50 20 80 50 50 80 20 50ZM50 32 68 50 50 68 32 50ZM50 43 57 50 50 57 43 50Z M19 30l12-11m38 0 12 11m0 40L69 81m-38 0L19 70" />
+        <path d="M35 27v9H26m47 0h-9v-9m0 46v-9h9m-47 0h9v9" />
+      </>}
+      <path d="m47 12 3 3 3-3m32 35-3 3 3 3M53 85l-3-3-3 3M15 53l3-3-3-3" />
+    </g>
   </svg>;
 }
 
-function RecordCard({ record }) {
-  return <div className={`atlas-record ${record ? 'is-filled' : ''} ${record?.image ? 'has-image' : ''}`} aria-live="polite">
-    {record ? <>
-      {record.image && <figure className="atlas-record-photo">
-        <img src={assetUrl(record.image)} alt={record.imageAlt} loading="lazy" />
-        <figcaption><span>{record.imageCaption}</span><a href={record.imageSource} target="_blank" rel="noopener noreferrer">{record.imageAuthor} · {record.imageLicense} ↗</a></figcaption>
-      </figure>}
-      <div className="atlas-record-details">
-        <div className="atlas-record-top"><span>所选地区 / {record.province} · {record.zone}</span><span>Ⅶ-22</span></div>
-        <h3>{record.name} <small>{record.full}</small></h3>
-        <div className="atlas-record-rows"><span>申报地区</span><b>{record.place}</b><span>收录时间</span><b>{record.year} · {record.batch}</b><span>记录类别</span><b>{record.type}</b></div>
-        {!record.image && <p className="atlas-record-no-photo">更多地区的服饰图片正在整理</p>}
-        <a className="atlas-official-link" href={record.source} target="_blank" rel="noopener noreferrer">查看非遗项目档案 ↗</a>
+function DistributionMap({ state, points, focus, dispatch }) {
+  const prefix = useId().replace(/:/g, '');
+  const scrollRef = useRef(null);
+  const [peek, setPeek] = useState(null);
+  const cells = useMemo(() => heatCells(points), [points]);
+  const visibleIds = new Set(points.map((point) => point.id));
+  const previous = DISTRIBUTION_POINTS.find((point) => point.id === state.visited.at(-2));
+  const from = previous ? projectPoint(previous.coordinates) : null;
+  const to = focus ? projectPoint(focus.coordinates) : null;
+  const hovered = DISTRIBUTION_POINTS.find((point) => point.id === peek && visibleIds.has(point.id)) || focus;
+
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller || !focus) return;
+    function centerSelection() {
+      if (scroller.scrollWidth <= scroller.clientWidth) return;
+      const position = projectPoint(focus.coordinates);
+      scroller.scrollTo({ left: position.x / 820 * scroller.scrollWidth - scroller.clientWidth / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    }
+    centerSelection();
+    const observer = new ResizeObserver(centerSelection);
+    observer.observe(scroller);
+    return () => observer.disconnect();
+  }, [focus]);
+
+  return <div className="thread-map-panel">
+    <div className="thread-map-toolbar">
+      <div><span className="thread-kicker">01 / 落针山川</span><h3>每一处苗乡，都值得细看</h3></div>
+      <button type="button" className={`thread-heat-toggle ${state.heat ? 'on' : ''}`} aria-pressed={state.heat} onClick={() => dispatch({ type: 'heat' })}><span aria-hidden="true">◉</span> 热力显影</button>
+    </div>
+    <div className="thread-map-scroll" ref={scrollRef}>
+      <div className="thread-map-canvas">
+        <svg className="thread-map-svg" viewBox="0 0 820 460" role="img" aria-label="苗族地域支系代表分布点地图，热度表示本页收录点的集中程度">
+          <defs>
+            <pattern id={`${prefix}-weave`} width="12" height="12" patternUnits="userSpaceOnUse"><path d="m3 3 6 6m0-6L3 9" stroke="#b9c2ad" strokeWidth=".4" opacity=".14" /></pattern>
+            <filter id={`${prefix}-soft`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8" /></filter>
+          </defs>
+          <rect width="820" height="460" fill={`url(#${prefix}-weave)`} />
+          <g className="thread-provinces">{PROVINCE_PATHS.map((province) => <path key={province.adcode} d={province.d} className={province.adcode === 520000 ? 'is-guizhou' : ''} />)}</g>
+          <g className={`thread-heat-layer ${state.heat ? '' : 'is-hidden'}`} aria-hidden="true">
+            <g filter={`url(#${prefix}-soft)`}>{cells.map((cell) => <rect key={`${cell.x}-${cell.y}`} x={cell.x - 6} y={cell.y - 6} width="13" height="13" fill={heatColors[cell.level]} opacity={Math.min(.66, .1 + cell.value * .17)} />)}</g>
+            {cells.filter((cell) => cell.value >= .5).map((cell) => <path key={`stitch-${cell.x}-${cell.y}`} d={`M${cell.x - 2} ${cell.y - 2}l4 4m0-4-4 4`} stroke={heatColors[cell.level]} strokeWidth="1.1" opacity={Math.min(.8, cell.value * .27)} />)}
+          </g>
+          <g className="thread-province-labels">{PROVINCE_LABELS.map(([name, longitude, latitude]) => { const p = projectPoint([longitude, latitude]); return <text key={name} x={p.x} y={p.y}>{name}</text>; })}</g>
+          <path d="M26 422h768M26 32h768" stroke="#a88b65" strokeDasharray="2 7" opacity=".32" />
+          <g className="thread-compass" transform="translate(768 47)"><path d="M0 20V0m-5 7 5-7 5 7" /><text y="-10" textAnchor="middle">N</text></g>
+          <g className="thread-inset-motif" transform="translate(40 300)"><path d="m32 0 32 32-32 32L0 32Zm0 12 20 20-20 20-20-20Z" /><path d="M32 20v24M20 32h24" /></g>
+          {from && to && state.run > 0 && state.visited.at(-1) === focus?.id && <path key={state.run} className="thread-travel-line" d={`M${from.x} ${from.y}Q${(from.x + to.x) / 2} ${Math.min(from.y, to.y) - 55} ${to.x} ${to.y}`} pathLength="1" />}
+        </svg>
+        <div className="thread-map-nodes">{DISTRIBUTION_POINTS.map((point) => {
+          const position = projectPoint(point.coordinates);
+          const selected = point.id === state.selected;
+          const visible = visibleIds.has(point.id);
+          const visited = state.visited.includes(point.id);
+          const label = selected || ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id);
+          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%` }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} onMouseEnter={() => setPeek(point.id)} onMouseLeave={() => setPeek(null)} onFocus={() => setPeek(point.id)} onBlur={() => setPeek(null)} onClick={() => dispatch({ type: 'point', value: point.id })}>
+            <span className="thread-pin-ring" /><span className="thread-pin-core" /><span className="thread-point-label">{point.name}</span>
+          </button>;
+        })}</div>
+        <div className="thread-map-caption"><span>西南与武陵山区</span><small>省级轮廓作定位 · 县级中心作示意</small></div>
+        {hovered && <div className="thread-map-peek"><span>{branchFor(hovered).name}地域导览</span><strong>{hovered.name}<small>{hovered.province} · {hovered.zone}</small></strong></div>}
       </div>
-    </> : <div className="atlas-record-placeholder"><span className="atlas-record-emblem">✳</span><strong>点选地点，查看名录和绣品</strong><small>目前已为雷山、剑河、台江找到可溯源的服饰图。</small></div>}
+    </div>
+    <div className="thread-map-legend"><span><i className="thread-legend-dot" /> 已收录分布点</span><div className={state.heat ? '' : 'is-dim'}><span>收录点集中程度</span><i className="thread-heat-ramp" /><span>疏 → 密</span></div><small className="thread-pan-hint">左右滑动地图，或从下方选择地点</small></div>
+    <div className="thread-map-controls">
+      <label><span>选一处苗乡</span><select aria-label="选择苗乡地点" value={state.selected || ''} onChange={(event) => dispatch({ type: 'point', value: event.target.value })}>{points.map((point) => <option key={point.id} value={point.id}>{point.province} · {point.name}</option>)}</select></label>
+      <button type="button" className="thread-wander" onClick={() => dispatch({ type: 'wander', sample: Math.random() })}><span aria-hidden="true">✧</span> 随绣线去一处 <span aria-hidden="true">↗</span></button>
+    </div>
+    <div className="thread-exploration"><div className="thread-progress" aria-hidden="true"><i style={{ width: `${state.visited.length / DISTRIBUTION_POINTS.length * 100}%` }} /></div><span aria-live="polite">{state.visited.length === DISTRIBUTION_POINTS.length ? '这一幅苗乡绣卷，已被你点亮。' : `已落针 ${format(state.visited.length)} / ${DISTRIBUTION_POINTS.length} 处，绣出你的苗乡足迹。`}</span></div>
   </div>;
 }
 
-export default function AtlasPage() {
-  const [state, dispatch] = useReducer(atlasReducer, undefined, () => sessionAtlasState);
-  useEffect(() => { sessionAtlasState = state; }, [state]);
-  const items = filteredAtlas(state), local = state.view === 'guizhou';
-  const focus = ATLAS_RECORDS.find((record) => record.id === state.selected && atlasAllowed(record, state));
-  const added = items.filter((record) => record.type === '新增项目').length;
-  const provinces = new Set(items.map((record) => record.province)).size;
-  const gz = items.filter((record) => record.province === '贵州').length, hn = items.length - gz;
-  const latest = state.year === 'all' ? 2021 : Number(state.year);
-  const time = TIMES.find((entry) => entry.year === latest) || TIMES.at(-1);
-  const newlyAdded = state.year === 'all' ? 2 : ATLAS_RECORDS.filter((record) => record.year === latest).length;
-  const act = (type, value) => dispatch({ type, value });
-  return <section className="atlas-section" id="miaoxiu-atlas" aria-label="苗绣国家级非遗名录地区和服饰图">
-    <div className="atlas-heading"><div className="atlas-heading-left"><span className="atlas-chapter"><i /> 地图导览 / 02 <i /></span><h2>苗绣在哪里？</h2><p>跟着地图，看看不同地方的苗绣服饰与非遗记录。</p></div><div className="atlas-heading-seal"><Flower /><span>国家级非遗<br />Ⅶ-22</span></div></div>
-    <div className="atlas-topline"><div><span className="atlas-topline-label">本页收录</span><strong>1 项国家级非遗项目 <i>／</i> 7 条地区记录</strong></div><div className="atlas-topline-side">官方名录整理　·　截至 2026.10 核验 <span>✧</span> 全部数据可溯源</div></div>
-    <div className="atlas-workspace"><div className="atlas-visual">
-      <div className="atlas-panel-header"><div><span className="atlas-panel-index">01 / 地域地图</span><h3>点一个地点，看看当地苗绣</h3></div><div className="atlas-visual-actions"><button type="button" onClick={() => act('view', 'all')} className={local ? '' : 'on'} aria-pressed={!local}>地区总览</button><button type="button" onClick={() => act('view', 'guizhou')} className={local ? 'on' : ''} aria-pressed={local}>贵州地点</button></div></div>
-      <div className="atlas-field"><AbstractField /><span className="atlas-needle-decor" aria-hidden="true">✦</span>{local ? <div className="atlas-local-view"><div className="atlas-map-whisper">贵州省内六个申报地的相对方位示意 · 非行政区划底图</div>{ATLAS_RECORDS.filter((record) => record.province === '贵州').map((record) => <button key={record.id} className={`atlas-node ${atlasAllowed(record, state) ? '' : 'is-muted'} ${state.selected === record.id ? 'is-selected' : ''}`} style={{ left: `${record.x}%`, top: `${record.y}%` }} type="button" onClick={() => act('point', record.id)} aria-label={`查看${record.name}，${record.year}年，${atlasAllowed(record, state) ? '当前筛选内' : '当前筛选外'}`} disabled={!atlasAllowed(record, state)}><span className="atlas-node-dot" /><strong>{record.name}</strong><small>{record.year}</small></button>)}<span className="atlas-compass">N ↑</span></div> : <div className="atlas-overview"><div className="atlas-map-whisper">地理方位示意 · 节点光晕仅代表本页收录数量</div><button type="button" className={`atlas-cluster atlas-cluster-gz ${gz ? '' : 'is-muted'}`} onClick={() => act('province', '贵州')} aria-label={`查看贵州地域记录，共${gz}处`}><span className="atlas-radiate" /><span className="atlas-cluster-icon"><Flower /></span><strong>贵州</strong><small><b>{gz}</b> 处记录 · 查看局部</small></button><button type="button" className={`atlas-cluster atlas-cluster-hn ${hn ? '' : 'is-muted'}`} onClick={() => act('province', '湖南')} aria-label={`查看湖南湘西记录，共${hn}处`}><span className="atlas-radiate" /><span className="atlas-cluster-icon">✧</span><strong>湖南 · 湘西</strong><small><b>{hn}</b> 处记录</small></button><div className="atlas-spatial-cue">西 <span>─────────</span> 东</div></div>}</div>
-      <div className="atlas-region-strip"><span className="atlas-strip-caption">按地区筛选</span><button type="button" className={state.area === 'all' ? 'active' : ''} onClick={() => act('area', 'all')} aria-pressed={state.area === 'all'}>全部地区</button>{REGIONS.map(([zone]) => <button key={zone} type="button" className={state.area === zone ? 'active' : ''} aria-pressed={state.area === zone} onClick={() => act('area', zone)}>{zone}</button>)}</div>
-      <RecordCard record={focus} /><div className="atlas-map-note"><span>◎</span> 地图展示的是国家级名录中的申报地区，不代表苗族支系边界或完整分布范围。</div>
+function CoreDashboard({ state, points, stats, focus, dispatch }) {
+  const metrics = [
+    ['branches', stats.branches, '地域导览分区', '个'], ['points', stats.points, '已收录分布点', '处'],
+    ['provinces', stats.provinces, '涉及省级地区', '个'], ['archives', stats.archives.length, '关联非遗档案', '条'],
+  ];
+  const provinceCounts = [...new Set(DISTRIBUTION_POINTS.filter((point) => state.branch === 'all' || point.branch === state.branch).map((point) => point.province))].map((name) => ({ name, count: DISTRIBUTION_POINTS.filter((point) => point.province === name && (state.branch === 'all' || point.branch === state.branch)).length })).sort((a, b) => b.count - a.count);
+  const maximum = Math.max(...provinceCounts.map((province) => province.count), 1);
+  const activeBranch = branchFor(focus);
+  const related = ATLAS_RECORDS.find((record) => record.id === focus?.archive);
+  const metric = state.metric;
+  const list = metric === 'branches' ? BRANCHES.filter((branch) => points.some((point) => point.branch === branch.id)).map((branch) => branch.full) : metric === 'provinces' ? [...new Set(points.map((point) => point.province))] : metric === 'archives' ? stats.archives.map((record) => `${record.name} · ${record.year}`) : points.map((point) => `${point.province} · ${point.name}`);
+  return <aside className="thread-dashboard" aria-label="核心数据看板">
+    <div className="thread-dashboard-heading"><div><span className="thread-kicker">02 / 核心数据看板</span><h3>{state.province !== 'all' ? `${state.province} · 收录概览` : state.branch === 'all' ? '一眼看见苗乡' : `${BRANCHES.find((branch) => branch.id === state.branch).name} · 分布概览`}</h3></div><button type="button" className="thread-reset" onClick={() => dispatch({ type: 'reset' })}>看全部 ↺</button></div>
+    <div className="thread-stat-grid" aria-live="polite">{metrics.map(([id, value, label, unit]) => <button type="button" key={id} className={`thread-stat ${metric === id ? 'is-active' : ''}`} data-stat={id} aria-label={`查看${label}清单，共${value}${unit}`} aria-expanded={metric === id} onClick={() => dispatch({ type: 'metric', value: id })}><span>{label}<i aria-hidden="true">↗</i></span><strong key={value}>{format(value)}<small>{unit}</small></strong></button>)}</div>
+    {metric && <section className="thread-metric-list" aria-label="数据对应清单"><div><strong>{metrics.find(([id]) => id === metric)?.[2]}</strong><button type="button" aria-label="收起数据清单" onClick={() => dispatch({ type: 'metric', value: metric })}>×</button></div><p>{list.length ? list.join('　/　') : '当前筛选暂无关联国家级档案。'}</p></section>}
+    <div className="thread-chart"><div className="thread-chart-title"><strong>分区内各省收录</strong><small>点击省份筛选</small></div>{provinceCounts.map((province) => <button type="button" key={province.name} className={`thread-province-bar ${state.province === province.name ? 'is-active' : ''}`} aria-label={`筛选${province.name}，${province.count}处分布点`} aria-pressed={state.province === province.name} onClick={() => dispatch({ type: 'province', value: province.name })}><span>{province.name}</span><i><b style={{ width: `${province.count / maximum * 100}%` }} /></i><small>{province.count} 处</small></button>)}</div>
+    {focus && <article className="thread-place-card" key={focus.id} aria-live="polite" style={{ '--branch-color': activeBranch.color }}>
+      <div className="thread-place-header"><Motif kind={activeBranch.motif} /><div><span>{activeBranch.full}</span><h4>{focus.name}<small>{focus.province} · {focus.zone}</small></h4></div><span className="thread-place-stamp">{state.visited.includes(focus.id) ? '已落针' : '待探访'}</span></div>
+      <p>{focus.description}</p>
+      <div className="thread-place-links"><a href={sourceFor(focus.source).url} target="_blank" rel="noopener noreferrer">阅读地域资料 ↗</a>{related && <a href={related.source} target="_blank" rel="noopener noreferrer">{related.year} · 非遗档案 ↗</a>}</div>
+    </article>}
+    <p className="thread-data-note">数字统计本页收录资料。热度反映收录点集中程度，不代表人口密度；未收录地区不表示没有苗族分布。</p>
+  </aside>;
+}
+
+function OfficialArchive({ onAction }) {
+  const [state, dispatch] = useReducer(atlasReducer, { ...initialAtlasState, selected: 'leishan' });
+  const items = filteredAtlas(state);
+  const record = items.find((item) => item.id === state.selected) || items[0];
+  return <details className="thread-archive">
+    <summary><span>循迹溯源 <b>国家级苗绣档案</b></span><small>保留 7 条地区记录与名录年份 <span aria-hidden="true">＋</span></small></summary>
+    <div className="thread-archive-body">
+      <p>同一个国家级项目编号 Ⅶ-22 下的 7 条申报地区记录，与上方的支系导览点分别统计。年份指名录公布时间。</p>
+      <div className="thread-archive-filters"><label>地区<select aria-label="筛选非遗档案地区" value={state.area} onChange={(event) => dispatch({ type: 'area', value: event.target.value })}><option value="all">全部地区</option>{REGIONS.map(([zone]) => <option key={zone}>{zone}</option>)}</select></label><div role="group" aria-label="按名录公布年份筛选"><button type="button" aria-pressed={state.year === 'all'} onClick={() => dispatch({ type: 'year', value: 'all' })}>全部年份</button>{TIMES.map((time) => <button type="button" key={time.year} aria-pressed={state.year === String(time.year)} onClick={() => dispatch({ type: 'year', value: String(time.year) })}>{time.year}</button>)}</div><strong className="thread-archive-count">{items.length} 条记录</strong></div>
+      {!items.length && <p role="status">所选条件暂无档案，切换“全部年份”可继续查看其他记录。</p>}
+      <div className="thread-archive-layout"><div className="thread-archive-list">{items.map((item) => <button type="button" key={item.id} aria-label={`查看${item.name}非遗档案`} aria-pressed={record?.id === item.id} onClick={() => dispatch({ type: 'point', value: item.id })}>{item.name}<span>{item.year}</span></button>)}</div>{record && <div className="thread-archive-record" aria-live="polite">{record.image && <button type="button" className="thread-archive-photo" aria-label={`放大${record.name}服饰参考图`} onClick={() => onAction?.('modal', 0, { src: record.image, title: record.imageCaption, description: `${record.imageAuthor} · ${record.imageLicense}` })}><img src={assetUrl(record.image)} alt={record.imageAlt} loading="lazy" /></button>}<div><span>{record.province} · {record.zone}</span><h4>{record.full}</h4><p>{record.place}<br />{record.year} · {record.batch} · {record.type}</p><a href={record.source} target="_blank" rel="noopener noreferrer">查看官方档案 ↗</a>{record.image && <a href={record.imageSource} target="_blank" rel="noopener noreferrer">配图：{record.imageAuthor} · {record.imageLicense} ↗</a>}</div></div>}</div>
+      <div className="thread-archive-timeline">{TIMES.map((time) => <span key={time.year}><b>{time.year}</b>该批新增 {time.num} 条<small>截至该年累计 {time.total} 条</small></span>)}</div>
     </div>
-    <div className="atlas-insights"><div className="atlas-panel-header"><div><span className="atlas-panel-index">02 / 数据概览</span><h3>国家级名录地区记录</h3></div><button type="button" className="atlas-clear" onClick={() => act('reset')}>重置 ↺</button></div>
-      <div className="atlas-key-stat"><div><span>当前显示的地区记录</span><strong className="atlas-number">{String(items.length).padStart(2, '0')}<small> / 07</small></strong></div><div className="atlas-key-seal"><Flower /></div></div>
-      <div className="atlas-minors"><div><span>涉及省级地区</span><b>{String(provinces).padStart(2, '0')}</b></div><div><span>新增项目记录</span><b>{String(added).padStart(2, '0')}</b></div><div><span>扩展项目记录</span><b>{String(items.length - added).padStart(2, '0')}</b></div></div>
-      <div className="atlas-chart-heading"><strong>申报地域构成</strong><small>点击条形可联动筛选</small></div><div className="atlas-bar-list">{REGIONS.map(([zone]) => { const count = items.filter((record) => record.zone === zone).length; return <button key={zone} type="button" className={`atlas-bar-item ${state.area === zone ? 'on' : ''}`} onClick={() => act('area', zone)} aria-label={`${zone}：当前${count}处，点击筛选该地区`}><span className="atlas-bar-name">{zone}</span><span className="atlas-bar-track"><i style={{ width: `${count / 4 * 100}%` }} /></span><span className="atlas-bar-value">{count}<small>处</small></span></button>; })}</div>
-      <div className="atlas-province-composition"><span>省级地域构成</span><div className="atlas-comp-track" aria-label={`贵州${gz}处，湖南${hn}处`}><i style={{ width: `${items.length ? gz / items.length * 100 : 0}%` }} /><b style={{ width: `${items.length ? hn / items.length * 100 : 0}%` }} /></div><div className="atlas-comp-labels"><span><i />贵州 {gz}</span><span><i />湖南 {hn}</span></div></div>
-      <div className="atlas-info-foot">{state.area === 'all' && state.year === 'all' ? '已核实分布：黔东南 4 处、贵阳 1 处、铜仁 1 处、湘西 1 处。' : items.length ? `当前条件命中 ${items.length} 条官方地域记录；图表已同步。` : '当前条件未命中记录，可点击“重置”重新探索。'}</div>
-    </div></div>
-    <div className="atlas-timeline"><div className="atlas-timeline-title"><div><span className="atlas-panel-index">03 / 名录年份</span><strong>国家级名录收录年份</strong></div><small>年份表示项目进入国家级名录的时间，不代表苗绣的起源年代</small></div>
-      <div className="atlas-years"><button type="button" onClick={() => act('year', 'all')} aria-pressed={state.year === 'all'} className={`atlas-year-all ${state.year === 'all' ? 'on' : ''}`}>完整记录</button>{TIMES.map((entry) => <button key={entry.year} type="button" className={`atlas-year ${state.year === String(entry.year) ? 'on' : ''}`} onClick={() => act('year', String(entry.year))} aria-pressed={state.year === String(entry.year)}><span className="atlas-year-dot" /><b>{entry.year}</b><small>新增 {entry.num} 处</small></button>)}</div><div className="atlas-timeline-footer"><span>当前进度：截至 {latest} 年累计 <strong>{time.total}</strong> 处记录</span><span>该批次新增 <strong>{newlyAdded}</strong> 处 {latest === 2014 && '（第四批苗绣Ⅶ-22没有新增记录）'}</span></div>
-    </div>
-    <details className="atlas-sources"><summary><span>✧　查看数据依据与统计口径</span><span>官方来源 · 7 条地域档案　⌄</span></summary><div className="atlas-sources-body"><p>统计单位是国家级非遗项目“苗绣”（项目序号 321、编号 Ⅶ-22）中，官方清单列明的申报地区或单位记录；不是七个独立国家级项目，也不是苗族人口、民族支系或全部苗绣流布范围。名录年份数据：2006 年 3、2008 年 1、2011 年 1、2014 年 0、2021 年 2。</p><div className="atlas-source-list">{ATLAS_RECORDS.map((record) => <a key={record.id} href={record.source} target="_blank" rel="noopener noreferrer">{record.name} · {record.year} · {record.type} ↗</a>)}</div><a className="atlas-source-gov" href="https://www.mct.gov.cn/whzx/ggtz/200606/t20060609_694679.htm" target="_blank" rel="noopener noreferrer">国务院第一批国家级非遗名录（原始公告） ↗</a><p className="atlas-source-end">页面数据人工整理与计算，统计口径核对日期：2026年10月16日。视觉光晕为信息编码；正式公共发布涉及行政边界的地图请采用审定标准地图。</p></div></details>
+  </details>;
+}
+
+export default function AtlasPage({ onAction, onNavigate }) {
+  const [state, dispatch] = useReducer(distributionReducer, undefined, () => sessionState);
+  useEffect(() => { sessionState = state; }, [state]);
+  const points = useMemo(() => distributionPoints(state), [state.branch, state.province]);
+  const stats = distributionStats(points);
+  const focus = points.find((point) => point.id === state.selected);
+  const gallery = ATLAS_RECORDS.filter((record) => record.image);
+
+  return <section id="miaoxiu-atlas" className="thread-atlas" aria-labelledby="thread-atlas-title">
+    <div className="thread-top-border" aria-hidden="true" />
+    <header className="thread-section-heading"><div><span className="thread-kicker">一针一地 · 苗绣文化地图</span><h2 id="thread-atlas-title">苗绣支系分布<span>循山川，识绣色</span></h2><p>让山川成为绣布，循着一处处苗乡，认识不同支系的服饰与苗绣。</p></div><div className="thread-heading-art" aria-hidden="true"><Motif kind="diamond" /><Motif /><Motif kind="flower" /></div></header>
+    <div className="thread-filter-row"><div className="thread-branch-tabs" role="group" aria-label="选择地域支系"><button type="button" className={state.branch === 'all' ? 'is-active' : ''} aria-pressed={state.branch === 'all'} onClick={() => dispatch({ type: 'branch', value: 'all' })}><span className="thread-all-icon" aria-hidden="true">✳</span><span>全部支系<small>一幅绣卷</small></span></button>{BRANCHES.map((branch) => <button type="button" key={branch.id} className={state.branch === branch.id ? 'is-active' : ''} style={{ '--branch-color': branch.color }} aria-pressed={state.branch === branch.id} onClick={() => dispatch({ type: 'branch', value: branch.id })}><Motif kind={branch.motif} /><span>{branch.name}<small>{branch.subtitle.split(' · ')[0]}</small></span></button>)}</div><span className="thread-filter-hint">点选支系，绣线随你显影 <i aria-hidden="true">↙</i></span></div>
+    <div className="thread-workspace"><DistributionMap state={state} points={points} focus={focus} dispatch={dispatch} /><CoreDashboard state={state} points={points} stats={stats} focus={focus} dispatch={dispatch} /></div>
+    <div className="thread-garment-heading"><div><span className="thread-kicker">03 / 细看一针一线</span><h3>从地图，走进一件衣裳</h3></div><p>黔东南三地服饰参考 · 点击图片放大细看</p></div>
+    <div className="thread-garment-grid">{gallery.map((record, index) => <figure key={record.id} className="thread-garment"><button type="button" className="thread-garment-image" aria-label={`放大${record.name}服饰参考图`} onClick={() => onAction?.('modal', 0, { src: record.image, title: record.imageCaption, description: `${record.imageAuthor} · ${record.imageLicense}。${record.imageAlt}` })}><img src={assetUrl(record.image)} alt={record.imageAlt} loading="lazy" /><span className="thread-garment-zoom" aria-hidden="true">＋ 细看针线</span><span className="thread-garment-number" aria-hidden="true">0{index + 1}</span></button><figcaption><div><span>贵州 · 黔东南</span><h4>{record.imageCaption}</h4></div><a href={record.imageSource} target="_blank" rel="noopener noreferrer">{record.imageAuthor} · {record.imageLicense} ↗</a></figcaption></figure>)}</div>
+    <button type="button" className="thread-story-link" onClick={() => onNavigate?.('history')}>再走近一些：认识苗绣的纹样与针法 <span aria-hidden="true">→</span></button>
+    <OfficialArchive onAction={onAction} />
+    <details className="thread-sources"><summary>地域分类与数据依据 <span aria-hidden="true">＋</span></summary><div><p>本页以湘西、黔东南、川黔滇三个地域分区组织支系导览，参考民族博物馆的介绍及国家民委的方言、服饰资料；并非完整支系分类或精确边界。各分区内部仍有多种地方支系、服饰类型及方言。分布点按县级地区去重，每点等权；热力图使用同一距离范围及固定色阶，展示本页样本的空间集中程度。地点取县级中心近似定位，地图空白表示未收录。资料核对：2026-10-21。</p><div className="thread-source-grid">{DISTRIBUTION_SOURCES.map((source) => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.title} ↗</strong><span>{source.note}</span></a>)}</div></div></details>
+    <div className="thread-bottom-border" aria-hidden="true" />
   </section>;
 }

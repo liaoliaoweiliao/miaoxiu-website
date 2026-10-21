@@ -140,7 +140,7 @@ function HeroCarousel({ initialSlide = 0 }) {
   );
 }
 
-export default function HomePage({ state }) {
+export default function HomePage({ state, onAction, onNavigate }) {
   return (
     <>
       <HeroCarousel initialSlide={state?.slide || 0} />
@@ -173,7 +173,7 @@ export default function HomePage({ state }) {
             </article>
           ))}
         </section>
-        <Atlas />
+        <Atlas onAction={onAction} onNavigate={onNavigate} />
         <HeritageJourney />
       </main>
     </>

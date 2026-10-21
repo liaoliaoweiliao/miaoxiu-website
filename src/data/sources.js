@@ -1,3 +1,5 @@
+import { DISTRIBUTION_SOURCES } from './distribution.js';
+
 export const materialSources=[
   {
     "title": "苗绣龙纹",
@@ -59,5 +61,9 @@ export const materialSources=[
     "license": "Public domain",
     "licenseUrl": "https://commons.wikimedia.org/wiki/Template:PD-self",
     "rows": ["首页地图"]
-  }
+  },
+  ...DISTRIBUTION_SOURCES.map((source) => ({
+    title: source.title, url: source.url, platform: '首页地域导览参考',
+    credits: [], group: 'research', usage: source.note,
+  }))
 ];

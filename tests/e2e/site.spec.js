@@ -70,19 +70,67 @@ test('five-page navigation, carousel, controlled search and hash history', async
   await expect(page).toHaveTitle('首页 · 穿在身上的民族历史');
 });
 
-test('atlas filters connect the map, timeline and statistics', async ({ page }) => {
+test('branch map, province filters, data lists and embroidery exploration stay connected', async ({ page }) => {
+  await page.addInitScript(() => { Math.random = () => 0; });
   await page.goto('/');
-  await expect(page.locator('.atlas-number')).toContainText('07');
-  await page.getByRole('button', { name: /查看贵州地域记录/ }).click();
-  await expect(page.locator('.atlas-local-view')).toBeVisible();
-  await expect(page.locator('.atlas-number')).toContainText('07');
-  await page.locator('.atlas-node').first().click();
-  await expect(page.locator('.atlas-record')).toHaveClass(/is-filled/);
-  await page.locator('.atlas-clear').click();
-  await page.locator('.atlas-year').filter({ hasText: '2006' }).click();
-  await expect(page.locator('.atlas-number')).toContainText('03');
-  await page.locator('.atlas-clear').click();
-  await expect(page.locator('.atlas-number')).toContainText('07');
+  const section = page.locator('#miaoxiu-atlas');
+  await expect(section.locator('[data-stat="points"] strong')).toHaveText('20处');
+  await expect(section.locator('[data-stat="archives"] strong')).toHaveText('07条');
+  await page.getByRole('group', { name: '选择地域支系' }).getByRole('button', { name: /黔东南/ }).click();
+  await expect(section.locator('[data-stat="points"] strong')).toHaveText('08处');
+  await expect(section.locator('[data-stat="archives"] strong')).toHaveText('04条');
+  await page.getByLabel('选择苗乡地点').selectOption('taijiang');
+  await expect(section.locator('.thread-place-card')).toContainText('施洞型服饰');
+  await page.getByRole('button', { name: '筛选广西，2处分布点', exact: true }).click();
+  await expect(section.locator('[data-stat="points"] strong')).toHaveText('02处');
+  await expect(section.locator('[data-stat="archives"] strong')).toHaveText('00条');
+  await section.locator('[data-stat="archives"]').click();
+  await expect(page.getByLabel('数据对应清单')).toContainText('暂无关联国家级档案');
+  await page.getByRole('button', { name: '热力显影', exact: true }).click();
+  await expect(section.locator('.thread-heat-layer')).toHaveClass(/is-hidden/);
+  await expect(section.locator('.thread-map-point:not(:disabled)')).toHaveCount(2);
+  await page.getByRole('button', { name: '看全部 ↺', exact: true }).click();
+  await page.getByRole('button', { name: '随绣线去一处', exact: true }).click();
+  await expect(section.locator('.thread-place-card')).toContainText('花垣');
+  await expect(section.locator('.thread-exploration')).toContainText('已落针 02 / 20');
+  await section.locator('.thread-garment-grid').getByRole('button', { name: '放大雷山服饰参考图', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('雷山苗族节庆女上衣');
+  await page.keyboard.press('Escape');
+  await expect(section.locator('.thread-garment-grid').getByRole('button', { name: '放大雷山服饰参考图', exact: true })).toBeFocused();
+});
+
+test('official archive retains all seven records, year filtering, images and an empty state', async ({ page }) => {
+  await page.goto('/');
+  const archive = page.locator('.thread-archive');
+  await archive.locator('summary').click();
+  await expect(archive.locator('.thread-archive-count')).toHaveText('7 条记录');
+  await archive.getByRole('button', { name: '2006', exact: true }).click();
+  await expect(archive.locator('.thread-archive-count')).toHaveText('3 条记录');
+  await page.getByLabel('筛选非遗档案地区').selectOption('湘西');
+  await expect(archive.getByRole('status')).toContainText('暂无档案');
+  await archive.getByRole('button', { name: '全部年份', exact: true }).click();
+  await expect(archive.locator('.thread-archive-count')).toHaveText('7 条记录');
+  await archive.getByRole('button', { name: '查看台江非遗档案', exact: true }).click();
+  await expect(archive.locator('.thread-archive-record')).toContainText('贵州省台江县');
+  await archive.getByRole('button', { name: '放大台江服饰参考图', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('施洞型苗族女装');
+  await page.keyboard.press('Escape');
+});
+
+test('mobile branch atlas supports point selection and touch controls without page overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const section = page.locator('#miaoxiu-atlas');
+  await page.getByRole('group', { name: '选择地域支系' }).getByRole('button', { name: /川黔滇/ }).click();
+  await page.getByLabel('选择苗乡地点').selectOption('malipo');
+  await expect(section.locator('.thread-place-card')).toContainText('麻栗坡');
+  await expect(section.locator('[data-stat="points"] strong')).toHaveText('06处');
+  await page.getByRole('button', { name: '筛选云南，1处分布点', exact: true }).click();
+  await expect(section.locator('[data-stat="points"] strong')).toHaveText('01处');
+  await page.getByRole('button', { name: '随绣线去一处', exact: true }).click();
+  await expect(section.locator('.thread-exploration')).toContainText('已落针 01 / 20');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expectImagesLoaded(page);
 });
 
 test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
