@@ -29,7 +29,7 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
       <div className="nav-inner">
         <button type="button" className="brand" onClick={() => onNavigate('home')}>
           <span className="brand-mark"><img src={assetUrl('common/nav-logo.svg')} alt="苗绣纹样标志" width="50" height="50" /></span>
-          <span>穿在身上的民族历史</span>
+          <span className="brand-title">穿在身上的民族历史</span>
         </button>
         <nav id="primary-navigation" className={`nav ${nav ? 'open' : ''}`} aria-label="主导航">
           {navigation.map(([target, label]) => (
