@@ -44,11 +44,25 @@ function NeedleScene({ anchorRef }) {
   );
 }
 
+function ThreadKnot({ closing = false }) {
+  return (
+    <svg className={`stitch-motif${closing ? ' is-closing' : ''}`} viewBox="-30 -30 60 60" aria-hidden="true">
+      <path className="stitch-frame" d="M 0 -26 L 26 0 L 0 26 L -26 0 Z" />
+      <path className="stitch-frame-detail" d="M -5 -21 L 0 -16 L 5 -21 M 21 -5 L 16 0 L 21 5 M 5 21 L 0 16 L -5 21 M -21 5 L -16 0 L -21 -5" />
+      <path className="stitch-weave" pathLength="1" d="M 0 -5 C -18 -27 -28 -3 -6 0 C -28 3 -18 27 0 5 C 18 27 28 3 6 0 C 28 -3 18 -27 0 -5 Z" />
+      <path className="stitch-weave-light" pathLength="1" d="M 0 -5 C -18 -27 -28 -3 -6 0 M 0 5 C 18 27 28 3 6 0" />
+      <path className="stitch-center" d="M 0 -6 L 6 0 L 0 6 L -6 0 Z M -3 -3 L 3 3" />
+      {closing && <path className="knot-tail" pathLength="1" d="M 0 6 C 8 15 17 23 12 28 C 9 31 5 26 9 24" />}
+    </svg>
+  );
+}
+
 export default function GalleryPage({ onAction }) {
   const works = galleryDisplayWorks();
   const stageRef = useRef(null);
   const startRef = useRef(null);
   const railEntryRef = useRef(null);
+  const railExitRef = useRef(null);
   const markerRefs = useRef([]);
   const endRef = useRef(null);
   const cardRefs = useRef([]);
@@ -145,7 +159,7 @@ export default function GalleryPage({ onAction }) {
         const box = element.getBoundingClientRect();
         return { x: box.left + box.width / 2 - rect.left, y: box.top + box.height / 2 - rect.top };
       };
-      const points = [startRef.current, railEntryRef.current, ...markerRefs.current.slice(0, works.length), endRef.current]
+      const points = [startRef.current, railEntryRef.current, ...markerRefs.current.slice(0, works.length), railExitRef.current, endRef.current]
         .filter(Boolean)
         .map(pointAt);
       const width = stage.clientWidth;
@@ -207,11 +221,18 @@ export default function GalleryPage({ onAction }) {
         <path className="thread-glint" />
       </svg>
       <header className="jing-heading">
-        <span className="jing-eyebrow">MIAO EMBROIDERY · THE THREAD OF STORIES</span>
-        <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
-        <p className="jing-heading-poem">循一线锦绣，赏万千绣意。</p>
-        <p className="jing-heading-note">针穿过线，故事便有了起点。向下浏览，让一缕朱红串起每一件苗绣。</p>
-        <span className="jing-scroll-prompt"><i aria-hidden="true" />向下浏览 · 牵引红线</span>
+        <span className="jing-eyebrow"><i aria-hidden="true" />苗绣 · 锦绣长卷<i aria-hidden="true" /></span>
+        <div className="jing-heading-composition">
+          <div className="jing-title-block">
+            <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
+            <span className="jing-title-caption">以针代笔 · 以线传情<span className="jing-title-seal" aria-hidden="true">锦绣</span></span>
+          </div>
+          <div className="jing-heading-copy">
+            <p className="jing-heading-poem"><span>一缕朱红，引山河入绣。</span><span>千般锦色，藏岁月于衣。</span></p>
+            <p className="jing-heading-note">循着针脚徐徐而行，<br />赏苗岭风华，读绣里春秋。</p>
+          </div>
+        </div>
+        <span className="jing-scroll-prompt"><i aria-hidden="true" />循线入卷 · 向下观绣</span>
         <NeedleScene anchorRef={startRef} />
       </header>
 
@@ -223,9 +244,9 @@ export default function GalleryPage({ onAction }) {
             return (
               <li key={work.src} className={`thread-story jing-slot ${index % 2 ? 'is-right' : 'is-left'}${featured ? ' is-featured' : ''}${work.catalogue ? ' has-catalogue' : ''}`}>
                 <span className="thread-stitch" ref={(node) => { markerRefs.current[index] = node; }} aria-hidden="true">
-                  <i className="stitch-cross" />
+                  <ThreadKnot />
                   <i className="stitch-needle" />
-                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span className="stitch-number">{String(index + 1).padStart(2, '0')}</span>
                 </span>
                 <button
                   type="button"
@@ -239,7 +260,6 @@ export default function GalleryPage({ onAction }) {
                   </span>
                   <span className="jing-work-copy">
                     <span className="jing-work-type">{work.sub}</span>
-                    <span className="work-chapter">STITCH {String(index + 1).padStart(2, '0')}</span>
                     <span className="work-title" role="heading" aria-level="2">{work.title}</span>
                     <span className="work-description">{work.summary || work.desc}</span>
                     {work.kind && <span className="jing-work-kind">{work.kind}</span>}
@@ -250,15 +270,16 @@ export default function GalleryPage({ onAction }) {
             );
           })}
         </ol>
+        <span className="thread-rail-exit" ref={railExitRef} aria-hidden="true" />
       </section>
 
       <footer className="thread-colophon">
         <span className="closing-knot" ref={endRef} aria-hidden="true">
-          <i className="knot-loop" /><i className="knot-tail" />
+          <ThreadKnot closing />
           <svg className="closing-needle" viewBox="0 0 62 18"><path d="M 4 13 L 52 4" /><ellipse cx="5" cy="13" rx="3" ry="1.7" /></svg>
         </span>
-        <p>一针一线，绣见万象。</p>
-        <span className="colophon-caption">收针 · 苗绣作品展</span>
+        <div className="colophon-signature"><p>一针一线，绣见万象。</p><span className="colophon-seal" aria-hidden="true">绣成</span></div>
+        <span className="colophon-caption"><i aria-hidden="true" />锦绣成卷 · 余韵悠长<i aria-hidden="true" /></span>
       </footer>
     </main>
   );

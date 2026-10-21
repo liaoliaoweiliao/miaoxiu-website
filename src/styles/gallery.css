@@ -12,7 +12,7 @@ body[data-page="gallery"]::before {
   --thread-dark: #b8443d;
   --ink: #f0dfc0;
   --muted-ink: #becbd0;
-  --gallery-photo-size: clamp(156px, 18vw, 248px);
+  --gallery-photo-size: clamp(236px, 22vw, 320px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -53,59 +53,121 @@ body[data-page="gallery"]::before {
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: 490px;
+  min-height: 410px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px 38px;
+  padding: 40px 28px 14px;
   text-align: center;
 }
 
 .jing-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 17px;
   color: #c9a675;
-  font: 10px/1.5 Arial, sans-serif;
-  letter-spacing: 3px;
+  font-size: 13px;
+  letter-spacing: .32em;
+}
+
+.jing-eyebrow i {
+  width: 34px;
+  height: 7px;
+  border-block: 1px solid #c9a67570;
+  transform: skewX(-35deg);
+}
+
+.jing-heading-composition {
+  display: flex;
+  align-items: center;
+  gap: clamp(28px, 4vw, 60px);
+  margin-top: 21px;
+}
+
+.jing-title-block {
+  position: relative;
 }
 
 .jing-heading h1 {
   display: flex;
   align-items: baseline;
   gap: .18em;
-  margin: 13px 0 4px;
-  color: #f2d5a1;
+  margin: 0;
+  color: #f4d7a2;
   font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif;
-  font-size: clamp(46px, 6.6vw, 82px);
+  font-size: clamp(60px, 6.8vw, 96px);
   font-weight: 400;
   letter-spacing: .12em;
   line-height: 1.22;
+  text-shadow: 0 2px 1px #02192b, 0 8px 24px #00101c55;
 }
 
 .jing-heading h1 em {
-  color: #ef9b77;
+  color: #eeb886;
   font-style: normal;
 }
 
+.jing-title-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 15px;
+  color: #c9b38e;
+  font-size: 14px;
+  letter-spacing: .24em;
+}
+
+.jing-title-seal,
+.colophon-seal {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 29px;
+  min-height: 36px;
+  place-items: center;
+  padding: 4px;
+  border: 1px solid #d98969;
+  border-radius: 2px 4px 2px 3px;
+  background: #9b3c31b0;
+  box-shadow: inset 0 0 0 2px #08273d;
+  color: #f4d1ab;
+  font: 12px/1.1 "STKaiti", "KaiTi", serif;
+  letter-spacing: 1px;
+  writing-mode: vertical-rl;
+  transform: rotate(-5deg);
+}
+
+.jing-heading-copy {
+  padding: 5px 0 5px clamp(24px, 3vw, 44px);
+  border-left: 1px solid #d0aa6e66;
+  text-align: left;
+}
+
 .jing-heading-poem {
-  margin: 6px 0 0;
-  color: #d9bb8b;
+  margin: 0;
+  color: #ecd0a3;
   font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
-  font-size: 18px;
-  letter-spacing: 3px;
+  font-size: clamp(20px, 1.8vw, 25px);
+  letter-spacing: .12em;
+  line-height: 1.85;
+}
+
+.jing-heading-poem span {
+  display: block;
 }
 
 .jing-heading-note {
-  max-width: 550px;
-  margin: 12px 0 0;
+  margin: 13px 0 0;
   color: #bdcdd0;
-  font-size: 13px;
-  letter-spacing: .4px;
+  font-size: 15px;
+  letter-spacing: 1px;
   line-height: 1.9;
 }
 
 .needle-scene {
   position: relative;
-  width: min(320px, 70vw);
-  margin: 5px auto -1px;
+  width: min(300px, 70vw);
+  margin: 0 auto -7px;
   aspect-ratio: 320 / 112;
 }
 
@@ -146,9 +208,9 @@ body[data-page="gallery"]::before {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  margin-top: 11px;
+  margin-top: 24px;
   color: #d5b88c;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1.3px;
 }
 
@@ -162,15 +224,23 @@ body[data-page="gallery"]::before {
 .thread-exhibition {
   position: relative;
   z-index: 1;
-  padding: 10px 30px 30px;
+  padding: 0 clamp(28px, 4vw, 64px) 12px;
 }
 
-.thread-rail-entry {
+.thread-rail-entry,
+.thread-rail-exit {
   position: absolute;
-  top: 10px;
   left: 50%;
   width: 1px;
   height: 1px;
+}
+
+.thread-rail-entry {
+  top: 0;
+}
+
+.thread-rail-exit {
+  bottom: 0;
 }
 
 .thread-drawing {
@@ -207,7 +277,7 @@ body[data-page="gallery"]::before {
   position: relative;
   z-index: 1;
   display: flex;
-  max-width: 1280px;
+  max-width: 1440px;
   flex-direction: column;
   margin: 0 auto;
   padding: 0;
@@ -218,22 +288,22 @@ body[data-page="gallery"]::before {
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: 380px;
+  min-height: 0;
   align-items: center;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(64px, 8vw, 132px);
-  padding: 34px 0;
+  column-gap: clamp(84px, 7vw, 112px);
+  padding: 18px 0;
 }
 
 .jing-work {
   position: relative;
   display: grid;
   width: 100%;
-  max-width: 570px;
+  max-width: 664px;
   min-width: 0;
   grid-template-columns: var(--gallery-photo-size) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(14px, 1.8vw, 26px);
+  gap: clamp(20px, 1.7vw, 28px);
   padding: 0;
   border: 0;
   background: transparent;
@@ -308,46 +378,33 @@ body[data-page="gallery"]::before {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  padding: 13px 0;
+  padding: 16px 0;
   border-top: 1px solid #d5ae694a;
   background: linear-gradient(90deg, #06223990, transparent);
 }
 
 .jing-work-type {
   color: #ddad79;
-  font-size: 11px;
-  letter-spacing: .7px;
-  line-height: 1.6;
-}
-
-.work-chapter {
-  margin: 8px 0 2px;
-  color: #91abb9;
-  font: 9px/1.4 Arial, sans-serif;
-  letter-spacing: 1.5px;
+  margin-bottom: 9px;
+  font-size: 13px;
+  letter-spacing: .8px;
+  line-height: 1.7;
 }
 
 .work-title {
   color: #f3d4a0;
   font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif;
-  font-size: clamp(21px, 2.1vw, 29px);
+  font-size: clamp(29px, 2.5vw, 36px);
   letter-spacing: 1px;
   line-height: 1.38;
 }
 
 .work-description {
-  display: -webkit-box;
-  margin-top: 8px;
-  overflow: hidden;
+  display: block;
+  margin-top: 12px;
   color: #c3d0d7;
-  font-size: 13px;
-  line-height: 1.8;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.has-catalogue .work-description {
-  -webkit-line-clamp: 3;
+  font-size: 16px;
+  line-height: 1.85;
 }
 
 .jing-work-kind {
@@ -356,7 +413,7 @@ body[data-page="gallery"]::before {
   padding-bottom: 2px;
   border-bottom: 1px solid #d4b07d55;
   color: #ccab80;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .6px;
 }
 
@@ -364,9 +421,9 @@ body[data-page="gallery"]::before {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin-top: 11px;
+  margin-top: 16px;
   color: #f09b7d;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: .8px;
 }
 
@@ -381,7 +438,7 @@ body[data-page="gallery"]::before {
 }
 
 .thread-story.is-featured {
-  min-height: 440px;
+  padding-block: 23px;
 }
 
 .thread-stitch {
@@ -390,57 +447,90 @@ body[data-page="gallery"]::before {
   top: 50%;
   left: 50%;
   display: grid;
-  width: 29px;
-  height: 29px;
+  width: 52px;
+  height: 52px;
   place-items: center;
-  border: 1px solid #e9a17e66;
-  border-radius: 50%;
-  background: #08273d;
+  background: radial-gradient(circle, #08273d 30%, #08273dee 55%, transparent 72%);
   color: #efb792;
-  font: 8px/1 Arial, sans-serif;
-  letter-spacing: .5px;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  transition: border-color .3s ease, background .3s ease, box-shadow .3s ease;
 }
 
-.thread-stitch > span {
-  position: relative;
-  z-index: 1;
+.stitch-motif {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity .35s ease;
 }
 
-.stitch-cross,
+.stitch-frame {
+  stroke: #c4a06b;
+  stroke-width: .7;
+  opacity: .5;
+  transition: opacity .35s ease;
+}
+
+.stitch-frame-detail {
+  stroke: #78acb5;
+  stroke-width: 1;
+  opacity: .6;
+}
+
+.stitch-weave,
+.stitch-weave-light,
+.stitch-center,
+.knot-tail {
+  stroke: url(#thread-silk);
+  stroke-width: 2.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: stroke-dashoffset .65s ease .05s, opacity .25s ease;
+}
+
+.stitch-weave-light {
+  stroke: #ffd3a0;
+  stroke-width: .55;
+  transition-delay: .12s;
+}
+
+.stitch-center {
+  stroke: #f4bd7d;
+  stroke-width: 1.4;
+  stroke-dasharray: none;
+  transition-delay: .28s;
+}
+
+.stitch-number {
+  position: absolute;
+  top: calc(100% + 3px);
+  color: #baa689;
+  font: 10px/1 Arial, sans-serif;
+  letter-spacing: 1.5px;
+}
+
 .stitch-needle {
   position: absolute;
-  display: block;
-  width: 13px;
-  height: 1.8px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #bc4b43, #f29375 52%, #c85446);
-  box-shadow: 0 1px 1px #7b2b222d;
-}
-
-.stitch-cross {
-  transform: rotate(45deg) scaleX(.2);
-  opacity: 0;
-  transition: transform .4s ease, opacity .25s ease;
-}
-
-.stitch-needle {
   width: 17px;
   height: 2px;
+  border-radius: 2px;
   background: linear-gradient(90deg, #98a1a2, #f6f6f2, #77838a);
   opacity: 0;
   transform: translate(-12px, -4px) rotate(-38deg);
 }
 
-.thread-stitch.is-stitched {
-  border-color: transparent;
-  background: transparent;
+.thread-stitch.is-stitched .stitch-motif {
+  opacity: .8;
 }
 
-.thread-stitch.is-stitched .stitch-cross {
-  transform: rotate(45deg) scaleX(1);
+.thread-stitch.is-stitched .stitch-weave,
+.thread-stitch.is-stitched .stitch-weave-light,
+.thread-stitch.is-stitched .stitch-center {
+  stroke-dashoffset: 0;
   opacity: 1;
 }
 
@@ -448,19 +538,24 @@ body[data-page="gallery"]::before {
   animation: needle-drop .48s cubic-bezier(.2,.7,.25,1) both;
 }
 
-.thread-stitch.is-active {
-  box-shadow: 0 0 0 5px #e57e511a;
+.thread-stitch.is-active .stitch-motif,
+.thread-stitch.is-active .stitch-frame {
+  opacity: 1;
+}
+
+.thread-stitch.is-active .stitch-number {
+  color: #f2c38a;
 }
 
 .thread-colophon {
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: 235px;
+  min-height: 310px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 47px 24px 65px;
+  padding: 20px 28px 52px;
   color: #e1c99e;
   text-align: center;
 }
@@ -468,51 +563,47 @@ body[data-page="gallery"]::before {
 .closing-knot {
   position: relative;
   display: block;
-  width: 38px;
-  height: 25px;
-  margin-bottom: 14px;
-  opacity: 0;
-  transition: opacity .35s ease;
+  width: 86px;
+  height: 86px;
+  margin-bottom: 22px;
+  background: radial-gradient(circle, #08273d 32%, #08273dd9 57%, transparent 72%);
+  opacity: .45;
+  transition: opacity .45s ease;
 }
 
-.knot-loop,
-.knot-tail {
+.closing-knot::before,
+.closing-knot::after {
   position: absolute;
-  display: block;
-  border: 1.8px solid var(--thread-red);
+  top: 50%;
+  width: clamp(32px, 6vw, 90px);
+  height: 9px;
+  border-block: 1px solid #bd985d55;
+  content: "";
 }
 
-.knot-loop {
-  top: 6px;
-  left: 12px;
-  width: 13px;
-  height: 10px;
-  border-radius: 60% 40% 55% 45%;
-  transform: rotate(28deg) scale(.45);
-  opacity: .3;
-  transition: transform .45s ease, opacity .45s ease;
+.closing-knot::before {
+  right: calc(100% + 16px);
+  transform: skewX(35deg);
+}
+
+.closing-knot::after {
+  left: calc(100% + 16px);
+  transform: skewX(-35deg);
 }
 
 .knot-tail {
-  top: 12px;
-  left: 19px;
-  width: 15px;
-  height: 1px;
-  border-width: 0 0 1.8px;
-  transform: scaleX(1);
-  transform-origin: left center;
-  opacity: .3;
-  transition: transform .45s ease .08s, opacity .45s ease .08s;
+  stroke-width: 1.4;
+  transform-origin: 0 6px;
 }
 
 .closing-needle {
   position: absolute;
-  top: 0;
-  left: 3px;
+  top: 30px;
+  left: 38px;
   width: 58px;
   height: 18px;
   overflow: visible;
-  opacity: .38;
+  opacity: 0;
   transform: translate(-9px, -5px) rotate(-7deg);
   transform-origin: 5px 13px;
 }
@@ -534,34 +625,61 @@ body[data-page="gallery"]::before {
   margin: 0;
   color: #e8cd9e;
   font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
-  font-size: 23px;
+  font-size: clamp(26px, 2.7vw, 36px);
   letter-spacing: 3px;
+  line-height: 1.5;
+}
+
+.colophon-signature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.colophon-seal {
+  width: 30px;
+  min-height: 40px;
+  opacity: .5;
+  transition: opacity .6s ease .55s;
 }
 
 .colophon-caption {
-  margin-top: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  margin-top: 16px;
   color: #bc9b70;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 2px;
 }
 
-.is-finished .knot-loop {
-  transform: rotate(28deg) scale(1);
+.colophon-caption i {
+  width: 4px;
+  height: 4px;
+  border: 1px solid #d2b280;
+  transform: rotate(45deg);
+}
+
+.is-finished .closing-knot .stitch-weave,
+.is-finished .closing-knot .stitch-weave-light,
+.is-finished .closing-knot .stitch-center,
+.is-finished .closing-knot .knot-tail {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+.is-finished .closing-knot,
+.is-finished .colophon-seal {
   opacity: 1;
 }
 
 .is-finished .knot-tail {
-  transform: scaleX(.28);
-  opacity: 1;
-}
-
-.is-finished .closing-knot {
-  opacity: 1;
+  animation: knot-tighten .8s ease .2s both;
 }
 
 .is-finished .closing-needle {
-  animation: needle-withdraw .55s ease-out both;
-  opacity: 1;
+  animation: needle-withdraw 1s ease-out both;
 }
 
 body[data-page="gallery"] .footer {
@@ -585,65 +703,42 @@ body[data-page="gallery"] .footer-pattern {
   filter: none;
 }
 
-@media (min-width: 1500px) {
-  .jing-heading {
-    min-height: 540px;
+@media (max-width: 1100px) {
+  .jing-gallery {
+    --gallery-photo-size: clamp(236px, 30vw, 320px);
   }
 
-  .thread-story {
-    min-height: 420px;
+  .jing-artworks {
+    max-width: 860px;
   }
 
+  .thread-story,
   .thread-story.is-featured {
-    min-height: 485px;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    padding: 18px 0 18px 62px;
   }
 
-  .jing-work {
-    max-width: 600px;
+  .thread-story.is-left .jing-work,
+  .thread-story.is-right .jing-work {
+    grid-column: 1;
+    justify-self: start;
+    max-width: none;
+    gap: 28px;
   }
 
-  .work-description {
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 900px) and (min-width: 761px) {
-  .jing-heading {
-    min-height: 440px;
+  .thread-stitch {
+    left: 22px;
   }
 
-  .thread-story {
-    column-gap: 58px;
-    min-height: 350px;
-    padding: 28px 0;
-  }
-
-  .thread-story.is-featured {
-    min-height: 395px;
-  }
-
-  .jing-work {
-    gap: 12px;
-  }
-
-  .work-title {
-    font-size: 21px;
-  }
-
-  .work-description {
-    font-size: 12px;
-    line-height: 1.65;
-    -webkit-line-clamp: 2;
-  }
-
-  .jing-work-type {
-    font-size: 10px;
+  .thread-rail-entry,
+  .thread-rail-exit {
+    left: calc(max(clamp(28px, 4vw, 64px), (100% - 860px) / 2) + 22px);
   }
 }
 
 @media (max-width: 760px) {
   .jing-gallery {
-    --gallery-photo-size: 100%;
     background-size: 100% 800px, 100% 100%, auto 1400px;
     background-position: center top;
   }
@@ -659,156 +754,197 @@ body[data-page="gallery"] .footer-pattern {
   }
 
   .jing-heading {
-    min-height: 395px;
-    padding: 46px 30px 29px;
+    min-height: 0;
+    padding: 32px 24px 10px;
   }
 
   .jing-eyebrow {
-    font-size: 8px;
-    letter-spacing: 2px;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: .25em;
+  }
+
+  .jing-eyebrow i {
+    width: 23px;
+    height: 5px;
+  }
+
+  .jing-heading-composition {
+    flex-direction: column;
+    gap: 17px;
+    margin-top: 16px;
   }
 
   .jing-heading h1 {
-    margin-top: 12px;
-    font-size: clamp(44px, 12vw, 66px);
+    font-size: clamp(48px, 11vw, 72px);
+    letter-spacing: .1em;
+  }
+
+  .jing-title-caption {
+    gap: 11px;
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: .2em;
+  }
+
+  .jing-title-seal {
+    width: 23px;
+    min-height: 28px;
+    font-size: 10px;
+  }
+
+  .jing-heading-copy {
+    padding: 0;
+    border: 0;
+    text-align: center;
   }
 
   .jing-heading-poem {
-    font-size: 16px;
-    letter-spacing: 2px;
+    font-size: 19px;
+    letter-spacing: 1.8px;
+    line-height: 1.7;
   }
 
   .jing-heading-note {
-    max-width: 340px;
-    font-size: 12px;
+    max-width: 330px;
+    margin-top: 9px;
+    font-size: 13px;
     line-height: 1.8;
+    letter-spacing: .5px;
+  }
+
+  .jing-heading-note br {
+    display: none;
   }
 
   .needle-scene {
     width: min(270px, 78vw);
-    margin-top: 4px;
   }
 
   .jing-scroll-prompt {
-    margin-top: 10px;
-    font-size: 10px;
-  }
-
-  .thread-exhibition {
-    padding: 7px 18px 10px;
-  }
-
-  .jing-artworks {
-    display: flex;
-    max-width: 620px;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .thread-story,
-  .thread-story.is-featured {
-    display: grid;
-    min-height: 0;
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 0;
-    padding: 24px 0 35px 39px;
+    margin-top: 19px;
+    font-size: 11px;
   }
 
   .thread-story.is-left .jing-work,
   .thread-story.is-right .jing-work {
-    grid-column: 1;
-    justify-self: start;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 17px;
-    max-width: 390px;
-    padding: 0;
-  }
-
-  .jing-work-copy {
-    padding: 12px 0 4px;
-  }
-
-  .jing-work-type {
-    font-size: 10px;
-  }
-
-  .work-chapter {
-    margin-top: 5px;
-    font-size: 8px;
+    gap: 22px;
   }
 
   .work-title {
-    font-size: 22px;
-  }
-
-  .work-description,
-  .has-catalogue .work-description {
-    margin-top: 6px;
-    font-size: 13px;
-    line-height: 1.7;
-    -webkit-line-clamp: 3;
-  }
-
-  .jing-work-open {
-    margin-top: 9px;
-    font-size: 10px;
-  }
-
-  .thread-stitch {
-    top: 50%;
-    left: 19px;
-    width: 26px;
-    height: 26px;
-  }
-
-  .thread-rail-entry {
-    left: 19px;
+    font-size: 29px;
   }
 
   .thread-colophon {
-    min-height: 205px;
-    align-items: flex-start;
-    padding: 38px 0 55px 57px;
-    text-align: left;
+    min-height: 285px;
+    padding: 28px 20px 40px;
   }
 
   .closing-knot {
-    margin-left: -15px;
+    width: 74px;
+    height: 74px;
+    margin-bottom: 20px;
+  }
+
+  .colophon-signature {
+    gap: 12px;
   }
 
   .thread-colophon p {
-    font-size: 20px;
-    letter-spacing: 2px;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+  }
+
+  .colophon-seal {
+    width: 25px;
+    min-height: 34px;
+    font-size: 11px;
   }
 
   .colophon-caption {
-    margin-left: 2px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .jing-gallery {
+    --gallery-photo-size: 100%;
+  }
+
+  .thread-exhibition {
+    padding-inline: 18px;
+  }
+
+  .thread-story,
+  .thread-story.is-featured {
+    padding: 16px 0 20px 34px;
+  }
+
+  .thread-story.is-left .jing-work,
+  .thread-story.is-right .jing-work {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 520px;
+    gap: 18px;
+  }
+
+  .jing-work-copy {
+    padding: 13px 0 3px;
+  }
+
+  .jing-work-type {
+    margin-bottom: 7px;
+  }
+
+  .work-description {
+    margin-top: 9px;
+    line-height: 1.8;
+  }
+
+  .jing-work-open {
+    margin-top: 12px;
+  }
+
+  .thread-stitch {
+    left: 10px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .stitch-number {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .thread-rail-entry,
+  .thread-rail-exit {
+    left: 28px;
   }
 }
 
 @media (max-width: 370px) {
   .jing-heading {
-    min-height: 370px;
-    padding-right: 20px;
-    padding-left: 20px;
+    padding-inline: 18px;
   }
 
-  .jing-heading-note {
-    font-size: 11px;
+  .jing-heading-poem {
+    font-size: 17px;
+    letter-spacing: 1px;
   }
 
   .thread-exhibition {
-    padding-right: 13px;
-    padding-left: 13px;
+    padding-inline: 13px;
   }
 
-  .thread-story,
-  .thread-story.is-featured {
-    padding-left: 35px;
+  .thread-rail-entry,
+  .thread-rail-exit {
+    left: 23px;
   }
 
   .work-title {
-    font-size: 20px;
+    font-size: 27px;
+  }
+
+  .thread-colophon p {
+    font-size: 23px;
+    letter-spacing: 1px;
   }
 }
 
@@ -824,7 +960,8 @@ body[data-page="gallery"] .footer-pattern {
 
   .needle-body,
   .stitch-needle,
-  .closing-needle {
+  .closing-needle,
+  .is-finished .knot-tail {
     animation: none !important;
   }
 
@@ -835,41 +972,34 @@ body[data-page="gallery"] .footer-pattern {
     transition: none;
   }
 
-  .stitch-cross,
-  .knot-loop,
+  .stitch-weave,
+  .stitch-weave-light,
+  .stitch-center,
+  .knot-tail {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  .stitch-motif,
+  .stitch-weave,
+  .stitch-weave-light,
+  .stitch-center,
+  .stitch-frame,
   .knot-tail,
-  .closing-needle,
+  .closing-knot,
+  .colophon-seal,
   .jing-work-open i {
     transition: none;
   }
 
-  .stitch-cross {
-    transform: rotate(45deg) scaleX(1);
-    opacity: 1;
-  }
-
-  .thread-stitch {
-    border-color: transparent;
-    background: transparent;
-  }
-
-  .knot-loop {
-    transform: rotate(28deg) scale(1);
-    opacity: 1;
-  }
-
-  .knot-tail {
-    transform: scaleX(.28);
-    opacity: 1;
-  }
-
-  .closing-knot {
+  .closing-knot,
+  .colophon-seal {
     opacity: 1;
   }
 
   .closing-needle {
-    opacity: .75;
-    transform: translate(0, 0) rotate(-7deg);
+    opacity: .6;
+    transform: translate(12px, -6px) rotate(-7deg);
   }
 }
 
@@ -892,7 +1022,15 @@ body[data-page="gallery"] .footer-pattern {
 }
 
 @keyframes needle-withdraw {
-  0% { transform: translate(-5px, -2px) rotate(-7deg); }
-  38% { transform: translate(2px, 1px) rotate(0deg); }
-  100% { transform: translate(17px, -8px) rotate(-12deg); opacity: .15; }
+  0% { opacity: 0; transform: translate(-18px, -8px) rotate(-22deg); }
+  24% { opacity: 1; transform: translate(-4px, 3px) rotate(3deg); }
+  48% { opacity: .8; transform: translate(-10px, -2px) rotate(-9deg); }
+  65% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: .4; transform: translate(24px, -10px) rotate(-12deg); }
+}
+
+@keyframes knot-tighten {
+  0% { transform: scale(1.35); }
+  65% { transform: scale(.9); }
+  100% { transform: scale(1); }
 }
