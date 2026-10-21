@@ -42,12 +42,14 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
             >
               <span className="nav-label">{label}</span>
               <span className="nav-marker" aria-hidden="true">
-                <svg viewBox="0 0 120 22" focusable="false">
-                  <path className="nav-scroll-line" d="M6 11H34C40 11 43 8 42 5C41 2 36 3 37 6C38 9 44 11 50 11M70 11C76 11 82 9 83 6C84 3 79 2 78 5C77 8 80 11 86 11H114" />
-                  <path className="nav-scroll-echo" d="M13 15H32Q39 15 43 12M77 12Q81 15 88 15H107" />
-                  <path className="nav-scroll-knot" d="M60 3L68 11 60 19 52 11Z" />
-                  <path className="nav-scroll-heart" d="M60 7L64 11 60 15 56 11Z" />
-                  <path className="nav-scroll-tip" d="M3 11L6 8 9 11 6 14ZM111 11L114 8 117 11 114 14Z" />
+                <svg viewBox="0 0 144 24" focusable="false">
+                  <path className="nav-scroll-line" d="M10 12H18L21 9L24 12H43C50 12 54 10 52 6C50 2 44 4 46 7C48 9 53 12 61 12M83 12C91 12 96 9 98 7C100 4 94 2 92 6C90 10 94 12 101 12H120L123 9L126 12H134" />
+                  <path className="nav-scroll-return" d="M27 12V7H36V10H32M117 12V7H108V10H112" />
+                  <path className="nav-scroll-stitches" d="M13 17H40Q49 17 55 13M89 13Q95 17 104 17H131" />
+                  <path className="nav-scroll-knot" d="M72 2L82 12 72 22 62 12ZM57 8L61 12 57 16M87 8L83 12 87 16" />
+                  <path className="nav-scroll-heart" d="M72 7L77 12 72 17 67 12Z" />
+                  <path className="nav-scroll-needle" d="M72 10L74 12 72 14 70 12Z" />
+                  <path className="nav-scroll-tip" d="M3 12L6 9 9 12 6 15ZM135 12L138 9 141 12 138 15Z" />
                 </svg>
               </span>
             </button>

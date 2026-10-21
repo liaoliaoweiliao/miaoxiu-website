@@ -24,8 +24,19 @@ body[data-page="sources"] {
 }
 
 @media (min-width: 761px) {
-  .nav { transform: translateY(3px); }
+  .nav { transform: translateY(9px); }
 }
+
+/* Rhombus stitches, meanders and ruyi curls form a restrained embroidered border. */
+.nav-link.active::after { display: none; }
+.nav-marker { color: #dfb981; }
+.nav-scroll-line { stroke-width: 1.15; }
+.nav-scroll-return { stroke-width: .9; opacity: .85; }
+.nav-scroll-stitches { stroke-width: .75; stroke-dasharray: 2.2 2.8; opacity: .65; }
+.nav-scroll-knot { stroke-width: 1; fill: #0a2637; }
+.nav-scroll-heart { stroke-width: .65; fill: #e2bd84; }
+.nav-scroll-needle { fill: #a95440; stroke: #a95440; stroke-width: .4; }
+.nav-scroll-tip { fill: #c49a65; stroke-width: .6; }
 
 @media (max-width: 900px) {
   body[data-page="home"],
@@ -38,6 +49,7 @@ body[data-page="sources"] {
 
 @media (max-width: 760px) {
   .nav.open {
+    padding-top: 14px;
     background: rgba(10, 38, 55, .98);
     border-bottom-color: rgba(224, 178, 123, .42);
   }
