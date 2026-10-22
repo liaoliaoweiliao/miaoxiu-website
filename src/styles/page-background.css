@@ -1,20 +1,20 @@
-/* Shared cloth ground. Effects belong only to these decorative layers. */
+/* Fresh indigo cloth: no legacy background imagery or page-specific wallpaper. */
 :root {
   --page-indigo: #202b43;
   --page-indigo-raised: #283851;
   --page-indigo-deep: #1a263c;
   --surface-indigo: #24334a;
   --surface-indigo-deep: #1c293f;
-  --nav-indigo: rgb(23 34 53 / 97%);
+  --nav-indigo: rgb(23 34 53 / 98%);
   --nav-text: #e1e0db;
   --nav-gold: #d0b58b;
   --border-thread: rgb(195 171 134 / 34%);
   --border-quiet: rgb(175 187 202 / 22%);
-  --motif-opacity: .08;
-  --edge-motif-opacity: .16;
-  --weave-opacity: .18;
-  --cloth-ground: radial-gradient(ellipse at 50% 0, var(--page-indigo-raised), transparent 70%),
-    linear-gradient(180deg, var(--page-indigo), var(--page-indigo-deep));
+  --motif-opacity: .07;
+  --edge-motif-opacity: .12;
+  --weave-opacity: .045;
+  --cloth-ground: radial-gradient(ellipse at 42% 5%, rgb(67 88 114 / 16%), transparent 65%),
+    linear-gradient(165deg, var(--page-indigo), var(--page-indigo-deep));
 }
 
 body {
@@ -22,54 +22,46 @@ body {
   overflow-x: hidden;
   isolation: isolate;
   background: var(--page-indigo);
-  background-image: var(--cloth-ground);
-  background-attachment: fixed;
 }
 
-body::before,
-body::after {
-  content: '';
+.site-background {
   position: fixed;
   inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--cloth-ground);
   pointer-events: none;
 }
 
-body::before {
-  z-index: -2;
+.site-background span { position: absolute; display: block; pointer-events: none; }
+.cloth-grain {
+  inset: 0;
+  background: url('/assets/common/indigo-weave.svg') 0 0 / 160px 160px;
   opacity: var(--weave-opacity);
-  background-image:
-    repeating-linear-gradient(0deg, rgb(230 228 218 / 4%) 0 1px, transparent 1px 4px),
-    repeating-linear-gradient(90deg, rgb(6 14 27 / 12%) 0 1px, transparent 1px 4px);
 }
 
-body::after {
-  z-index: -1;
+.cloth-edge {
+  width: clamp(170px, 18vw, 280px);
+  height: min(1000px, 110vh);
+  background: url('/assets/common/indigo-embroidery.svg') left top / 100% auto no-repeat;
   opacity: var(--motif-opacity);
-  background: url('/assets/common/page-background.webp') center top / 100% auto no-repeat;
-  filter: grayscale(.9) brightness(1.7);
-  mix-blend-mode: screen;
-  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 65%) 12%, transparent 34% 66%, rgb(0 0 0 / 65%) 88%, #000);
+  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 70%) 55%, transparent 95%);
 }
+.cloth-edge-left { left: -28px; top: 16vh; }
+.cloth-edge-right { right: -50px; bottom: -18vh; transform: scaleX(-1); }
 
 body.bloom {
   --motif-opacity: .10;
-  --edge-motif-opacity: .22;
+  --edge-motif-opacity: .18;
 }
 
 .footer {
   border-top: 1px solid var(--border-quiet);
-  background: linear-gradient(180deg, var(--page-indigo-deep), #172236);
-}
-
-.footer-pattern {
-  opacity: var(--motif-opacity);
-  filter: grayscale(.9);
-  pointer-events: none;
+  background: linear-gradient(180deg, rgb(26 38 60 / 65%), #1a263c);
 }
 
 @media (max-width: 760px) {
-  body::after {
-    /* One complete textile, without tiling or losing the side motifs. */
-    mask-image: linear-gradient(90deg, #000, transparent 28% 72%, #000);
-  }
+  .cloth-edge { width: 160px; opacity: calc(var(--motif-opacity) * .7); }
+  .cloth-edge-left { left: -65px; top: 12vh; }
+  .cloth-edge-right { right: -80px; bottom: -24vh; }
 }

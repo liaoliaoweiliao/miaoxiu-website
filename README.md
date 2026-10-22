@@ -86,7 +86,7 @@ miaoxiu-website/
 
 页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
 
-全站底色、内容承托色、导航色、边框与纹样强度统一在 `src/styles/page-background.css` 的 CSS 变量中调整。现有花鸟底图通过独立装饰层以 0.08 透明度显示在两侧，纹样装饰开关将其调整为 0.10；织物肌理和底纹滤镜只作用于装饰，不改变作品、地图或人物的颜色。公共导航（含印章、针脚标记和手机搜索）的样式集中在 `embroidered-theme.css`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航与绣框 → 光标 → 响应式规则。
+全站背景由 `src/components/SiteBackground.jsx` 统一承载，底色、内容承托色、导航色、边框与纹样强度集中在 `src/styles/page-background.css` 的 CSS 变量中调整。旧花鸟背景和页脚花纹已移除；新设计由靛蓝渐变、`indigo-weave.svg` 细微布纹、`indigo-embroidery.svg` 蝴蝶与菱形针脚组成。纹样从首页已有苗绣图形提炼，仅在两侧稀疏显示，默认透明度 0.07、装饰开关开启后 0.10，手机进一步降低。装饰不拦截点击，不改变作品、地图或人物颜色。公共导航（含印章、针脚标记和手机搜索）的样式集中在 `embroidered-theme.css`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航与绣框 → 光标 → 响应式规则。
 
 ## 图片与子路径
 

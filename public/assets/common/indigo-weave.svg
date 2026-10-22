@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <filter id="fiber">
+    <feTurbulence type="fractalNoise" baseFrequency=".72 .38" numOctaves="3" stitchTiles="stitch" seed="12"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="160" height="160" filter="url(#fiber)" opacity=".55"/>
+  <g fill="none" stroke="#bdc5ce" stroke-width=".45" opacity=".2">
+    <path d="M0 13h29m19 0h53m18 0h41M0 49h58m21 0h81M0 91h17m18 0h84m23 0h18M0 132h42m15 0h46m20 0h37"/>
+    <path d="M21 0v36m0 19v63m0 17v25M68 0v18m0 23v58m0 16v45M114 0v51m0 13v29m0 23v44M151 0v27m0 19v75m0 13v26"/>
+  </g>
+</svg>

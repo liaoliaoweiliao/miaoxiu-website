@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Header, Footer } from './components/Layout.jsx';
+import SiteBackground from './components/SiteBackground.jsx';
 import HomePage from './pages/HomePage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
 import ExperiencePage from './pages/ExperiencePage.jsx';
@@ -81,6 +82,7 @@ export default function App() {
   const Page = pages[state.page];
   return (
     <>
+      <SiteBackground />
       <Header {...state} onQueryChange={(query) => setState((previous) => ({ ...previous, query }))} onAction={onAction} onNavigate={onNavigate} />
       <Page state={state} onAction={onAction} onNavigate={onNavigate} />
       <Footer onNavigate={onNavigate} />

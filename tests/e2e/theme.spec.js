@@ -3,6 +3,10 @@ import { test, expect } from '@playwright/test';
 test.use({ reducedMotion: 'reduce' });
 
 test('ornament switch preserves the original artwork and map colors on every page', async ({ page }) => {
+  const legacyWallpaper = [];
+  page.on('request', (request) => {
+    if (/\/(page-background|floral-corner)\.webp(?:\?|$)/.test(request.url())) legacyWallpaper.push(request.url());
+  });
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const route of ['home', 'history', 'experience', 'gallery', 'sources']) {
     await page.goto(`/#${route}`);
@@ -25,6 +29,7 @@ test('ornament switch preserves the original artwork and map colors on every pag
     await decoration.click();
     await expect(decoration).toHaveAttribute('aria-pressed', 'false');
   }
+  expect(legacyWallpaper).toEqual([]);
 });
 
 test('title, seal, navigation and search stay separate across header breakpoints', async ({ page }) => {

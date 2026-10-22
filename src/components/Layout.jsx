@@ -112,8 +112,6 @@ export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNav
 export function Footer({ onNavigate }) {
   return (
     <footer className="footer">
-      <div className="footer-pattern left" aria-hidden="true" />
-      <div className="footer-pattern right" aria-hidden="true" />
       <div className="motto"><span>苗绣</span> · 不只是技艺，更是一种生活的哲学。</div>
       <div className="footer-links">
         {[...navigation, ['sources', '素材来源']].map(([target, label], index) => (
