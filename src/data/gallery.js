@@ -1,6 +1,6 @@
 export const exhibitionWorks=[
- {title:'银冠盛装',sub:'传统盛装 · 头饰与银饰',src:'gallery/new/ceremonial-dress.jpg',desc:'层叠银饰与绣衣一同构成盛装的视觉节奏，细看头饰、胸饰与衣身纹样的呼应。'},
- {title:'绣衣风华',sub:'传统服饰 · 成套穿着',src:'gallery/new/festival-costume.jpg',desc:'在完整穿着中观察绣衣、裙装与银饰的搭配，感受色彩与装饰的层次。'},
+ {title:'银冠盛装',sub:'传统盛装 · 头饰与银饰',src:'gallery/new/ceremonial-dress.jpg',detailPosition:'center 20%',desc:'层叠银饰与绣衣一同构成盛装的视觉节奏，细看头饰、胸饰与衣身纹样的呼应。'},
+ {title:'绣衣风华',sub:'传统服饰 · 成套穿着',src:'gallery/new/festival-costume.jpg',detailPosition:'center 70%',desc:'在完整穿着中观察绣衣、裙装与银饰的搭配，感受色彩与装饰的层次。'},
  {title:'儿童节庆裙',sub:'贵州黄平 · 20世纪',src:'gallery/new/pleated-skirt.jpg',desc:'这条来自贵州黄平的儿童节庆裙制作于20世纪，以平纹棉布为底，将靛蓝蜡染与刺绣相结合，呈现节庆服饰的工艺层次。现藏于檀香山艺术博物馆。',summary:'以平纹棉布为底，将靛蓝蜡染与刺绣相结合，呈现节庆服饰的工艺层次。',catalogue:true},
  {title:'儿童节日背心',sub:'中国 · 约1940年',src:'gallery/new/embroidered-vest.jpg',desc:'约1940年制作的这件中国苗族儿童节日背心，在棉丝混纺面料上施以刺绣。现由檀香山艺术博物馆收藏，馆藏编号为11179.1。',summary:'在棉丝混纺面料上施以刺绣，展现衣身与纹饰之间的细腻搭配。',catalogue:true},
  {title:'节日背心·背面',sub:'苗族儿童节日背心 · 约1940年',src:'gallery/new/back-embroidery.jpg',desc:'从背面欣赏这件中国苗族儿童节日背心，可以观察贴花与刺绣的结合。作品约制于1940年，采用棉丝混纺面料，藏于檀香山艺术博物馆，馆藏编号为11200.1。',summary:'贴花与刺绣相互结合，在棉丝混纺面料上呈现丰富的纹样层次。',catalogue:true},
