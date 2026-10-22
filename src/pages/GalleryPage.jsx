@@ -222,15 +222,9 @@ export default function GalleryPage({ onAction }) {
       </svg>
       <header className="jing-heading">
         <span className="jing-eyebrow"><i aria-hidden="true" />苗绣 · 锦绣长卷<i aria-hidden="true" /></span>
-        <div className="jing-heading-composition">
-          <div className="jing-title-block">
-            <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
-            <span className="jing-title-caption">以针代笔 · 以线传情<span className="jing-title-seal" aria-hidden="true">锦绣</span></span>
-          </div>
-          <div className="jing-heading-copy">
-            <p className="jing-heading-poem"><span>一缕朱红，引山河入绣。</span><span>千般锦色，藏岁月于衣。</span></p>
-            <p className="jing-heading-note">循着针脚徐徐而行，<br />赏苗岭风华，读绣里春秋。</p>
-          </div>
+        <div className="jing-title-block">
+          <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
+          <span className="jing-title-caption">以针代笔 · 以线传情<span className="jing-title-seal" aria-hidden="true">锦绣</span></span>
         </div>
         <span className="jing-scroll-prompt"><i aria-hidden="true" />循线入卷 · 向下观绣</span>
         <NeedleScene anchorRef={startRef} />
@@ -278,7 +272,7 @@ export default function GalleryPage({ onAction }) {
           <ThreadKnot closing />
           <svg className="closing-needle" viewBox="0 0 62 18"><path d="M 4 13 L 52 4" /><ellipse cx="5" cy="13" rx="3" ry="1.7" /></svg>
         </span>
-        <div className="colophon-signature"><p>一针一线，绣见万象。</p><span className="colophon-seal" aria-hidden="true">绣成</span></div>
+        <p>一针一线，绣见万象。</p>
         <span className="colophon-caption"><i aria-hidden="true" />锦绣成卷 · 余韵悠长<i aria-hidden="true" /></span>
       </footer>
     </main>

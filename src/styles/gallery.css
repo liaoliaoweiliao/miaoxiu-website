@@ -53,11 +53,11 @@ body[data-page="gallery"]::before {
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: 410px;
+  min-height: 360px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 28px 14px;
+  padding: 32px 28px 8px;
   text-align: center;
 }
 
@@ -77,20 +77,15 @@ body[data-page="gallery"]::before {
   transform: skewX(-35deg);
 }
 
-.jing-heading-composition {
-  display: flex;
-  align-items: center;
-  gap: clamp(28px, 4vw, 60px);
-  margin-top: 21px;
-}
-
 .jing-title-block {
   position: relative;
+  margin-top: 21px;
 }
 
 .jing-heading h1 {
   display: flex;
   align-items: baseline;
+  justify-content: center;
   gap: .18em;
   margin: 0;
   color: #f4d7a2;
@@ -118,8 +113,7 @@ body[data-page="gallery"]::before {
   letter-spacing: .24em;
 }
 
-.jing-title-seal,
-.colophon-seal {
+.jing-title-seal {
   display: inline-grid;
   flex: 0 0 auto;
   width: 29px;
@@ -135,33 +129,6 @@ body[data-page="gallery"]::before {
   letter-spacing: 1px;
   writing-mode: vertical-rl;
   transform: rotate(-5deg);
-}
-
-.jing-heading-copy {
-  padding: 5px 0 5px clamp(24px, 3vw, 44px);
-  border-left: 1px solid #d0aa6e66;
-  text-align: left;
-}
-
-.jing-heading-poem {
-  margin: 0;
-  color: #ecd0a3;
-  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
-  font-size: clamp(20px, 1.8vw, 25px);
-  letter-spacing: .12em;
-  line-height: 1.85;
-}
-
-.jing-heading-poem span {
-  display: block;
-}
-
-.jing-heading-note {
-  margin: 13px 0 0;
-  color: #bdcdd0;
-  font-size: 15px;
-  letter-spacing: 1px;
-  line-height: 1.9;
 }
 
 .needle-scene {
@@ -630,20 +597,6 @@ body[data-page="gallery"]::before {
   line-height: 1.5;
 }
 
-.colophon-signature {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-}
-
-.colophon-seal {
-  width: 30px;
-  min-height: 40px;
-  opacity: .5;
-  transition: opacity .6s ease .55s;
-}
-
 .colophon-caption {
   display: inline-flex;
   align-items: center;
@@ -669,8 +622,7 @@ body[data-page="gallery"]::before {
   opacity: 1;
 }
 
-.is-finished .closing-knot,
-.is-finished .colophon-seal {
+.is-finished .closing-knot {
   opacity: 1;
 }
 
@@ -769,9 +721,7 @@ body[data-page="gallery"] .footer-pattern {
     height: 5px;
   }
 
-  .jing-heading-composition {
-    flex-direction: column;
-    gap: 17px;
+  .jing-title-block {
     margin-top: 16px;
   }
 
@@ -791,30 +741,6 @@ body[data-page="gallery"] .footer-pattern {
     width: 23px;
     min-height: 28px;
     font-size: 10px;
-  }
-
-  .jing-heading-copy {
-    padding: 0;
-    border: 0;
-    text-align: center;
-  }
-
-  .jing-heading-poem {
-    font-size: 19px;
-    letter-spacing: 1.8px;
-    line-height: 1.7;
-  }
-
-  .jing-heading-note {
-    max-width: 330px;
-    margin-top: 9px;
-    font-size: 13px;
-    line-height: 1.8;
-    letter-spacing: .5px;
-  }
-
-  .jing-heading-note br {
-    display: none;
   }
 
   .needle-scene {
@@ -846,19 +772,9 @@ body[data-page="gallery"] .footer-pattern {
     margin-bottom: 20px;
   }
 
-  .colophon-signature {
-    gap: 12px;
-  }
-
   .thread-colophon p {
     font-size: 26px;
     letter-spacing: 1.5px;
-  }
-
-  .colophon-seal {
-    width: 25px;
-    min-height: 34px;
-    font-size: 11px;
   }
 
   .colophon-caption {
@@ -924,11 +840,6 @@ body[data-page="gallery"] .footer-pattern {
     padding-inline: 18px;
   }
 
-  .jing-heading-poem {
-    font-size: 17px;
-    letter-spacing: 1px;
-  }
-
   .thread-exhibition {
     padding-inline: 13px;
   }
@@ -987,13 +898,11 @@ body[data-page="gallery"] .footer-pattern {
   .stitch-frame,
   .knot-tail,
   .closing-knot,
-  .colophon-seal,
   .jing-work-open i {
     transition: none;
   }
 
-  .closing-knot,
-  .colophon-seal {
+  .closing-knot {
     opacity: 1;
   }
 
