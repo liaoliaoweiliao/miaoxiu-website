@@ -31,7 +31,11 @@ export default function LookViewer({ collection, revision }) {
   useEffect(() => { setView(initialView); points.current.clear(); pinch.current = 0; setDragging(false); }, [appearance]);
   useEffect(() => {
     const viewport = viewportRef.current;
-    function wheel(event) { event.preventDefault(); change((previous) => ({ ...previous, scale: previous.scale * Math.exp(-clamp(event.deltaY, -100, 100) * 0.002) })); }
+    function wheel(event) {
+      if (event.ctrlKey || event.metaKey) return;
+      event.preventDefault();
+      change((previous) => ({ ...previous, scale: previous.scale * Math.exp(-clamp(event.deltaY, -100, 100) * 0.002) }));
+    }
     viewport?.addEventListener('wheel', wheel, { passive: false });
     return () => viewport?.removeEventListener('wheel', wheel);
   }, [expanded]);
@@ -68,6 +72,7 @@ export default function LookViewer({ collection, revision }) {
   }
   function release(event) { points.current.delete(event.pointerId); pinch.current = 0; if (!points.current.size) setDragging(false); }
   function onKeyDown(event) {
+    if (event.ctrlKey || event.metaKey) return;
     if (event.key === 'Escape' && expanded) { event.preventDefault(); setExpanded(false); return; }
     if (expanded && event.key === 'Tab') {
       const controls = [...(rootRef.current?.querySelectorAll('button:not(:disabled),[tabindex="0"]') || [])];

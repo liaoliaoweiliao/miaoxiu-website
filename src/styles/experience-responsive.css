@@ -1,0 +1,90 @@
+/* Experience rules from main/a607580 responsive.css, scoped for this branch. */
+body[data-page="experience"] {
+  --page-gutter: clamp(12px, 2.5vw, 36px);
+  --header-height: 75px;
+}
+.experience-page, .experience-page :is(section, article, aside) { min-width: 0; }
+.experience-page .container { width: calc(100% - 2 * var(--page-gutter)); }
+body[data-page="experience"] :is(button, input, select, textarea) { max-width: 100%; }
+
+/* Image appreciation is also opened by the pattern search board. */
+body[data-page="experience"] .image-lightbox { padding: clamp(12px, 2vw, 28px); }
+body[data-page="experience"] .image-lightbox-body {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 2 * clamp(12px, 2vw, 28px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 4px 12px;
+}
+body[data-page="experience"] .image-lightbox-body .image-viewer-close {
+  position: sticky; top: 0; right: auto; align-self: flex-end;
+  flex: 0 0 40px; margin: 0 0 -40px auto;
+}
+body[data-page="experience"] .image-lightbox .image-viewer-stage {
+  flex: 0 0 auto; height: min(65dvh, 850px);
+}
+body[data-page="experience"] .image-lightbox-body.has-details .image-viewer-stage { height: min(52dvh, 700px); }
+body[data-page="experience"] .image-viewer-caption { flex-shrink: 0; flex-wrap: wrap; }
+body[data-page="experience"] .image-lightbox-body h2 { min-width: 0; overflow-wrap: anywhere; }
+body[data-page="experience"] :is(.image-viewer-details, .image-viewer-hint) { flex-shrink: 0; }
+.unlock-dialog {
+  max-height: calc(100dvh - 44px);
+  padding: clamp(20px, 4vw, 36px);
+  overscroll-behavior: contain;
+}
+.look-viewer.viewer-expanded { overflow-y: auto; }
+.viewer-expanded .viewer-viewport { min-height: 80px; }
+.viewer-header, .viewer-caption, .viewer-tools, .viewer-hint { flex-shrink: 0; }
+.viewer-tools { flex-wrap: wrap; }
+.viewer-viewport { height: clamp(300px, 42vw, 490px); }
+.avatar-panel { top: calc(var(--header-height) + 16px); }
+
+@media (max-width: 1100px) {
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding: 54px 32px !important; }
+  .atelier-grid { grid-template-columns: minmax(230px, .9fr) minmax(0, 1.1fr); }
+}
+@media (max-width: 900px) {
+  .atelier-grid { grid-template-columns: minmax(0, 1fr); }
+  .avatar-panel { position: static; width: 100%; max-width: 430px; margin-inline: auto; }
+  .experience-page .wardrobe-layout { grid-template-columns: minmax(0, 1fr); }
+  .wardrobe-layout > .side-heading br { display: none; }
+}
+@media (max-width: 760px) {
+  body[data-page="experience"] { --header-height: 62px; }
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding: 46px 22px !important; }
+  .experience-page .decode-inner { display: block; }
+  .experience-page .decode-inner > .side-heading { margin-bottom: 20px; }
+  .experience-page .side-heading h1 br { display: none; }
+  .decode-toolbar, .target-brief, .collection-heading, .dressup-heading { flex-wrap: wrap; }
+  .target-brief { gap: 6px; }
+  .target-brief small { margin-left: 0; }
+  .decode-actions button { flex: 1 1 125px; margin-left: 0; }
+  .decode-image-preview { right: 6px; bottom: 6px; font-size: 11px; padding: 6px 9px; }
+  .costume-draw-stage { min-height: 360px; }
+  .costume-draw-stage > .draw-card, .has-result > .draw-card { height: 360px; }
+  .costume-draw-stage > .draw-card > img, .costume-draw-stage .reveal-front > img { height: 250px; }
+  .mystery-costume { height: 230px; }
+  .owned-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .collection-heading { gap: 8px; }
+}
+@media (max-width: 380px) {
+  .experience-page .pattern-image-frame,
+  .experience-page .wardrobe-frame,
+  .experience-page .dressup-frame { padding-inline: 18px !important; }
+  .owned-grid { grid-template-columns: minmax(0, 1fr); }
+  .avatar-actions { flex-wrap: wrap; }
+  .avatar-actions > button { flex: 1 1 130px; }
+}
+@media (max-height: 500px) {
+  body[data-page="experience"] .topbar { position: relative; }
+  .avatar-panel { position: static; }
+  .viewer-expanded .viewer-viewport { min-height: 0; }
+  body[data-page="experience"] .image-lightbox .image-viewer-stage,
+  body[data-page="experience"] .image-lightbox-body.has-details .image-viewer-stage { height: 50dvh; }
+  .viewer-expanded .viewer-hint { display: none; }
+}
