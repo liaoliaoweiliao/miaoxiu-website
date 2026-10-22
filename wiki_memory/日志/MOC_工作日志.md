@@ -20,6 +20,7 @@ sources: []
 | 2026-10-22 | ui | completed | [探源页附件替换](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E6%8E%A2%E6%BA%90%E9%A1%B5%E9%99%84%E4%BB%B6%E6%9B%BF%E6%8D%A2.md) |
 | 2026-10-22 | ui | completed | [小鸟指引清晰底框](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E5%B0%8F%E9%B8%9F%E6%8C%87%E5%BC%95%E6%B8%85%E6%99%B0%E5%BA%95%E6%A1%86.md) |
 | 2026-10-22 | ui | completed | [小鸟指引字号微调](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E5%B0%8F%E9%B8%9F%E6%8C%87%E5%BC%95%E5%AD%97%E5%8F%B7%E5%BE%AE%E8%B0%83.md) |
+| 2026-10-22 | ui | completed | [套装金色揭晓与名字稳定登场](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E5%A5%97%E8%A3%85%E9%87%91%E8%89%B2%E6%8F%AD%E6%99%93%E4%B8%8E%E5%90%8D%E5%AD%97%E7%A8%B3%E5%AE%9A%E7%99%BB%E5%9C%BA.md) |
 | 2026-10-22 | ui | completed | [作品展览整体字号放大](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E6%95%B4%E4%BD%93%E5%AD%97%E5%8F%B7%E6%94%BE%E5%A4%A7.md) |
 | 2026-10-21 | maintenance | blocked | [分支整合](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-21-%E5%88%86%E6%94%AF%E6%95%B4%E5%90%88.md) |
 | 2026-10-21 | feature | completed | [首页支系热力图与核心看板](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-21-%E9%A6%96%E9%A1%B5%E6%94%AF%E7%B3%BB%E7%83%AD%E5%8A%9B%E5%9B%BE%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%9C%8B%E6%9D%BF.md) |
