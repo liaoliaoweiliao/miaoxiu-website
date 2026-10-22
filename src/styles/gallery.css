@@ -106,29 +106,10 @@ body[data-page="gallery"]::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
   margin-top: 15px;
   color: #c9b38e;
   font-size: 14px;
   letter-spacing: .24em;
-}
-
-.jing-title-seal {
-  display: inline-grid;
-  flex: 0 0 auto;
-  width: 29px;
-  min-height: 36px;
-  place-items: center;
-  padding: 4px;
-  border: 1px solid #d98969;
-  border-radius: 2px 4px 2px 3px;
-  background: #9b3c31b0;
-  box-shadow: inset 0 0 0 2px #08273d;
-  color: #f4d1ab;
-  font: 12px/1.1 "STKaiti", "KaiTi", serif;
-  letter-spacing: 1px;
-  writing-mode: vertical-rl;
-  transform: rotate(-5deg);
 }
 
 .needle-scene {
@@ -731,16 +712,9 @@ body[data-page="gallery"] .footer-pattern {
   }
 
   .jing-title-caption {
-    gap: 11px;
     margin-top: 10px;
     font-size: 12px;
     letter-spacing: .2em;
-  }
-
-  .jing-title-seal {
-    width: 23px;
-    min-height: 28px;
-    font-size: 10px;
   }
 
   .needle-scene {

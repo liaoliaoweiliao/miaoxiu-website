@@ -224,7 +224,7 @@ export default function GalleryPage({ onAction }) {
         <span className="jing-eyebrow"><i aria-hidden="true" />苗绣 · 锦绣长卷<i aria-hidden="true" /></span>
         <div className="jing-title-block">
           <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
-          <span className="jing-title-caption">以针代笔 · 以线传情<span className="jing-title-seal" aria-hidden="true">锦绣</span></span>
+          <span className="jing-title-caption">以针代笔 · 以线传情</span>
         </div>
         <span className="jing-scroll-prompt"><i aria-hidden="true" />循线入卷 · 向下观绣</span>
         <NeedleScene anchorRef={startRef} />

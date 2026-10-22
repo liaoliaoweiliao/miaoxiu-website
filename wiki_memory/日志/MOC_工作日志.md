@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-10-21
+updated: 2026-10-22
 topic: work-log-index
 sources: []
 ---
@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-10-22 | ui | completed | [移除展览标题锦绣印章](UI%E4%BF%AE%E6%94%B9/2026-10-22-%E7%A7%BB%E9%99%A4%E5%B1%95%E8%A7%88%E6%A0%87%E9%A2%98%E9%94%A6%E7%BB%A3%E5%8D%B0%E7%AB%A0.md) |
 | 2026-10-21 | feature | completed | [作品展览穿针引线长卷](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-21-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E7%A9%BF%E9%92%88%E5%BC%95%E7%BA%BF%E9%95%BF%E5%8D%B7.md) |
 | 2026-10-21 | ui | completed | [展览题签与针结精修](UI%E4%BF%AE%E6%94%B9/2026-10-21-%E5%B1%95%E8%A7%88%E9%A2%98%E7%AD%BE%E4%B8%8E%E9%92%88%E7%BB%93%E7%B2%BE%E4%BF%AE.md) |
 | 2026-10-21 | ui | completed | [展览藏青配色与统一图片](UI%E4%BF%AE%E6%94%B9/2026-10-21-%E5%B1%95%E8%A7%88%E8%97%8F%E9%9D%92%E9%85%8D%E8%89%B2%E4%B8%8E%E7%BB%9F%E4%B8%80%E5%9B%BE%E7%89%87.md) |
