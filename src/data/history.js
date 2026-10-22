@@ -1,36 +1,36 @@
-// Content and asset references preserved from upstream 82f079f.
+// History content follows the user's 22.43.zip, including its embedded storybooks.
 export const stories = [
   {
     title: '一针一线的传承',
     image: 'history/story-stitch.webp',
+    book: 'history/storybooks/stitch-book.webp',
     label: '阅读故事',
     description: '在苗寨的晨雾里，绣娘把关于山川与家族的记忆，藏进一段段细密的针脚。',
     pages: [
-      '天还没亮透，木楼里已经点起一盏灯。阿婆把绷架架在膝头，银针在布里进出，像雨点落在青石板上，细密而均匀。',
-      '她绣的是一幅「蝴蝶妈妈」。不看图纸，花样早在心里——那是她七岁那年，母亲握着她的手，一针一针认下的第一幅纹样。',
-      '如今她教孙女时，说的还是同一句话：「针脚要浅，心意要深。」绣线穿过布的声响，就这样一代接一代，从祖母的手传到孩子的手里。'
+      '在薄雾缭绕的苗寨木楼里，白发苍苍的老绣娘握着小女孩的小手，穿针引线，耐心传授苗绣技法。五彩丝线在麻布上穿梭，山地轮廓、花鸟纹样、家族里代代讲述的旧事，全都藏进细密交错的针脚之中。',
+      '苗绣没有书本教程，全靠口传手教。老一辈绣娘把祖辈留下来的纹样、配色与刺绣诀窍，一点点传给年轻一代。一根根丝线连接起过去与现在，让苗家的民族记忆随针线代代延续，守护这份珍贵的非遗传承。'
     ]
   },
   {
     title: '兰娟记事',
     image: 'history/story-lanjuan.webp',
+    book: 'history/storybooks/lanjuan-book.webp',
     label: '阅读故事',
     description: '一位苗族少女兰娟，用一针一线记录家乡的山水与传说，绣出了自己的成长故事。',
     pages: [
-      '兰娟十六岁那年离开山寨去城里读书。行囊里除了衣物，还有一块母亲绣到一半的绣片，蓝底上浮着几枝没绣完的桐花。',
-      '想家的时候，她就着灯接着绣。桐花一瓣一瓣绽开，山里的雾、田里的水声、母亲哼过的歌，也跟着一针一线回到心里。',
-      '后来她回到寨子，把这块绣片做成了一件小小的衣裳。她说，这不是一件衣服，是一段她带得走、也传得下去的家乡。'
+      '古时，苗族少女兰娟跟随族人踏上漫长艰难的南迁路途。苗族古时没有文字，无法写下一路上的见闻。兰娟便想出以绣记事的办法，手握彩线，将渡过的江河、翻越的群山、故土的传说，',
+      '还有自己一路上的成长感悟，一针一线绣在衣袍上。衣衫上斑斓的图案，记录着族群跋涉迁徙的漫漫征程。这一件绣衣，就是一本穿在身上的史书，把整个民族的远行故事永久留存。'
     ]
   },
   {
     title: '蝴蝶妈妈',
     image: 'history/story-butterfly.webp',
+    book: 'history/storybooks/butterfly-book.webp',
     label: '阅读故事',
     description: '相传蝴蝶妈妈用五彩的丝线，绣出了苗族先民对美好生活的向往。',
     pages: [
-      '古歌里唱，蝴蝶妈妈从枫木的心里生出来，又生下十二个蛋，孵出人、雷公、龙、虎与蛇——世间万物，都是她的孩子。',
-      '所以苗家人把蝴蝶绣在衣襟上、袖口上、背扇上。孩子出生，绣一只蝴蝶护着他；姑娘出嫁，绣一对蝴蝶祝她圆满。',
-      '那不是装饰，是一句反复被绣下的祝愿：愿你被生命护着，愿你生生不息。'
+      '源自苗族古歌传说：枫树孕育出蝴蝶妈妈，她诞下十二枚神蛋，孵化出人类始祖与世间万物。蝴蝶妈妈作为苗族的生命始祖，被先民深深崇敬。苗家人拿起五彩丝线，将蝴蝶的形象绣在服饰上。',
+      '灵动绚烂的蝴蝶纹样，寄托着苗族先民对生命起源的敬畏，饱含对平安、繁盛与美好生活的热切向往，也是苗绣里最经典、最具代表性的图腾。'
     ]
   }
 ];
@@ -75,9 +75,9 @@ export const colorChoices = [
   { name: '藏青', color: '#123b66', swatch: 'history/color-swatches/01-navy-swatch-no-text.webp', image: 'history/color-thread-closeups/01-navy-thread-closeup.png', meaning: '沉静深远，象征山川、夜色与坚韧。' },
   { name: '朱砂红', color: '#bd3d2f', swatch: 'history/color-swatches/02-vermilion-swatch-no-text.webp', image: 'history/color-thread-closeups/02-vermilion-thread-closeup.png', meaning: '热烈喜庆，常用于节庆服饰与重要纹样。' },
   { name: '暖金', color: '#d6a252', swatch: 'history/color-swatches/03-warm-gold-swatch-no-text.webp', image: 'history/color-thread-closeups/03-warm-gold-thread-closeup.png', meaning: '温暖明亮，寓意丰收、祝福与希望。' },
-  { name: '靛蓝', color: '#416da3', swatch: 'history/color-swatches/04-indigo-swatch-no-text.webp', image: 'history/color-thread-closeups/04-indigo-thread-closeup.png', meaning: '清雅沉稳，连接河流、天空与远行。' },
-  { name: '米白', color: '#eee6d5', swatch: 'history/color-swatches/05-ivory-swatch-no-text.webp', image: 'history/color-thread-closeups/05-ivory-thread-closeup.png', meaning: '质朴纯净，衬托彩线与细密针脚。' },
-  { name: '翠绿', color: '#3c8068', swatch: 'history/color-swatches/06-jade-swatch-no-text.webp', image: 'history/color-thread-closeups/06-jade-thread-closeup.png', meaning: '生机盎然，象征植物、春天与新生。' }
+  { name: '靛蓝', color: '#416da3', swatch: 'history/color-swatches/indigo-swatch-user.png', image: 'history/color-thread-closeups/04-indigo-thread-closeup.png', meaning: '清雅沉稳，连接河流、天空与远行。' },
+  { name: '米白', color: '#eee6d5', swatch: 'history/color-swatches/ivory-swatch-user.png', image: 'history/color-thread-closeups/05-ivory-thread-closeup.png', meaning: '质朴纯净，衬托彩线与细密针脚。' },
+  { name: '翠绿', color: '#3c8068', swatch: 'history/color-swatches/jade-swatch-user.png', image: 'history/color-thread-closeups/06-jade-thread-closeup.png', meaning: '生机盎然，象征植物、春天与新生。' }
 ];
 export const colorMotifs = [
   { name: '蝴蝶纹', key: 'butterfly', line: 'history/color-motifs/butterfly-line.webp', desc: '生命、自由与繁衍的象征' },
@@ -89,4 +89,3 @@ export const colorExamples = [
   ['山野清雅', 'history/color-examples/08-mountain-elegant-image-no-text.webp'],
   ['现代苗风', 'history/color-examples/09-modern-miao-image-no-text.webp']
 ];
-export const defaultColorSet = [0, 2, 4];

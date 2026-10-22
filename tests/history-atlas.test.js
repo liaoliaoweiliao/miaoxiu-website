@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { colorChoices, colorExamples, colorMotifs, motifGroups, stories, stitches } from '../src/data/history.js';
 import { ATLAS_RECORDS, initialAtlasState, TIMES } from '../src/data/atlas.js';
-import { appliedColors, historyReducer, initialHistoryState, motifColorImage } from '../src/features/history/historyModel.js';
+import { colorLayerPlan, historyReducer, initialHistoryState } from '../src/features/history/historyModel.js';
 import { atlasReducer, filteredAtlas } from '../src/features/history/atlasModel.js';
 
-test('upstream history content retains every story, motif and stitch', () => {
-  assert.deepEqual(stories.map(({ pages }) => pages.length), [3, 3, 3]);
+test('archive history content includes storybook text, every motif and six stitches', () => {
+  assert.deepEqual(stories.map(({ pages }) => pages.length), [2, 2, 2]);
+  assert.match(stories[1].pages.join(''), /南迁路途/);
   assert.equal(Object.values(motifGroups).reduce((total, group) => total + group.items.length, 0), 10);
   assert.equal(stitches.length, 6);
   let state = historyReducer(initialHistoryState, { type: 'group', group: 'plant' });
@@ -17,19 +18,22 @@ test('upstream history content retains every story, motif and stitch', () => {
   assert.equal(state.motif, 0);
 });
 
-test('color selections toggle and replace oldest choice while producing canonical image names', () => {
+test('one to three colors keep selection order and never add unselected colors', () => {
   let state = initialHistoryState;
+  assert.deepEqual(colorLayerPlan([]), []);
+  assert.deepEqual(colorLayerPlan([5]), [5, 5, 5]);
+  assert.deepEqual(colorLayerPlan([5, 1]), [5, 1, 5]);
   for (const index of [5, 1, 3]) state = historyReducer(state, { type: 'color', index });
   assert.deepEqual(state.colors, [5, 1, 3]);
-  assert.equal(motifColorImage(colorMotifs[0], appliedColors(state.colors)), 'history/color-motifs/butterfly-c1-3-5.webp');
-  state = historyReducer(state, { type: 'color', index: 2 });
-  assert.deepEqual(state.colors, [1, 3, 2]);
+  assert.deepEqual(colorLayerPlan(state.colors), [5, 1, 3]);
+  assert.strictEqual(historyReducer(state, { type: 'color', index: 2 }), state, 'a fourth color requires deselecting an existing choice');
   state = historyReducer(state, { type: 'color', index: 3 });
-  assert.deepEqual(state.colors, [1, 2]);
-  assert.deepEqual(appliedColors(state.colors), [0, 1, 2]);
+  assert.deepEqual(state.colors, [5, 1]);
+  assert.deepEqual(colorLayerPlan(state.colors), [5, 1, 5]);
+  state = historyReducer(state, { type: 'color', index: 2 });
+  assert.deepEqual(state.colors, [5, 1, 2]);
   state = historyReducer(state, { type: 'colorReset' });
-  assert.deepEqual(appliedColors(state.colors), []);
-  assert.equal(motifColorImage(colorMotifs[2], appliedColors(state.colors)), colorMotifs[2].line);
+  assert.deepEqual(colorLayerPlan(state.colors), []);
 });
 
 test('stitch replay ignores stale completion and changing other tools stops playback', () => {
@@ -43,9 +47,10 @@ test('stitch replay ignores stale completion and changing other tools stops play
   assert.strictEqual(historyReducer(state, { type: 'stitchComplete', run: state.run }), state);
 });
 
-test('all historical content and every three-color combination resolve to preserved local assets', () => {
+test('all active archive images, storybook spreads and color masks exist locally', () => {
   const images = [
-    ...stories.map((item) => item.image),
+    'history/storybooks/cover-book-user.png',
+    ...stories.flatMap((item) => [item.image, item.book]),
     ...Object.values(motifGroups).flatMap((group) => group.items.map((item) => item.image)),
     ...stitches.flatMap((item) => [item.thumb, item.finish]),
     ...colorChoices.flatMap((item) => [item.swatch, item.image]),
@@ -53,7 +58,7 @@ test('all historical content and every three-color combination resolve to preser
     ...colorMotifs.map((item) => item.line),
   ];
   for (const motif of colorMotifs) {
-    for (let a = 0; a < 6; a += 1) for (let b = a + 1; b < 6; b += 1) for (let c = b + 1; c < 6; c += 1) images.push(motifColorImage(motif, [a, b, c]));
+    for (let layer = 0; layer < 3; layer += 1) images.push(`history/color-motifs/${motif.key}-paint-${layer}.png`);
   }
   for (const image of images) assert.ok(existsSync(new URL(`../public/assets/${image}`, import.meta.url)), image);
 });
