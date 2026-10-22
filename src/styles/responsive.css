@@ -9,11 +9,6 @@ html { scroll-padding-top: calc(var(--header-height) + 16px); }
   width: calc(100% - 2 * var(--page-gutter));
 }
 button, input, select, textarea { max-width: 100%; }
-.nav-inner { position: relative; gap: clamp(12px, 1.8vw, 30px); }
-.nav-tools { flex-shrink: 0; }
-.brand { min-width: 0; }
-.brand-mark { flex: 0 0 50px; width: 50px; height: 52px; }
-.nav { gap: clamp(10px, 2vw, 32px); }
 .footer-links { flex-wrap: wrap; row-gap: 12px; }
 .source-overview, .source-group-heading { flex-wrap: wrap; }
 .source-credit, .source-reference { overflow-wrap: anywhere; }
@@ -103,19 +98,6 @@ button, input, select, textarea { max-width: 100%; }
 }
 @media (max-width: 760px) {
   :root { --header-height: 62px; }
-  .nav-inner { height: auto; min-height: 62px; padding-inline: var(--page-gutter); gap: 8px; }
-  .brand { font-size: clamp(12px, 3.4vw, 17px); gap: 7px; }
-  .brand-mark { flex-basis: 36px; width: 36px; height: 40px; }
-  .nav-tools { gap: 8px; }
-  .nav { top: 100%; max-height: calc(100dvh - 62px); overflow-y: auto; }
-  .search { flex-shrink: 0; }
-  .search.is-open input {
-    display: block; position: absolute; left: var(--page-gutter); top: calc(100% + 8px);
-    width: calc(100% - 2 * var(--page-gutter)); height: 46px; padding: 0 16px;
-    border: 1px solid #bd9867; border-radius: 6px; background: #06243d;
-    font-size: 16px; box-shadow: 0 8px 24px #00101be6;
-  }
-  .search.is-open input:focus { outline: 2px solid #f3d09b; outline-offset: 2px; }
   .hero-dots { bottom: 28px; }
   .hero-controls { bottom: 14px; }
   .feature-editorial .feature-content { padding-inline: clamp(16px, 5vw, 25px); }

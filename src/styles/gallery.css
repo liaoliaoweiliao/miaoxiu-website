@@ -1,12 +1,3 @@
-body[data-page="gallery"] {
-  background: #061d32;
-  background-image: none;
-}
-
-body[data-page="gallery"]::before {
-  display: none;
-}
-
 .jing-gallery {
   --thread-red: #e3705c;
   --thread-dark: #b8443d;
@@ -17,14 +8,8 @@ body[data-page="gallery"]::before {
   isolation: isolate;
   overflow: hidden;
   color: var(--ink);
-  background-color: #08273d;
-  background-image:
-    radial-gradient(ellipse at 50% 0, #23647770 0, transparent 72%),
-    linear-gradient(90deg, #02172c15, #06243ab8 22%, #06243ac9 50%, #06243ab8 78%, #02172c15),
-    url('/assets/common/page-background.webp');
-  background-size: 100% 1200px, 100% 100%, 100% auto;
-  background-repeat: no-repeat, no-repeat, repeat-y;
-  box-shadow: inset 0 1px #d1aa7550;
+  background: transparent;
+  box-shadow: inset 0 1px var(--border-thread);
 }
 
 .jing-gallery::before,
@@ -37,7 +22,7 @@ body[data-page="gallery"]::before {
 }
 
 .jing-gallery::before {
-  opacity: .5;
+  opacity: var(--edge-motif-opacity);
   background-image: url('/assets/gallery/embroidered-border.svg'), url('/assets/gallery/embroidered-border.svg');
   background-size: 20px 144px;
   background-position: left 22px top, right 22px top;
@@ -46,7 +31,7 @@ body[data-page="gallery"]::before {
 
 .jing-gallery::after {
   inset: 12px;
-  border: 1px solid #d0a76b45;
+  border: 1px solid var(--border-quiet);
 }
 
 .jing-heading {
@@ -622,8 +607,6 @@ body[data-page="gallery"]::before {
 }
 
 body[data-page="gallery"] .footer {
-  border-top: 1px solid #c5a16f3d;
-  background: linear-gradient(#08273d, #03172a);
   color: #c5ccca;
 }
 
@@ -635,11 +618,6 @@ body[data-page="gallery"] .footer-links button {
 
 body[data-page="gallery"] .footer .motto span {
   color: #efbb80;
-}
-
-body[data-page="gallery"] .footer-pattern {
-  opacity: .3;
-  filter: none;
 }
 
 @media (max-width: 1100px) {
@@ -677,13 +655,7 @@ body[data-page="gallery"] .footer-pattern {
 }
 
 @media (max-width: 760px) {
-  .jing-gallery {
-    background-size: 100% 800px, 100% 100%, auto 1400px;
-    background-position: center top;
-  }
-
   .jing-gallery::before {
-    opacity: .3;
     background-size: 9px 72px;
     background-position: left 9px top, right 9px top;
   }

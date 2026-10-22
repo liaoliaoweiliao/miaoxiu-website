@@ -1,27 +1,47 @@
-/* Keep the floral embroidery visible while lifting the shared indigo ground. */
-body {
-  background: radial-gradient(ellipse at 50% 8%, #245266 0%, #123b52 48%, #0b2e45 100%);
-}
-
-body[data-page="home"],
-body[data-page="history"],
-body[data-page="experience"],
-body[data-page="sources"] {
-  background-color: #173c50;
-  background-image:
-    linear-gradient(180deg, rgba(36, 70, 84, .18) 0%, rgba(25, 58, 75, .18) 45%, rgba(8, 33, 51, .43) 100%),
-    radial-gradient(ellipse at 50% 3%, rgba(186, 145, 104, .11), transparent 58%),
-    url('/assets/common/page-background.webp');
-  background-size: cover, cover, cover;
-  background-position: center top, center top, center top;
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-attachment: fixed, fixed, fixed;
-}
-
+/* Public navigation: one source for its ground, spacing and embroidered marker. */
 .topbar {
-  background-color: rgba(10, 38, 55, .92);
-  border-bottom-color: rgba(224, 178, 123, .34);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--nav-indigo);
+  border-bottom: 1px solid var(--border-thread);
 }
+
+.nav-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1450px;
+  min-height: var(--header-height);
+  margin: auto;
+  padding: 0 34px;
+  gap: clamp(16px, 2vw, 30px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 15px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #e8dbc4;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 52px;
+}
+
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
 
 .brand-title {
   position: relative;
@@ -32,10 +52,10 @@ body[data-page="sources"] {
   font-weight: 400;
   line-height: 1.35;
   letter-spacing: 1.5px;
-  transform: translateY(6px);
+  transform: translateY(3px);
 }
 
-/* Frame the supplied seal's transparent margins without changing its artwork. */
+/* Crop only the supplied seal's transparent margins. */
 .brand-seal {
   position: absolute;
   right: 0;
@@ -45,56 +65,119 @@ body[data-page="sources"] {
   overflow: hidden;
   pointer-events: none;
 }
+.brand-seal img { width: 100%; height: 100%; object-fit: cover; }
 
-.brand-seal img {
+.nav {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+  gap: clamp(10px, 2vw, 32px);
+}
+
+.nav-link {
+  display: grid;
+  grid-template-rows: auto 16px;
+  align-content: center;
+  justify-items: center;
+  row-gap: 5px;
+  position: relative;
+  padding: 15px 8px 5px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--nav-text);
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  transition: color .18s ease;
+}
+
+.nav-label { display: block; line-height: 1.5; letter-spacing: 1px; }
+.nav-link.active, .nav-link:hover, .nav-link:focus-visible { color: var(--nav-gold); }
+.topbar button:focus-visible { outline: 2px solid var(--nav-gold); outline-offset: 3px; }
+
+.nav-marker {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: calc(100% + 22px);
+  max-width: 112px;
+  height: 16px;
+  color: var(--nav-gold);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
 }
-
-@media (min-width: 761px) and (max-width: 1100px) {
-  .brand-title { font-size: clamp(15px, 1.75vw, 19px); letter-spacing: .5px; }
-  .nav-inner { gap: 12px; }
-  .brand { flex-shrink: 0; gap: 8px; }
-  .brand-mark { flex-basis: 38px; width: 38px; height: 40px; }
-  .nav { flex: 1; min-width: 0; gap: 8px; }
-  .nav-link { flex: 1; min-width: 0; padding-inline: 2px; }
-  .nav-marker { width: 64px; max-width: 100%; }
-}
-
-@media (min-width: 761px) {
-  .nav { transform: translateY(9px); }
-}
-
-/* Rhombus stitches, meanders and ruyi curls form a restrained embroidered border. */
-.nav-link.active::after { display: none; }
-.nav-marker { color: #dfb981; }
+.nav-link.active .nav-marker { opacity: 1; }
+.nav-link:not(.active):hover .nav-marker,
+.nav-link:not(.active):focus-visible .nav-marker { opacity: .65; }
+.nav-marker svg { display: block; width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
 .nav-scroll-line { stroke-width: 1.15; }
 .nav-scroll-return { stroke-width: .9; opacity: .85; }
 .nav-scroll-stitches { stroke-width: .75; stroke-dasharray: 2.2 2.8; opacity: .65; }
-.nav-scroll-knot { stroke-width: 1; fill: #0a2637; }
-.nav-scroll-heart { stroke-width: .65; fill: #e2bd84; }
-.nav-scroll-needle { fill: #a95440; stroke: #a95440; stroke-width: .4; }
-.nav-scroll-tip { fill: #c49a65; stroke-width: .6; }
+.nav-scroll-knot { stroke-width: 1; fill: var(--page-indigo-deep); }
+.nav-scroll-heart { stroke-width: .65; fill: var(--nav-gold); }
+.nav-scroll-needle { fill: #aa6654; stroke: #aa6654; stroke-width: .4; }
+.nav-scroll-tip { fill: #b79b75; stroke-width: .6; }
 
-@media (max-width: 900px) {
-  body[data-page="home"],
-  body[data-page="history"],
-  body[data-page="experience"],
-  body[data-page="sources"] {
-    background-attachment: scroll, scroll, scroll;
-  }
+.nav-tools { display: flex; align-items: center; flex-shrink: 0; gap: 14px; }
+.search { display: flex; flex-shrink: 0; height: 38px; max-width: 196px; border: 1px solid var(--border-quiet); border-radius: 24px; background: var(--surface-indigo-deep); }
+.search:focus-within { border-color: var(--nav-gold); }
+.search input { min-width: 0; width: 148px; border: 0; outline: 0; background: none; color: var(--nav-text); font-size: 12px; padding: 0 12px; }
+.search input::placeholder { color: #aab5c4; }
+.search button { padding: 0 10px; border: 0; background: none; color: var(--nav-gold); font-size: 24px; }
+.mini-flower, .hamburger { border: 0; background: none; color: var(--nav-gold); }
+.mini-flower { padding: 2px; font-size: 29px; border-radius: 4px; }
+.mini-flower[aria-pressed='true'] { background: rgb(208 181 139 / 10%); }
+.hamburger { display: none; font-size: 25px; padding: 2px; }
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .nav-inner { padding-inline: 20px; gap: 12px; }
+  .brand { gap: 8px; }
+  .brand-title { font-size: clamp(15px, 1.75vw, 19px); letter-spacing: .5px; }
+  .brand-mark { flex-basis: 38px; width: 38px; height: 40px; }
+  .nav { flex: 1; min-width: 0; gap: 8px; }
+  .nav-link { flex: 1; min-width: 0; padding-inline: 2px; font-size: 13px; }
+  .nav-marker { width: 64px; max-width: 100%; }
+  .search { max-width: 150px; }
+  .search input { width: 100px; }
 }
 
 @media (max-width: 760px) {
+  .nav-inner { min-height: var(--header-height); padding-inline: var(--page-gutter); gap: 8px; }
+  .brand { flex-shrink: 1; gap: 7px; }
   .brand-title { font-size: clamp(17px, 5vw, 23px); letter-spacing: .5px; }
-
-  .nav.open {
-    padding-top: 14px;
-    background: rgba(10, 38, 55, .98);
-    border-bottom-color: rgba(224, 178, 123, .42);
+  .brand-mark { flex-basis: 36px; width: 36px; height: 40px; }
+  .nav-tools { gap: 8px; }
+  .hamburger { display: block; }
+  .mini-flower { display: none; }
+  .nav {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    max-height: calc(100dvh - var(--header-height)); overflow-y: auto;
+    padding: 14px 16px; flex-direction: column; gap: 0;
+    background: var(--nav-indigo); border-bottom: 1px solid var(--border-thread);
   }
+  .nav.open { display: flex; }
+  .nav-link { align-self: flex-start; padding: 11px 16px 8px; row-gap: 4px; }
+  .nav-marker { max-width: 102px; }
+  .search { width: 35px; height: 35px; border: 0; background: none; }
+  .search input { display: none; }
+  .search button { padding: 0 6px; font-size: 28px; }
+  .search.is-open input {
+    display: block; position: absolute; left: var(--page-gutter); top: calc(100% + 8px);
+    width: calc(100% - 2 * var(--page-gutter)); height: 46px; padding: 0 16px;
+    border: 1px solid var(--nav-gold); border-radius: 6px; background: var(--surface-indigo-deep);
+    font-size: 16px; box-shadow: 0 8px 20px rgb(10 16 28 / 25%);
+  }
+  .search.is-open input:focus { outline: 2px solid var(--nav-gold); outline-offset: 2px; }
+}
+
+@media (max-width: 380px) {
+  .brand-title { font-size: 17px; }
+  .brand { gap: 5px; }
+  .brand-mark { flex-basis: 32px; width: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link, .nav-marker { transition: none; }
 }
 
 /* Running stitches and small geometric knots echo Miao brocade borders. */
@@ -102,7 +185,7 @@ body[data-page="sources"] {
   position: absolute;
   z-index: 4;
   inset: 9px;
-  border: 1px dashed rgba(228, 190, 143, .56);
+  border: 1px dashed var(--border-thread);
   pointer-events: none;
   transition: border-color .35s ease;
 }
@@ -113,7 +196,7 @@ body[data-page="sources"] {
   height: 9px;
   border: 1px solid #f0d6ad;
   background: #b78a59;
-  box-shadow: 0 0 0 2px #092a41, 0 0 0 3px rgba(231, 183, 128, .62);
+  box-shadow: 0 0 0 2px var(--page-indigo-deep), 0 0 0 3px rgba(231, 183, 128, .62);
   transform: rotate(45deg);
   transition: background-color .35s ease, box-shadow .35s ease;
 }
@@ -130,7 +213,7 @@ body[data-page="sources"] {
 
   .feature-editorial .feature-card:hover .feature-stitch-knot {
     background: #bd5547;
-    box-shadow: 0 0 0 2px #092a41, 0 0 0 3px rgba(233, 185, 130, .78);
+    box-shadow: 0 0 0 2px var(--page-indigo-deep), 0 0 0 3px rgba(233, 185, 130, .78);
   }
 }
 

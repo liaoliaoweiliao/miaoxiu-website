@@ -8,7 +8,7 @@ const navigation = [
   ['gallery', '作品展览'],
 ];
 
-export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }) {
+export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNavigate }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef(null);
   const searchButtonRef = useRef(null);
@@ -89,6 +89,7 @@ export function Header({ page, nav, query, onQueryChange, onAction, onNavigate }
             onClick={() => onAction('theme')}
             title="纹样装饰"
             aria-label="切换纹样装饰"
+            aria-pressed={bloom}
           >
             ❀
           </button>

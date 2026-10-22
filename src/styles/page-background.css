@@ -1,23 +1,75 @@
-/* ===== 统一氛围底图：首页 / 苗绣探源 / 互动体验 =====
-   底图为 assets/common/page-background.webp（深蓝花鸟暗纹），
-   叠一层自上而下的暗色蒙版，保证正文与卡片的可读性。 */
-body[data-page="home"],
-body[data-page="history"],
-body[data-page="experience"]{
-  background-color:#04182b;
-  background-image:
-    linear-gradient(180deg,rgba(3,20,36,.46) 0%,rgba(3,20,36,.34) 42%,rgba(2,14,26,.68) 100%),
-    url('/assets/common/page-background.webp');
-  background-size:cover,cover;
-  background-position:center top,center top;
-  background-repeat:no-repeat,no-repeat;
-  background-attachment:fixed,fixed;
+/* Shared cloth ground. Effects belong only to these decorative layers. */
+:root {
+  --page-indigo: #202b43;
+  --page-indigo-raised: #283851;
+  --page-indigo-deep: #1a263c;
+  --surface-indigo: #24334a;
+  --surface-indigo-deep: #1c293f;
+  --nav-indigo: rgb(23 34 53 / 97%);
+  --nav-text: #e1e0db;
+  --nav-gold: #d0b58b;
+  --border-thread: rgb(195 171 134 / 34%);
+  --border-quiet: rgb(175 187 202 / 22%);
+  --motif-opacity: .08;
+  --edge-motif-opacity: .16;
+  --weave-opacity: .18;
+  --cloth-ground: radial-gradient(ellipse at 50% 0, var(--page-indigo-raised), transparent 70%),
+    linear-gradient(180deg, var(--page-indigo), var(--page-indigo-deep));
 }
-/* 让页面主体自身的大面积渐变让位给底图 */
-body[data-page="history"] .history-page,
-body[data-page="experience"] .experience-page{background:transparent}
-@media(max-width:900px){
-  body[data-page="home"],
-  body[data-page="history"],
-  body[data-page="experience"]{background-attachment:scroll,scroll;background-position:center top,center top}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  isolation: isolate;
+  background: var(--page-indigo);
+  background-image: var(--cloth-ground);
+  background-attachment: fixed;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -2;
+  opacity: var(--weave-opacity);
+  background-image:
+    repeating-linear-gradient(0deg, rgb(230 228 218 / 4%) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgb(6 14 27 / 12%) 0 1px, transparent 1px 4px);
+}
+
+body::after {
+  z-index: -1;
+  opacity: var(--motif-opacity);
+  background: url('/assets/common/page-background.webp') center top / 100% auto no-repeat;
+  filter: grayscale(.9) brightness(1.7);
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 65%) 12%, transparent 34% 66%, rgb(0 0 0 / 65%) 88%, #000);
+}
+
+body.bloom {
+  --motif-opacity: .10;
+  --edge-motif-opacity: .22;
+}
+
+.footer {
+  border-top: 1px solid var(--border-quiet);
+  background: linear-gradient(180deg, var(--page-indigo-deep), #172236);
+}
+
+.footer-pattern {
+  opacity: var(--motif-opacity);
+  filter: grayscale(.9);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  body::after {
+    /* One complete textile, without tiling or losing the side motifs. */
+    mask-image: linear-gradient(90deg, #000, transparent 28% 72%, #000);
+  }
 }
