@@ -39,7 +39,7 @@ for (const viewport of [{ width: 320, height: 700 }, { width: 640, height: 500 }
         const photos = await page.locator('.jing-work-photo').evaluateAll((elements) => elements.map((element) => ({ width: element.clientWidth, height: element.clientHeight })));
         expect(photos).toHaveLength(18);
         expect(photos.every((photo) => photo.width === photos[0].width && photo.height === photo.width)).toBe(true);
-        expect(await page.locator('.jing-work h2').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
+        expect(await page.locator('.jing-work').first().getByRole('heading', { level: 2 }).evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
       }
     }
     expect(errors).toEqual([]);
@@ -123,6 +123,8 @@ test('image, story and character dialogs fit a short viewport after resizing', a
   await page.keyboard.press('Escape');
   await page.goto('/#history');
   await page.locator('.story-image').first().click();
+  await expectInside(page.locator('.story-animation-shell'), page.locator('.story-animation-overlay'));
+  await page.getByRole('button', { name: '阅读文字', exact: true }).click();
   await expectInside(page.locator('.story-reader-panel'), page.locator('.story-reader'));
   await page.locator('.story-reader-nav button').last().scrollIntoViewIfNeeded();
   await page.keyboard.press('Escape');

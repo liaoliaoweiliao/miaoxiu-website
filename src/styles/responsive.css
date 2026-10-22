@@ -181,6 +181,7 @@ button, input, select, textarea { max-width: 100%; }
 @media (max-height: 500px) {
   .topbar { position: relative; }
   .avatar-panel { position: static; }
+  .viewer-expanded .viewer-viewport { min-height: 0; }
   .image-lightbox .image-viewer-stage,
   .image-lightbox-body.has-details .image-viewer-stage { height: 50dvh; }
   .story-reader-panel { grid-template-columns: .65fr 1.35fr; grid-template-rows: minmax(0, 1fr); }

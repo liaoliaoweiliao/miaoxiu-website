@@ -95,7 +95,7 @@ export default function LookViewer({ collection, revision }) {
     <div ref={viewportRef} className={`viewer-viewport ${dragging ? 'is-dragging' : ''}`} tabIndex={0} role="group" aria-label="拖拽移动人物，滚轮或双指缩放，方向键移动，加减号缩放，零键复位" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onDoubleClick={reset}>
       <div className="viewer-halo" aria-hidden="true" /><div className="viewer-floor" aria-hidden="true" />
       <div className="viewer-actor" style={{ transform: `translate(${view.x}px,${view.y}px) scale(${view.scale})` }}><div className="avatar-canvas" aria-label="当前人物预览"><div key={appearance} className="garment-display garment-enter" data-appearance={appearance}>
-        <img className={`whole-avatar ${dressed ? 'is-dressed' : ''}`} src={assetUrl(layer.src)} alt={dressed ? '已穿戴整套服装的人物' : collection.gender === 'girl' ? 'renwu ip 原始女孩形象' : 'renwu ip2 原始男孩形象'} />
+        <img className={`whole-avatar ${dressed ? 'is-dressed' : ''}`} src={assetUrl(layer.src)} alt={dressed ? '已穿戴整套服装的人物' : collection.gender === 'girl' ? '原始女孩形象' : '原始男孩形象'} />
         {dressed && <><span className="garment-shimmer" style={{ '--garment-mask': `url("${assetUrl(layer.src)}")` }} aria-hidden="true" /><span className="garment-sparks" aria-hidden="true">{[0, 1, 2, 3, 4].map((index) => <i key={index} style={{ '--glint': index }}>✧</i>)}</span></>}
       </div></div></div><span className="viewer-corner viewer-corner-tl" aria-hidden="true" /><span className="viewer-corner viewer-corner-br" aria-hidden="true" />
     </div>
