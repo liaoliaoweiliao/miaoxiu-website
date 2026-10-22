@@ -157,6 +157,9 @@ test('stories, motif navigation, stitch animation and three-color palette', asyn
   await page.locator('.story-image').first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
+  await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'open');
+  await expectImagesLoaded(page);
+  await page.getByRole('button', { name: '阅读文字', exact: true }).click();
   await expect(page.locator('.story-reader-count')).toContainText('01 /');
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('.story-reader-count')).toContainText('02 /');

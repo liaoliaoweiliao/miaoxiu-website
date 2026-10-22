@@ -94,7 +94,7 @@
 .color-lab-panel{position:relative;min-height:420px;overflow:hidden;border:1px solid #315b83;border-radius:14px;background:linear-gradient(150deg,#12375c,#0a294b 72%,#08223e);box-shadow:inset 0 0 0 1px #83a6c322,0 8px 20px #01182b66;padding:18px 20px}
 .color-lab-panel:before{content:'✥';position:absolute;left:18px;top:15px;color:#f4c579;font-size:17px}.color-lab-panel h3{margin:0 0 16px 23px;color:#ffe0a6;font-size:22px;letter-spacing:2px;text-shadow:0 2px 6px #061b32}
 .color-motif-tabs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #466d94;border-radius:13px;overflow:hidden;margin-bottom:14px}.color-motif-tab{border:0;border-right:1px solid #466d94;background:#0b2b4d;color:#edf0ed;padding:9px 5px;font-size:14px}.color-motif-tab:last-child{border-right:0}.color-motif-tab.is-active{background:linear-gradient(#f5d18e,#d8a25b);color:#182a3e;font-weight:700}
-.color-motif-art{position:relative;width:100%;height:320px;border:1px solid #315f82;border-radius:9px;overflow:hidden;padding:0;background:#092946;color:#fff;text-align:left}.color-motif-art img{width:100%;height:100%;object-fit:cover;filter:saturate(1.1)}.color-motif-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,#051c34d9)}.color-motif-art span{position:absolute;z-index:1;left:14px;right:12px;bottom:12px;color:#ffe2a9;font-size:13px}
+.color-motif-art{position:relative;width:100%;height:320px;border:1px solid #315f82;border-radius:9px;overflow:hidden;padding:8px;background:#f8f7e9;color:#fff;text-align:left;isolation:isolate}.color-motif-art img{width:100%;height:100%;object-fit:contain;object-position:center center;filter:none}.color-motif-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,#051c34d9)}.color-motif-art span{position:absolute;z-index:3;left:14px;right:12px;bottom:12px;color:#ffe2a9;font-size:13px}
 .color-swatch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.color-swatch{border:1px solid transparent;border-radius:10px;background:#0a2948;color:#f4f0e7;padding:8px 4px 7px;transition:transform .2s,border-color .2s,box-shadow .2s}.color-swatch span{display:block;width:68px;height:68px;margin:0 auto 6px;border-radius:50%;background-size:cover;background-position:center;box-shadow:inset 0 0 0 3px #061d35,0 3px 10px #0008}.color-swatch b{font-size:12px;font-weight:500}.color-swatch:hover,.color-swatch.is-active{border-color:#f5c778;box-shadow:0 0 0 2px #f5c77855,0 0 18px #e8aa5b55;transform:translateY(-2px)}.color-swatch.is-active span{box-shadow:inset 0 0 0 3px #f7d78e,0 0 0 3px #b85a35,0 0 17px #efb263}
 .color-example-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:17px;padding-top:14px;border-top:1px solid #d6b77b}.color-example{border:1px solid #345a7c;border-radius:8px;overflow:hidden;padding:0;background:#0a2948;color:#f7e5bf}.color-example img{display:block;width:100%;height:66px;object-fit:cover}.color-example span{display:block;padding:5px 2px;font-size:11px}.color-example.is-active{border-color:#f5c778;box-shadow:0 0 0 2px #f5c77855}
 .color-meaning-panel{padding-left:18px;padding-right:18px}.meaning-art{height:240px;border:1px solid #f0c678;border-radius:12px 12px 0 0;overflow:hidden}.meaning-art img{width:100%;height:100%;object-fit:cover;filter:saturate(1.25) contrast(1.04)}.meaning-copy{position:relative;margin-top:-1px;padding:14px 12px 13px;background:#102f50e8;border:1px solid #f0c678;border-top:0}.meaning-dot{display:inline-block;width:27px;height:27px;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 0 0 1px #f6dfb0}.meaning-copy strong{color:#ffe1a1;font-size:21px;vertical-align:middle}.meaning-copy p{margin:10px 0 0;color:#f0eee5;font-size:13px;line-height:1.7}.meaning-bottom-art{display:block;width:100%;height:85px;object-fit:cover;border:1px solid #d6b77b;border-top:0;border-radius:0 0 10px 10px;opacity:.9}.color-challenge{display:block;width:min(610px,80%);margin:18px auto 0;border:1px solid #e7c17d;border-radius:28px;background:#0d2c4c;color:#f9deb0;padding:10px 20px;font-size:17px;letter-spacing:1px;box-shadow:0 0 0 2px #0d2c4c,0 0 0 3px #8e6840}.color-challenge span{color:#f5c373;margin:0 12px}.color-challenge b{color:#a9e0be;font-size:12px}.color-challenge:hover,.color-challenge.is-active{background:#17496e;box-shadow:0 0 0 2px #17496e,0 0 0 3px #f0bf70,0 0 18px #efb56566}
@@ -108,6 +108,7 @@
 
 /* 色彩解析静态展示：左侧纹样切换时不缩放、不淡入、不移动。 */
 .color-motif-art img,.color-motif-art.has-color img{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
+.color-motif-art img.color-motif-line{padding:0!important}
 
 /* 纹样图案圆形放大镜 */
 .motif-art[data-magnifier]{cursor:none}
@@ -123,20 +124,233 @@
 .motif-art[data-magnifier]{cursor:none}
 @media(max-width:640px){.motif-art[data-magnifier] .motif-magnifier{background-size:250% 250%}}
 
-/* ===== 苗绣小故事：卡片浮动光晕 + 沉浸式阅读器 ===== */
-[data-story-card]{--story-tilt-x:0deg;--story-tilt-y:0deg;--story-glow-x:50%;--story-glow-y:50%;transform:perspective(900px) rotateX(var(--story-tilt-x)) rotateY(var(--story-tilt-y));transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s,border-color .5s}
-[data-story-card]:hover,[data-story-card]:focus-within{transform:perspective(900px) rotateX(var(--story-tilt-x)) rotateY(var(--story-tilt-y)) translateY(-6px);box-shadow:0 22px 42px #01111fc4,0 0 0 1px #ef3d3966}
-[data-story-card] .story-image{overflow:hidden}
-.story-card:hover .story-image img{transform:scale(1.07);filter:saturate(1.2) brightness(1.03)}
-.story-play{opacity:0;transform:translate(-50%,-50%) scale(.7);transition:opacity .35s ease,transform .5s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 22px #021b33b3;backdrop-filter:blur(2px)}
-[data-story-card]:hover .story-play,[data-story-card]:focus-within .story-play{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.story-play:after{content:'';position:absolute;inset:-5px;border:1px solid #ffffff5c;border-radius:50%;animation:storyPulse 2.6s ease-out infinite}
-@keyframes storyPulse{0%{transform:scale(.9);opacity:.85}70%{transform:scale(1.42);opacity:0}100%{opacity:0}}
-.story-glint{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .45s;background:radial-gradient(220px circle at var(--story-glow-x) var(--story-glow-y),#ffd9a52b,transparent 66%)}
-[data-story-card]:hover .story-glint{opacity:1}
-.story-more{display:inline-flex;align-items:center;gap:9px;box-shadow:0 6px 14px #01111f66}
-.story-more-count{font-size:10px;letter-spacing:1px;padding:1px 6px;border:1px solid #ffe5c052;border-radius:999px;color:#ffe5c0cc}
+/* 六大针法：用连续 SVG 走线演示针迹，最后切换至原有成品素材 */
+.stitch-stage .stitch-crafted-svg{position:absolute;z-index:3;inset:12% 5% 11%;width:90%;height:77%;overflow:visible;pointer-events:none;transition:opacity .35s ease}
+.stitch-stage .stitch-drawn-line{fill:none;stroke-dasharray:100;stroke-dashoffset:100;opacity:.95}
+.stitch-stage.is-playing .stitch-drawn-line{animation:stitchRealDraw var(--draw-duration) cubic-bezier(.35,.05,.68,1) var(--draw-delay) both}
+@keyframes stitchRealDraw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+.stitch-stage.is-idle .stitch-drawn-line{stroke-dashoffset:100}
+.stitch-stage.is-complete .stitch-crafted-svg{opacity:0}
+.stitch-stage.is-playing .stitch-finish-image,.stitch-stage.is-idle .stitch-finish-image{opacity:0!important;animation:none!important}
+.stitch-stage.is-complete .stitch-finish-image{position:absolute;z-index:4;inset:10% 6% 12%;width:88%;height:78%;object-fit:contain;opacity:1!important;filter:none!important;transform:none!important;animation:stitchFinalAppear .65s ease both!important}
+@keyframes stitchFinalAppear{from{opacity:0;transform:scale(.94);filter:brightness(1.6)}to{opacity:1;transform:scale(1);filter:none}}
+.stitch-moving-needle{opacity:0;animation:stitchNeedleVisible .52s linear var(--needle-delay) both;filter:drop-shadow(0 0 1px #ffeab0)}
+@keyframes stitchNeedleVisible{0%,100%{opacity:0}10%,90%{opacity:1}}
+.stitch-demo-heading,.stitch-demo-footer{position:absolute;z-index:5;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fce4b2;pointer-events:none;text-shadow:0 1px 3px #031427}
+.stitch-demo-heading{top:14px;font-size:14px}.stitch-demo-heading small{font-size:11px;color:#dbe4e9}
+.stitch-demo-footer{bottom:13px;font-size:11px;color:#e7d4af}.stitch-demo-footer span:last-child{color:#fad18b;white-space:nowrap}
+@media(max-width:640px){.stitch-demo-heading{font-size:12px}.stitch-demo-heading small,.stitch-demo-footer{font-size:9px}}
 
+/* 六大针法演示局部微调：放大绣面、针线同步、成品惊喜弹出；不改变其他区域。 */
+.stitch-stage .stitch-crafted-svg{inset:5% 1% 5%;width:98%;height:90%;overflow:visible}
+.stitch-stage .stitch-underlay{opacity:.5}
+.stitch-stage .stitch-moving-needle{animation:stitchNeedleVisible var(--needle-duration) linear var(--needle-delay) both;filter:drop-shadow(0 0 1.2px #ffe9be)}
+.stitch-stage .stitch-needle-shaft-live{vector-effect:non-scaling-stroke}
+.stitch-stage.is-complete .stitch-finish-image{inset:5% 2%;width:96%;height:90%;object-fit:contain;opacity:1!important;animation:stitchFinishPop .84s cubic-bezier(.18,1.4,.36,1) both!important;transform-origin:center center;filter:none!important}
+.stitch-stage.is-complete:after{content:'';position:absolute;z-index:3;inset:12% 14%;border-radius:50%;background:radial-gradient(ellipse,#ffe3a380 0%,#f1c76b44 32%,transparent 68%);pointer-events:none;animation:stitchFinishGlow 1s ease-out both}
+@keyframes stitchFinishPop{0%{opacity:0;transform:scale(.48) translateY(12px) rotate(-3deg);filter:brightness(1.55)}55%{opacity:1;transform:scale(1.075) translateY(-3px) rotate(.7deg);filter:brightness(1.2)}76%{transform:scale(.975) rotate(-.25deg)}100%{opacity:1;transform:scale(1) rotate(0);filter:none}}
+@keyframes stitchFinishGlow{0%{opacity:0;transform:scale(.2)}30%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.55)}}
+@keyframes stitchNeedleVisible{0%,100%{opacity:0}1%,98%{opacity:1}}
+
+
+/* 六大针法最终微调：使用用户新成品图，并继续放大演示区域与绣针。 */
+.stitch-stage .stitch-crafted-svg{inset:2% 0 2%;width:100%;height:96%;overflow:visible}
+.stitch-stage .stitch-underlay{opacity:.42}
+.stitch-stage .stitch-drawn-line{stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 1.6px rgba(255,210,138,.34))}
+.stitch-stage .stitch-moving-needle{animation:stitchNeedleVisible var(--needle-duration) linear var(--needle-delay) both;filter:drop-shadow(0 0 2px #ffe3b8) drop-shadow(0 0 5px rgba(255,224,155,.24))}
+.stitch-stage .stitch-needle-shaft-live,.stitch-stage .stitch-needle-eye,.stitch-stage .stitch-needle-thread,.stitch-stage .stitch-needle-tip{vector-effect:non-scaling-stroke}
+.stitch-stage.is-complete .stitch-finish-image{inset:3% 1%;width:98%;height:94%;object-fit:contain;object-position:center center;opacity:1!important;animation:stitchFinishSurprise .92s cubic-bezier(.2,1.3,.25,1) both!important;transform-origin:center center;filter:none!important}
+.stitch-stage.is-complete:after{content:'';position:absolute;z-index:3;inset:8% 10%;border-radius:50%;background:radial-gradient(ellipse,#ffe8ae88 0%,#f4c66c4d 28%,transparent 70%);pointer-events:none;animation:stitchFinishHalo 1.12s ease-out both}
+@keyframes stitchFinishSurprise{0%{opacity:0;transform:scale(.42) translateY(18px)}52%{opacity:1;transform:scale(1.10) translateY(-5px)}74%{transform:scale(.98) translateY(1px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes stitchFinishHalo{0%{opacity:0;transform:scale(.25)}26%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
+
+/* 苗绣探源 · 苗绣小故事：三个故事卡片统一为等宽等高，其他模块保持原样。 */
+.history-story .story-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.history-story .story-grid>.story-card{min-width:0;min-height:350px;height:350px;grid-column:auto}
+@media(max-width:900px){
+  .history-story .story-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .history-story .story-grid{grid-template-columns:minmax(0,1fr)}
+  .history-story .story-grid>.story-card{min-height:275px;height:275px}
+}
+
+/* 苗绣探源 · 六大针法：快节奏、清晰针尖、成品在文字下方惊喜弹出（仅作用于本模块）。 */
+.history-stitches .stitch-stage .stitch-moving-needle{filter:drop-shadow(0 0 2.6px #ffecb9) drop-shadow(0 0 5.5px rgba(252,183,81,.85));}
+.history-stitches .stitch-stage .stitch-needle-outline,
+.history-stitches .stitch-stage .stitch-needle-shaft-live,
+.history-stitches .stitch-stage .stitch-needle-shine,
+.history-stitches .stitch-stage .stitch-needle-eye,
+.history-stitches .stitch-stage .stitch-needle-thread,
+.history-stitches .stitch-stage .stitch-needle-tip{vector-effect:none;}
+.history-stitches .stitch-stage .stitch-crafted-svg{inset:6% 0 8%;width:100%;height:86%;}
+.history-stitches .stitch-stage.is-complete .stitch-finish-image{
+  position:absolute;z-index:4;
+  inset:59px 16px 47px!important;width:calc(100% - 32px);height:calc(100% - 106px);
+  object-fit:contain;object-position:center center;opacity:1!important;
+  transform-origin:50% 50%;filter:none!important;
+  animation:stitchResultSurprise2026 1.06s cubic-bezier(.2,1.22,.24,1) both!important;
+}
+.history-stitches .stitch-stage.is-complete:after{
+  content:'';position:absolute;z-index:3;inset:56px 22px 44px;border-radius:46%;
+  background:radial-gradient(ellipse,#fff5d6b5 0%,#f9d68c78 24%,#df9a4b24 54%,transparent 72%);
+  pointer-events:none;animation:stitchResultAura2026 1.4s ease-out both;
+}
+.history-stitches .stitch-stage .stitch-result-stars{position:absolute;z-index:4;pointer-events:none;inset:61px 15px 48px;opacity:0}
+.history-stitches .stitch-stage .stitch-result-stars i{position:absolute;font-style:normal;color:#ffe6a0;font-size:clamp(15px,2vw,29px);text-shadow:0 0 12px #ffbf63,0 0 3px #fff8dd}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(1){top:7%;left:8%}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(2){top:30%;right:5%}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(3){bottom:4%;right:14%}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(4){bottom:15%;left:7%}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(5){top:8%;right:24%}
+.history-stitches .stitch-stage .stitch-result-stars i:nth-child(6){bottom:3%;left:29%}
+.history-stitches .stitch-stage.is-complete .stitch-result-stars{animation:stitchResultTwinkle2026 1.3s ease-out .08s both}
+@keyframes stitchResultSurprise2026{
+  0%{opacity:0;transform:translateY(22px) scale(.55) rotate(-2.5deg);filter:brightness(1.5)}
+  45%{opacity:1;transform:translateY(-7px) scale(1.105) rotate(.5deg);filter:brightness(1.1)}
+  68%{opacity:1;transform:translateY(1px) scale(.975) rotate(-.2deg)}
+  85%{transform:translateY(-1px) scale(1.018)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:none}
+}
+@keyframes stitchResultAura2026{0%{opacity:0;transform:scale(.25)}24%{opacity:1;transform:scale(.84)}55%{opacity:.7;transform:scale(1.12)}100%{opacity:0;transform:scale(1.35)}}
+@keyframes stitchResultTwinkle2026{0%{opacity:0;transform:scale(.7)}18%{opacity:1;transform:scale(1.06)}55%{opacity:.9;transform:scale(1.12)}100%{opacity:0;transform:scale(1.28)}}
+@media(max-width:640px){
+  .history-stitches .stitch-stage.is-complete .stitch-finish-image{inset:54px 11px 41px!important;width:calc(100% - 22px);height:calc(100% - 95px)}
+  .history-stitches .stitch-stage.is-complete:after{inset:54px 14px 41px}
+  .history-stitches .stitch-stage .stitch-result-stars{inset:54px 10px 41px}
+}
+
+
+/* 仅限苗绣探源 · 纹样图案：镜内 3 倍真实细节，镜外轻度虚化；文字始终清晰。 */
+.history-pattern .motif-art[data-magnifier] .motif-base-image{transition:filter .20s ease}
+.history-pattern .motif-art[data-magnifier].is-zooming .motif-base-image{filter:blur(2.5px) brightness(.84) saturate(.87)}
+.history-pattern .motif-art[data-magnifier] .motif-magnifier{z-index:2;background:#082f52;border:3px solid #f6dbaf;box-shadow:0 0 0 1px #4d6c82,0 8px 22px #001324b8,0 0 15px #f2cd8999}
+.history-pattern .motif-art[data-magnifier] .motif-magnifier .motif-zoom-image{position:absolute!important;inset:auto!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;left:var(--zoom-detail-left,0px)!important;top:var(--zoom-detail-top,0px)!important;right:auto!important;bottom:auto!important;width:var(--zoom-detail-width,300px)!important;height:var(--zoom-detail-height,300px)!important;transform:none!important;object-fit:fill!important;padding:0!important;margin:0!important;border:0!important;filter:none!important;background:transparent!important;transition:none!important;pointer-events:none}
+.history-pattern .motif-art[data-magnifier] .motif-art-copy{z-index:3}
+@media(hover:none),(pointer:coarse){.history-pattern .motif-art[data-magnifier]{cursor:auto}.history-pattern .motif-art[data-magnifier] .motif-magnifier{display:none!important}}
+
+/* 仅限苗绣探源 · 六大针法：更大的银色真针、放缓走线、成品铺满文字间的可用空间。 */
+.history-stitches .stitch-stage .stitch-moving-needle{filter:drop-shadow(0 0 1.4px #f1faff) drop-shadow(0 1px 2.5px #53728f)}
+.history-stitches .stitch-stage.is-complete .stitch-finish-image{
+  inset:42px 6px 32px!important;
+  width:calc(100% - 12px)!important;
+  height:calc(100% - 74px)!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:#0b1f3a;
+}
+.history-stitches .stitch-stage.is-complete:after{inset:43px 8px 33px}
+.history-stitches .stitch-stage .stitch-result-stars{inset:44px 8px 35px}
+@media(max-width:640px){
+  .history-stitches .stitch-stage.is-complete .stitch-finish-image{inset:40px 4px 31px!important;width:calc(100% - 8px)!important;height:calc(100% - 71px)!important}
+  .history-stitches .stitch-stage.is-complete:after{inset:41px 5px 32px}
+  .history-stitches .stitch-stage .stitch-result-stars{inset:42px 6px 33px}
+}
+
+/* 小屏幕六大针法：缩短空白高度，让横向成品图在文字间尽量铺满。 */
+@media(max-width:640px){.history-stitches .stitch-board{height:clamp(230px,64vw,285px)}}
+
+/* 苗绣探源 / 色彩解析：只渲染用户真正选择的颜色，不自动补色 */
+.color-motif-art .color-motif-paint{position:absolute;inset:8px;z-index:0;pointer-events:none;background:var(--paint-color);-webkit-mask-image:var(--paint-mask);mask-image:var(--paint-mask);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.color-motif-art img.color-motif-line{position:relative;z-index:1;mix-blend-mode:multiply;pointer-events:none}
+.color-motif-art>span{z-index:3}
+.color-motif-art:after{z-index:2;pointer-events:none}
+.color-swatch:disabled:not(.is-active){opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;border-color:transparent}
+
+/* 苗绣探源 · 连续运针：细长银针使用单一轨迹、柔和高光，去掉旧版强烈光晕。 */
+.history-stitches .stitch-stage .stitch-moving-needle{filter:drop-shadow(0 .4px .6px rgba(228,238,255,.7)) drop-shadow(0 1px 1.2px rgba(27,50,74,.65))}
+.history-stitches .stitch-stage.is-playing .stitch-drawn-line{animation-timing-function:linear}
+.history-stitches .stitch-stage .stitch-needle-shaft-live,
+.history-stitches .stitch-stage .stitch-needle-outline{shape-rendering:geometricPrecision}
+/* 色彩解析 · 上色蒙版使用与线稿相同的裁切盒，防止缩放造成色彩越界。 */
+.history-colors .color-motif-art .color-motif-paint{inset:8px;-webkit-mask-origin:content-box;mask-origin:content-box;-webkit-mask-clip:content-box;mask-clip:content-box;-webkit-mask-size:contain;mask-size:contain}
+.history-colors .color-motif-art img.color-motif-line{display:block;object-position:center center;object-fit:contain}
+
+
+/* 苗绣探源专属 · 简约苗绣针脚边框（仅改变边框外观，不改版式及交互）
+   细暖金线、藏蓝衬底与四角微型菱形十字绣纹；无大面积繁复装饰。 */
+.history-page {
+  --miao-edge-color: rgba(208,174,119,.70);
+  --miao-inner-edge: rgba(108,151,160,.25);
+  --miao-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2042%2042%22%3E%3Cg%20transform%3D%22translate%280%2C0%29%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M4%2038V13Q4%204%2013%204H38%22%20stroke%3D%22%23c7a777%22%20stroke-width%3D%221.25%22%20opacity%3D%22.83%22%2F%3E%0A%3Cpath%20d%3D%22M10%2030V17Q10%2010%2017%2010H30%22%20stroke%3D%22%237899a2%22%20stroke-width%3D%22.85%22%20opacity%3D%22.66%22%2F%3E%0A%3Cpath%20d%3D%22M9%209l6-6%206%206-6%206z%22%20fill%3D%22%2312395a%22%20stroke%3D%22%23d5b786%22%20stroke-width%3D%221.15%22%2F%3E%0A%3Cpath%20d%3D%22M15%205v8M11%209h8%22%20stroke%3D%22%23e8d5b4%22%20stroke-width%3D%22.65%22%2F%3E%0A%3Cpath%20d%3D%22M27%204l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3Cpath%20d%3D%22M4%2027l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --miao-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2042%2042%22%3E%3Cg%20transform%3D%22translate%2842%2C0%29%20scale%28-1%2C1%29%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M4%2038V13Q4%204%2013%204H38%22%20stroke%3D%22%23c7a777%22%20stroke-width%3D%221.25%22%20opacity%3D%22.83%22%2F%3E%0A%3Cpath%20d%3D%22M10%2030V17Q10%2010%2017%2010H30%22%20stroke%3D%22%237899a2%22%20stroke-width%3D%22.85%22%20opacity%3D%22.66%22%2F%3E%0A%3Cpath%20d%3D%22M9%209l6-6%206%206-6%206z%22%20fill%3D%22%2312395a%22%20stroke%3D%22%23d5b786%22%20stroke-width%3D%221.15%22%2F%3E%0A%3Cpath%20d%3D%22M15%205v8M11%209h8%22%20stroke%3D%22%23e8d5b4%22%20stroke-width%3D%22.65%22%2F%3E%0A%3Cpath%20d%3D%22M27%204l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3Cpath%20d%3D%22M4%2027l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --miao-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2042%2042%22%3E%3Cg%20transform%3D%22translate%280%2C42%29%20scale%281%2C-1%29%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M4%2038V13Q4%204%2013%204H38%22%20stroke%3D%22%23c7a777%22%20stroke-width%3D%221.25%22%20opacity%3D%22.83%22%2F%3E%0A%3Cpath%20d%3D%22M10%2030V17Q10%2010%2017%2010H30%22%20stroke%3D%22%237899a2%22%20stroke-width%3D%22.85%22%20opacity%3D%22.66%22%2F%3E%0A%3Cpath%20d%3D%22M9%209l6-6%206%206-6%206z%22%20fill%3D%22%2312395a%22%20stroke%3D%22%23d5b786%22%20stroke-width%3D%221.15%22%2F%3E%0A%3Cpath%20d%3D%22M15%205v8M11%209h8%22%20stroke%3D%22%23e8d5b4%22%20stroke-width%3D%22.65%22%2F%3E%0A%3Cpath%20d%3D%22M27%204l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3Cpath%20d%3D%22M4%2027l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --miao-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2042%2042%22%3E%3Cg%20transform%3D%22translate%2842%2C42%29%20scale%28-1%2C-1%29%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M4%2038V13Q4%204%2013%204H38%22%20stroke%3D%22%23c7a777%22%20stroke-width%3D%221.25%22%20opacity%3D%22.83%22%2F%3E%0A%3Cpath%20d%3D%22M10%2030V17Q10%2010%2017%2010H30%22%20stroke%3D%22%237899a2%22%20stroke-width%3D%22.85%22%20opacity%3D%22.66%22%2F%3E%0A%3Cpath%20d%3D%22M9%209l6-6%206%206-6%206z%22%20fill%3D%22%2312395a%22%20stroke%3D%22%23d5b786%22%20stroke-width%3D%221.15%22%2F%3E%0A%3Cpath%20d%3D%22M15%205v8M11%209h8%22%20stroke%3D%22%23e8d5b4%22%20stroke-width%3D%22.65%22%2F%3E%0A%3Cpath%20d%3D%22M27%204l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3Cpath%20d%3D%22M4%2027l3%203-3%203-3-3z%22%20stroke%3D%22%23caa875%22%20stroke-width%3D%22.8%22%20opacity%3D%22.72%22%2F%3E%0A%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --miao-border-knot: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2052%2012%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M1%206h15M36%206h15%22%20stroke%3D%22%23b89b6d%22%20stroke-width%3D%22.9%22%20opacity%3D%22.58%22%2F%3E%3Cpath%20d%3D%22M26%201l5%205-5%205-5-5z%22%20stroke%3D%22%23d2b17d%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M26%204v4m-2-2h4%22%20stroke%3D%22%23e8d1a4%22%20stroke-width%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M18%203l3%203-3%203-3-3zm16%200l3%203-3%203-3-3z%22%20stroke%3D%22%23829ca2%22%20stroke-width%3D%22.8%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+}
+/* 主区域：三张故事卡、纹样分类和图片区、针法演示区、色彩解析三栏。 */
+.history-page :is(.story-card,.motif-menu,.motif-feature,.motif-art,.stitch-board,.color-lab-panel) {
+  border:1px solid var(--miao-edge-color);
+  border-radius:9px;
+  box-shadow:inset 0 0 0 1px var(--miao-inner-edge),0 8px 18px rgba(0,17,35,.26);
+}
+.history-page :is(.story-card,.motif-menu,.motif-feature,.motif-art,.stitch-board,.color-lab-panel)::before {
+  content:"";
+  position:absolute;
+  inset:2px;
+  z-index:8;
+  pointer-events:none;
+  opacity:.94;
+  border:1px solid rgba(209,178,133,.15);
+  border-radius:7px;
+  background-image:var(--miao-border-tl),var(--miao-border-tr),var(--miao-border-bl),var(--miao-border-br),var(--miao-border-knot),var(--miao-border-knot);
+  background-repeat:no-repeat;
+  background-size:42px 42px,42px 42px,42px 42px,42px 42px,52px 12px,52px 12px;
+  background-position:left top,right top,left bottom,right bottom,center top,center bottom;
+}
+/* 原本两个卡片上的红色卷草角花较抢眼，替换成上面的低饱和细针脚边饰。 */
+.history-page .story-card::after,.history-page .motif-feature::after{content:none;display:none}
+.history-page .motif-menu{position:relative}
+/* 动画内部的金光和针法完成态不变，边框图层只展示在最外缘。 */
+.history-page .stitch-board::after{pointer-events:none}
+.history-page .stitch-board-ornament{color:#c7ac83;opacity:.60;font-size:19px}
+/* 针法选项和纹样分类行：弱化大面积亮金描边，保留点击反馈。 */
+.history-page .stitch-item{position:relative;border:1px solid rgba(179,150,111,.43);border-radius:6px;box-shadow:inset 3px 0 0 rgba(161,187,185,.15)}
+.history-page .stitch-item.is-selected{border-color:rgba(237,203,146,.90);box-shadow:inset 3px 0 0 rgba(235,199,139,.70),0 0 0 1px rgba(232,194,135,.26),0 5px 12px rgba(0,17,35,.40)}
+.history-page .motif-group-title{border-bottom-color:rgba(190,157,112,.32)}
+.history-page .motif-menu-item{border-bottom-color:rgba(165,180,172,.18)}
+/* 色卡、配色实例的小框与主区域色调统一，不触碰已有选中高亮。 */
+.history-page :is(.color-motif-tabs,.color-swatch,.color-example){border-color:rgba(183,157,113,.42)}
+.history-page .color-challenge{border-color:rgba(210,177,125,.64)}
+@media (max-width:640px){
+ .history-page :is(.story-card,.motif-menu,.motif-feature,.motif-art,.stitch-board,.color-lab-panel)::before{
+   background-size:30px 30px,30px 30px,30px 30px,30px 30px,38px 9px,38px 9px;
+ }
+}
+
+/* 针法演示底纹：仅移除十字形水印，不影响演示与边框。 */
+.history-page .history-stitches .stitch-board::after{content:none!important;display:none!important}
+
+/* 修复色彩寓意大图：保持原图完整显示及切换，避免图片区域塌陷。 */
+.history-page .color-meaning-panel .meaning-art {display:block;position:relative;width:100%;height:240px;min-height:240px;overflow:hidden;}
+.history-page .color-meaning-panel .meaning-art .meaning-main-image {display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;visibility:visible;}
+@media(max-width:900px){.history-page .color-meaning-panel .meaning-art{height:210px;min-height:210px;}}
+
+/* 阅读故事：离线版书本弹出、金光环绕、翻页定格动画 */
+.story-animation-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,48px);background:radial-gradient(circle at center,#6d3c22e8 0%,#140e16f5 58%,#060910f8 100%);backdrop-filter:blur(8px)}
+.story-animation-shell{position:relative;width:min(1080px,94vw);min-height:min(760px,88vh);display:flex;align-items:center;justify-content:center;isolation:isolate}
+.story-animation-shell:before{content:'';position:absolute;width:60%;height:34%;border-radius:50%;background:#f5b64e44;filter:blur(44px);opacity:.78;z-index:-1;animation:storyGlow 1s ease-in-out both}
+.story-book-cover,.story-book-open{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
+.story-book-cover{opacity:1;animation:storyBookFloat .82s ease-in-out infinite alternate;transition:opacity .35s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.story-book-cover img{width:min(360px,44vw);max-height:78vh;object-fit:contain;filter:drop-shadow(0 22px 24px #000b) drop-shadow(0 0 20px #f4b34c66)}
+.story-book-open{opacity:0;transform:scale(.62) rotateY(-75deg);transition:opacity .25s,transform .58s cubic-bezier(.16,.84,.32,1);pointer-events:none}
+.story-book-open img{width:100%;max-height:80vh;object-fit:contain;border:4px solid #e0a36b;border-radius:10px;box-shadow:0 24px 38px #000c,0 0 26px #f4b96366;background:#5b2f20}
+.story-animation-shell[data-phase="open"] .story-book-cover{opacity:0;transform:scale(.68) rotateY(90deg);animation:none}
+.story-animation-shell[data-phase="open"] .story-book-open{opacity:1;transform:scale(1) rotateY(0);transition-delay:.05s}
+.story-animation-close{position:absolute;right:-4px;top:18px;width:40px;height:40px;border:1px solid #f2c98e;border-radius:50%;background:#7e302ce8;color:#fff2d8;font-size:27px;line-height:1;z-index:4}
+.story-sparkles{position:absolute;inset:3% 14%;pointer-events:none;z-index:2}
+.story-sparkles i{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffe39c;box-shadow:0 0 8px 3px #f8b446,0 0 21px 7px #f29c3c88;animation:storySparkle 1s ease-in-out infinite}
+.story-sparkles i:nth-child(1){left:9%;top:29%;animation-delay:.04s}.story-sparkles i:nth-child(2){left:25%;top:14%;animation-delay:.17s}.story-sparkles i:nth-child(3){left:76%;top:18%;animation-delay:.27s}.story-sparkles i:nth-child(4){right:8%;top:39%;animation-delay:.41s}.story-sparkles i:nth-child(5){left:16%;bottom:21%;animation-delay:.32s}.story-sparkles i:nth-child(6){left:49%;bottom:8%;animation-delay:.1s}.story-sparkles i:nth-child(7){right:18%;bottom:19%;animation-delay:.48s}.story-sparkles i:nth-child(8){right:2%;top:61%;animation-delay:.22s}
+.story-animation-shell[data-phase="open"] .story-sparkles{opacity:0;transition:opacity .25s}
+@keyframes storyBookFloat{from{transform:translateY(-10px) rotate(-1.2deg)}to{transform:translateY(10px) rotate(1.2deg)}}
+@keyframes storyGlow{0%,100%{transform:scale(.82);opacity:.45}50%{transform:scale(1.1);opacity:1}}
+@keyframes storySparkle{0%,100%{transform:scale(.35);opacity:.2}45%{transform:scale(1.35);opacity:1}70%{transform:scale(.7);opacity:.45}}
+@media(max-width:640px){.story-animation-shell{min-height:78vh;width:96vw}.story-book-cover img{width:min(275px,66vw);max-height:68vh}.story-book-open img{max-height:72vh;border-width:2px;border-radius:6px}.story-animation-close{top:6px;right:0;width:34px;height:34px;font-size:22px}.story-sparkles{inset:7% 4%}}
+
+
+.color-motif-art{background:#f7f3e9;border-color:#d6b77b;display:flex;align-items:center;justify-content:center}.color-motif-art img{object-fit:contain;padding:0;filter:none;background:#f7f3e9;transition:opacity .22s,transform .35s,filter .35s}.color-motif-art.has-color img{animation:colorMotifReveal .45s ease both}@keyframes colorMotifReveal{from{opacity:.35;transform:scale(.97);filter:saturate(.4)}to{opacity:1;transform:scale(1);filter:saturate(1.08)}}.color-motif-art:after{background:linear-gradient(180deg,transparent 68%,#051c34d0)}
+
+/* 故事书的文字阅读模式，支持键盘翻节。 */
 .story-reader{position:fixed;inset:0;z-index:220;display:grid;place-items:center;padding:32px;background:radial-gradient(ellipse at 50% 28%,#062338f2,#020b14f8 72%);backdrop-filter:blur(10px);animation:storyFade .3s ease both}
 @keyframes storyFade{from{opacity:0}to{opacity:1}}
 .story-reader-panel{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;width:min(1060px,100%);min-height:min(64vh,560px);max-height:min(88vh,720px);overflow:hidden;border:1px solid #b98a5f66;border-radius:4px;background:linear-gradient(160deg,#0a3454,#061f36 62%,#04182b);box-shadow:0 40px 90px #000a12d9;animation:storyRise .52s cubic-bezier(.2,.8,.2,1) both}
@@ -182,4 +396,14 @@ body.story-reader-open{overflow:hidden}
  .story-reader-foot{flex-wrap:wrap;gap:10px}
  .story-reader-progress{flex-basis:100%;order:3}
  .story-reader-hint{display:none}
+}
+
+.story-book-read{position:absolute;z-index:4;bottom:0;left:50%;transform:translateX(-50%);border:1px solid #f2c98e;border-radius:20px;padding:9px 22px;background:#642d23;color:#fff2d8;white-space:nowrap}
+.history-colors .color-motif-art img.color-motif-line{padding:8px;box-sizing:border-box}
+.history-page .stitch-item{grid-template-columns:44px minmax(0,1fr) 16px;column-gap:10px}
+.history-page .color-swatch b,.history-page .color-swatch small{display:block}
+.history-page .color-swatch small{margin-top:4px;font-size:10px}
+@media(max-width:640px){.history-page .stitch-item{grid-template-columns:31px minmax(0,1fr) 12px;column-gap:5px}}
+@media(prefers-reduced-motion:reduce){
+ .history-page *,.story-animation-overlay *,.story-reader *{animation:none!important;transition:none!important}
 }
