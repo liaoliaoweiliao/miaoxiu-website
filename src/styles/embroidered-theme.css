@@ -7,6 +7,16 @@
   border-bottom: 1px solid var(--border-thread);
 }
 
+.topbar::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, transparent 0 9px, var(--nav-gold) 9px 14px, transparent 14px 23px);
+  opacity: .35;
+  pointer-events: none;
+}
+
 .nav-inner {
   position: relative;
   display: flex;
@@ -76,7 +86,7 @@
 
 .nav-link {
   display: grid;
-  grid-template-rows: auto 16px;
+  grid-template-rows: auto 12px;
   align-content: center;
   justify-items: center;
   row-gap: 5px;
@@ -98,9 +108,9 @@
 
 .nav-marker {
   display: block;
-  width: calc(100% + 22px);
-  max-width: 112px;
-  height: 16px;
+  width: calc(100% + 12px);
+  max-width: 90px;
+  height: 12px;
   color: var(--nav-gold);
   opacity: 0;
   pointer-events: none;
@@ -111,12 +121,9 @@
 .nav-link:not(.active):focus-visible .nav-marker { opacity: .65; }
 .nav-marker svg { display: block; width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
 .nav-scroll-line { stroke-width: 1.15; }
-.nav-scroll-return { stroke-width: .9; opacity: .85; }
 .nav-scroll-stitches { stroke-width: .75; stroke-dasharray: 2.2 2.8; opacity: .65; }
 .nav-scroll-knot { stroke-width: 1; fill: var(--page-indigo-deep); }
-.nav-scroll-heart { stroke-width: .65; fill: var(--nav-gold); }
 .nav-scroll-needle { fill: #aa6654; stroke: #aa6654; stroke-width: .4; }
-.nav-scroll-tip { fill: #b79b75; stroke-width: .6; }
 
 .nav-tools { display: flex; align-items: center; flex-shrink: 0; gap: 14px; }
 .search { display: flex; flex-shrink: 0; height: 38px; max-width: 196px; border: 1px solid var(--border-quiet); border-radius: 24px; background: var(--surface-indigo-deep); }

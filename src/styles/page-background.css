@@ -1,20 +1,21 @@
-/* Fresh indigo cloth: no legacy background imagery or page-specific wallpaper. */
+/* One quiet cloth ground; only the decorative layers change their opacity. */
 :root {
-  --page-indigo: #202b43;
-  --page-indigo-raised: #283851;
-  --page-indigo-deep: #1a263c;
-  --surface-indigo: #24334a;
-  --surface-indigo-deep: #1c293f;
-  --nav-indigo: rgb(23 34 53 / 98%);
+  --page-indigo: #18263d;
+  --page-indigo-raised: #263a52;
+  --page-indigo-mist: #52657b;
+  --page-indigo-deep: #17243a;
+  --surface-indigo: #26364e;
+  --surface-indigo-deep: #1e2d44;
+  --nav-indigo: rgb(19 30 49 / 98%);
   --nav-text: #e1e0db;
   --nav-gold: #d0b58b;
   --border-thread: rgb(195 171 134 / 34%);
   --border-quiet: rgb(175 187 202 / 22%);
-  --motif-opacity: .07;
+  --motif-opacity: .09;
   --edge-motif-opacity: .12;
   --weave-opacity: .045;
-  --cloth-ground: radial-gradient(ellipse at 42% 5%, rgb(67 88 114 / 16%), transparent 65%),
-    linear-gradient(165deg, var(--page-indigo), var(--page-indigo-deep));
+  --cloth-ground: linear-gradient(165deg, var(--page-indigo-raised) -110%, var(--page-indigo) 65%, var(--page-indigo-deep));
+  background-color: var(--page-indigo);
 }
 
 body {
@@ -41,27 +42,32 @@ body {
 }
 
 .cloth-edge {
-  width: clamp(170px, 18vw, 280px);
-  height: min(1000px, 110vh);
-  background: url('/assets/common/indigo-embroidery.svg') left top / 100% auto no-repeat;
+  top: 0;
+  bottom: 0;
+  width: clamp(180px, 28vw, 440px);
+  /* Preserve the source's proportions and crop its quiet center, never tile it. */
+  background: url('/assets/common/indigo-embroidery.webp') left center / auto 100% no-repeat;
+  filter: saturate(.3) brightness(1.35);
   opacity: var(--motif-opacity);
-  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 70%) 55%, transparent 95%);
+  mask-image: linear-gradient(90deg, #000 10%, rgb(0 0 0 / 80%) 50%, transparent 100%);
 }
-.cloth-edge-left { left: -28px; top: 16vh; }
-.cloth-edge-right { right: -50px; bottom: -18vh; transform: scaleX(-1); }
+.cloth-edge-left { left: 0; }
+.cloth-edge-right {
+  right: 0;
+  background-position: right center;
+  mask-image: linear-gradient(270deg, #000 10%, rgb(0 0 0 / 80%) 50%, transparent 100%);
+}
 
 body.bloom {
-  --motif-opacity: .10;
+  --motif-opacity: .13;
   --edge-motif-opacity: .18;
 }
 
 .footer {
   border-top: 1px solid var(--border-quiet);
-  background: linear-gradient(180deg, rgb(26 38 60 / 65%), #1a263c);
+  background: linear-gradient(180deg, rgb(23 36 58 / 65%), var(--page-indigo-deep));
 }
 
 @media (max-width: 760px) {
-  .cloth-edge { width: 160px; opacity: calc(var(--motif-opacity) * .7); }
-  .cloth-edge-left { left: -65px; top: 12vh; }
-  .cloth-edge-right { right: -80px; bottom: -24vh; }
+  .cloth-edge { width: 110px; opacity: calc(var(--motif-opacity) * .75); }
 }

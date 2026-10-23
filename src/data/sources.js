@@ -1,6 +1,16 @@
 import { DISTRIBUTION_SOURCES } from './distribution.js';
+import { assetUrl } from '../utils/assets.js';
 
 export const materialSources=[
+  {
+    title: '靛染织物与花鸟蝴蝶底纹',
+    url: assetUrl('common/indigo-embroidery.webp'),
+    linkLabel: '查看背景纹样',
+    platform: '本站背景装饰 · AI 生成',
+    credits: [],
+    group: 'images',
+    usage: '五页公共背景的低对比边角暗纹；苗绣灵感创作，不作为馆藏复刻或传统纹样考据依据',
+  },
   {
     "title": "苗绣龙纹",
     "url": "https://epe.lac-bac.gc.ca/100/201/300/asian_social_science/2021/ASS-V17N12-All.pdf",

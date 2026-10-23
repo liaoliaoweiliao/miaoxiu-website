@@ -33,7 +33,7 @@ export default function SourcesPage() {
                   {source.doi && <p className="source-credit">DOI：{source.doi}</p>}
                   {source.license && <p className="source-credit">清单所列协议：<a href={source.licenseUrl} target="_blank" rel="noopener noreferrer">{source.license}</a></p>}
                   {source.url ? (
-                    <a className="source-url" href={source.url} target="_blank" rel="noopener noreferrer"><span>{source.url}</span><b aria-hidden="true">↗</b></a>
+                    <a className="source-url" href={source.url} target="_blank" rel="noopener noreferrer"><span>{source.linkLabel || source.url}</span><b aria-hidden="true">↗</b></a>
                   ) : <p className="source-reference">{source.reference || ''}<small>原清单未附网址</small></p>}
                 </div>
               </li>
