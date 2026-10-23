@@ -1,7 +1,7 @@
 import { materialSources } from '../data/sources.js';
 
 const groups = [
-  ['images', '影像素材', '摄影、馆藏与纹样图像'],
+  ['images', '影像素材', '纹样科普与作品展览'],
   ['research', '参考文献', '研究资料与开放获取文献'],
 ];
 

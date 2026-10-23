@@ -7,7 +7,7 @@
 - 开始时查看了旧 `page-background.webp`（826 × 1903，217850 字节）与工作区未提交的 `miao-embroidery-background-v1.png`（1672 × 941，3271511 字节）。旧图花朵对比较强，且远程更新已移除该文件；沿用这一移除结果。
 - 采用已有 v1 PNG 的蝴蝶、鸟纹、花枝和几何针饰。该图由先前任务于2026-10-22使用内置 imagegen 生成，依据工作区原说明及实际文件核对；属于苗绣灵感装饰，不是馆藏复刻。原始 SHA-256 为 `5c4060168a4b30c56ec9eda2b6292ae49dccaf2ec3c8b6ebf99f058d1c61a3e1`。
 - 原 PNG 及其 `miao-embroidery-background-v1.md` 原封保留为已有未提交素材。前轮仅提交浏览器使用的 [indigo-embroidery.webp](../../public/assets/common/indigo-embroidery.webp)：Pillow WebP，quality=83、method=6；保持1672 × 941分辨率，317436字节，体积比PNG减少约90%。没有重绘、改变构图或修改内容图片。
-- 继续使用远程已有 `indigo-weave.svg` 的细微纤维层；已有 `indigo-embroidery.svg` 保留在版本管理中，本轮页面不再请求它。素材来源页列出新背景及查看入口。
+- 继续使用远程已有 `indigo-weave.svg` 的细微纤维层；已有 `indigo-embroidery.svg` 保留在版本管理中，本轮页面不再请求它。背景来源与格式转换信息保留在本说明；网页素材来源按用户最新指定表格，仅展示两项第三方图片素材。
 
 ## 层级与样式
 
