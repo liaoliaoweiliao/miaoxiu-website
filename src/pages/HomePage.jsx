@@ -132,8 +132,12 @@ function HeroCarousel({ initialSlide = 0 }) {
           <span>/04</span>
         </div>
         <div className="hero-arrows">
-          <button type="button" onClick={() => goToSlide(slide - 1)} aria-label="上一张图片">〈</button>
-          <button type="button" onClick={() => goToSlide(slide + 1)} aria-label="下一张图片">〉</button>
+          <button type="button" onClick={() => goToSlide(slide - 1)} aria-label="上一张图片">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m13 3-6 7 6 7" /></svg>
+          </button>
+          <button type="button" onClick={() => goToSlide(slide + 1)} aria-label="下一张图片">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m7 3 6 7-6 7" /></svg>
+          </button>
         </div>
       </div>
     </section>
