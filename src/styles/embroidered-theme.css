@@ -1,30 +1,10 @@
-/* A dark cloth header finished with a colored embroidery band. */
+/* Public navigation: one source for its ground, spacing and embroidered marker. */
 .topbar {
   position: sticky;
   top: 0;
   z-index: 50;
-  isolation: isolate;
-  background: linear-gradient(100deg, #0c2b39, var(--nav-indigo) 50%, #142530);
+  background: var(--nav-indigo);
   border-bottom: 1px solid var(--border-thread);
-  box-shadow: 0 5px 22px rgb(2 13 23 / 25%);
-}
-.topbar::before,
-.topbar::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.topbar::before {
-  background: url('/assets/common/indigo-weave.svg') 0 0 / 160px 160px;
-  opacity: .1;
-}
-.topbar::after {
-  top: auto;
-  height: 8px;
-  background: url('/assets/common/miao-ribbon.svg') center / 120px 12px repeat-x;
-  border-top: 1px solid rgb(207 81 73 / 45%);
 }
 
 .nav-inner {
@@ -35,7 +15,7 @@
   max-width: 1450px;
   min-height: var(--header-height);
   margin: auto;
-  padding: 0 34px 8px;
+  padding: 0 34px;
   gap: clamp(16px, 2vw, 30px);
 }
 
@@ -48,7 +28,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: #f3e1c4;
+  color: #e8dbc4;
   white-space: nowrap;
 }
 
@@ -101,9 +81,9 @@
   justify-items: center;
   row-gap: 5px;
   position: relative;
-  padding: 12px 8px 4px;
+  padding: 15px 8px 5px;
   border: 0;
-  border-radius: 2px;
+  border-radius: 3px;
   background: none;
   color: var(--nav-text);
   font-size: 16px;
@@ -112,27 +92,11 @@
   transition: color .18s ease;
 }
 
-.nav-link::before {
-  content: '';
-  position: absolute;
-  inset: 7px -2px 5px;
-  border: 1px solid rgb(220 183 125 / 45%);
-  border-radius: 2px;
-  background: linear-gradient(135deg, rgb(148 48 53 / 72%), rgb(99 35 47 / 58%));
-  box-shadow: inset 0 0 0 3px rgb(9 30 44 / 40%);
-  opacity: 0;
-  transition: opacity .18s ease;
-  pointer-events: none;
-}
-.nav-link.active::before { opacity: 1; }
-.nav-link:not(.active):hover::before,
-.nav-link:not(.active):focus-visible::before { opacity: .45; }
-.nav-label { position: relative; display: block; line-height: 1.5; letter-spacing: 1px; }
+.nav-label { display: block; line-height: 1.5; letter-spacing: 1px; }
 .nav-link.active, .nav-link:hover, .nav-link:focus-visible { color: var(--nav-gold); }
 .topbar button:focus-visible { outline: 2px solid var(--nav-gold); outline-offset: 3px; }
 
 .nav-marker {
-  position: relative;
   display: block;
   width: calc(100% + 22px);
   max-width: 112px;
@@ -146,23 +110,23 @@
 .nav-link:not(.active):hover .nav-marker,
 .nav-link:not(.active):focus-visible .nav-marker { opacity: .65; }
 .nav-marker svg { display: block; width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-.nav-scroll-line { stroke: var(--thread-peacock); stroke-width: 1.35; }
+.nav-scroll-line { stroke-width: 1.15; }
 .nav-scroll-return { stroke-width: .9; opacity: .85; }
 .nav-scroll-stitches { stroke-width: .75; stroke-dasharray: 2.2 2.8; opacity: .65; }
-.nav-scroll-knot { stroke-width: 1; fill: #722f37; }
+.nav-scroll-knot { stroke-width: 1; fill: var(--page-indigo-deep); }
 .nav-scroll-heart { stroke-width: .65; fill: var(--nav-gold); }
-.nav-scroll-needle { fill: var(--thread-vermilion); stroke: var(--thread-vermilion); stroke-width: .4; }
-.nav-scroll-tip { fill: var(--thread-peacock); stroke-width: .6; }
+.nav-scroll-needle { fill: #aa6654; stroke: #aa6654; stroke-width: .4; }
+.nav-scroll-tip { fill: #b79b75; stroke-width: .6; }
 
 .nav-tools { display: flex; align-items: center; flex-shrink: 0; gap: 14px; }
-.search { display: flex; flex-shrink: 0; height: 38px; max-width: 196px; border: 1px solid var(--border-thread); border-radius: 5px; background: var(--surface-indigo-deep); box-shadow: inset 0 -2px rgb(87 185 176 / 15%); }
+.search { display: flex; flex-shrink: 0; height: 38px; max-width: 196px; border: 1px solid var(--border-quiet); border-radius: 24px; background: var(--surface-indigo-deep); }
 .search:focus-within { border-color: var(--nav-gold); }
 .search input { min-width: 0; width: 148px; border: 0; outline: 0; background: none; color: var(--nav-text); font-size: 12px; padding: 0 12px; }
-.search input::placeholder { color: #a8bdc6; }
+.search input::placeholder { color: #aab5c4; }
 .search button { padding: 0 10px; border: 0; background: none; color: var(--nav-gold); font-size: 24px; }
 .mini-flower, .hamburger { border: 0; background: none; color: var(--nav-gold); }
 .mini-flower { padding: 2px; font-size: 29px; border-radius: 4px; }
-.mini-flower[aria-pressed='true'] { background: rgb(207 81 73 / 24%); color: #f0cb8b; }
+.mini-flower[aria-pressed='true'] { background: rgb(208 181 139 / 10%); }
 .hamburger { display: none; font-size: 25px; padding: 2px; }
 
 @media (min-width: 761px) and (max-width: 1100px) {
@@ -188,15 +152,13 @@
   .nav {
     display: none; position: absolute; top: 100%; left: 0; right: 0;
     max-height: calc(100dvh - var(--header-height)); overflow-y: auto;
-    padding: 14px 16px; flex-direction: column; gap: 4px;
-    background: url('/assets/common/miao-stitch-field.svg') right top / 180px 180px, var(--nav-indigo);
-    border-bottom: 3px double var(--thread-gold);
+    padding: 14px 16px; flex-direction: column; gap: 0;
+    background: var(--nav-indigo); border-bottom: 1px solid var(--border-thread);
   }
   .nav.open { display: flex; }
-  .nav-link { align-self: stretch; justify-items: start; padding: 11px 16px 8px; row-gap: 4px; }
-  .nav-link::before { inset: 3px 0; }
+  .nav-link { align-self: flex-start; padding: 11px 16px 8px; row-gap: 4px; }
   .nav-marker { max-width: 102px; }
-  .search { width: 35px; height: 35px; border: 0; background: none; box-shadow: none; }
+  .search { width: 35px; height: 35px; border: 0; background: none; }
   .search input { display: none; }
   .search button { padding: 0 6px; font-size: 28px; }
   .search.is-open input {
@@ -215,7 +177,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-link, .nav-link::before, .nav-marker { transition: none; }
+  .nav-link, .nav-marker { transition: none; }
 }
 
 /* Running stitches and small geometric knots echo Miao brocade borders. */

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 800" fill="none">
+  <!-- Butterfly and folded rhombus stitches adapted from AtlasPage's Miao motifs. -->
+  <defs>
+    <g id="butterfly" stroke="#a8b6c7" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M49 49C34 14 10 18 20 40c4 10 18 14 29 12-28 0-28 31-10 23 8-3 9-13 11-22M51 49c15-35 39-31 29-9-4 10-18 14-29 12 28 0 28 31 10 23-8-3-9-13-11-22M50 39v37M49 40l-8-9m10 9 8-9"/>
+      <path d="M43 47C29 29 23 30 29 39l14 8Zm14 0c14-18 20-17 14-8l-14 8Z" stroke-dasharray="1.5 3"/>
+    </g>
+    <g id="fold" stroke="#a8b6c7" stroke-width=".9" stroke-linejoin="round">
+      <path d="M50 20 80 50 50 80 20 50ZM50 32 68 50 50 68 32 50Z M35 27v9H26m47 0h-9v-9m0 46v-9h9m-47 0h9v9"/>
+      <path d="M50 43 57 50 50 57 43 50Z" stroke="#c1aa82"/>
+    </g>
+  </defs>
+  <use href="#butterfly" transform="translate(-12 10) scale(1.9) rotate(-14 50 50)"/>
+  <use href="#fold" transform="translate(30 310) scale(.85)"/>
+  <use href="#butterfly" transform="translate(-24 555) scale(1.25) rotate(17 50 50)"/>
+  <g stroke="#c1aa82" stroke-width=".8">
+    <path d="m44 242 5 5-5 5-5-5Zm74 263 4 4-4 4-4-4Z"/>
+    <path d="M44 265v18m0 6v3m74 176v18" stroke-dasharray="2 5"/>
+  </g>
+</svg>
