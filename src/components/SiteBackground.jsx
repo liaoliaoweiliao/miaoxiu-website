@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import EmbroideryOrnament from './EmbroideryOrnament.jsx';
 
 /* One continuous cloth canvas; scrolling moves the embroidery, never tiles the image. */
 export default function SiteBackground() {
@@ -34,20 +33,6 @@ export default function SiteBackground() {
       <span className="cloth-grain" />
       <span className="cloth-edge cloth-edge-left" />
       <span className="cloth-edge cloth-edge-right" />
-      <div className="cloth-scroll-motifs cloth-scroll-left">
-        <EmbroideryOrnament motif="star" />
-        <i className="cloth-stitched-trail" />
-        <EmbroideryOrnament motif="flower" />
-        <i className="cloth-stitched-trail" />
-        <EmbroideryOrnament motif="spiral" />
-      </div>
-      <div className="cloth-scroll-motifs cloth-scroll-right">
-        <EmbroideryOrnament motif="flower" />
-        <i className="cloth-stitched-trail" />
-        <EmbroideryOrnament motif="butterfly" />
-        <i className="cloth-stitched-trail" />
-        <EmbroideryOrnament motif="star" />
-      </div>
     </div>
   );
 }

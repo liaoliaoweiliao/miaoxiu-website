@@ -1,19 +1,22 @@
 /* Clear indigo blue cloth with colored thread laid over its surface. */
 :root {
-  --page-indigo: #245b85;
-  --page-indigo-raised: #2d6b95;
-  --page-indigo-mist: #3d7ba2;
-  --page-indigo-deep: #1c4d76;
-  --surface-indigo: #214e73;
-  --surface-indigo-deep: #193f61;
-  --nav-indigo: #1b4568;
+  --page-indigo: #165981;
+  --page-indigo-raised: #1a6089;
+  --page-indigo-mist: #256c96;
+  --page-indigo-deep: #15537b;
+  --surface-indigo: #1b557c;
+  --surface-indigo-deep: #174c72;
+  --surface-indigo-inset: #18496c;
+  --surface-indigo-hover: #24658d;
+  --surface-indigo-rgb: 27 85 124;
+  --nav-indigo: #184c70;
   --nav-text: #f0e8da;
   --nav-gold: #e6c797;
   --border-thread: rgb(225 194 151 / 50%);
   --border-quiet: rgb(200 210 219 / 30%);
   --motif-opacity: .9;
   --edge-motif-opacity: .4;
-  --weave-opacity: .055;
+  --weave-opacity: .07;
   --cloth-ground: linear-gradient(145deg, var(--page-indigo-raised), var(--page-indigo) 48%, var(--page-indigo-deep));
   background-color: var(--page-indigo);
 }
@@ -40,6 +43,7 @@ body {
   inset: 0;
   background: url('/assets/common/indigo-weave.svg') 0 0 / 160px 160px;
   opacity: var(--weave-opacity);
+  mix-blend-mode: multiply;
 }
 
 .cloth-edge {
@@ -49,7 +53,7 @@ body {
   /* Lighten retains the thread colors instead of washing blue cloth with screen. */
   background: url('/assets/common/indigo-embroidery.webp') left center / auto 100% no-repeat;
   mix-blend-mode: lighten;
-  filter: saturate(1.5) brightness(1.35) contrast(1.1);
+  filter: saturate(1.25) brightness(1.15) contrast(1.1);
   opacity: var(--motif-opacity);
   mask-image: linear-gradient(90deg, #000 16%, rgb(0 0 0 / 90%) 55%, transparent 100%);
   transform: translate3d(0, calc(var(--scroll-progress) * -65px), 0);
@@ -62,23 +66,6 @@ body {
   transform: translate3d(0, calc(var(--scroll-progress) * 65px), 0);
 }
 
-.cloth-scroll-motifs {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: clamp(50px, 7vw, 100px);
-  color: #e7ad62;
-  opacity: calc(.3 + var(--scroll-progress) * .65);
-  pointer-events: none;
-}
-.cloth-scroll-motifs .embroidery-ornament { width: 100%; height: auto; stroke-width: .9; filter: drop-shadow(0 2px 1px #062b4b); }
-.cloth-scroll-motifs .ornament-detail { stroke: #ed7958; }
-.cloth-stitched-trail { width: 1px; height: clamp(40px, 7vh, 80px); border-left: 2px dashed #daaf70; }
-.cloth-scroll-left { left: 7%; top: 40%; transform: translate3d(0, calc(var(--scroll-progress) * -260px), 0) rotate(-12deg); }
-.cloth-scroll-right { right: 6%; top: 10%; transform: translate3d(0, calc(var(--scroll-progress) * 280px), 0) rotate(12deg); }
-
 body.bloom {
   --motif-opacity: 1;
   --edge-motif-opacity: .55;
@@ -86,10 +73,7 @@ body.bloom {
 
 @media (max-width: 760px) {
   .cloth-edge { width: 125px; opacity: calc(var(--motif-opacity) * .9); }
-  .cloth-scroll-motifs { width: 44px; }
-  .cloth-scroll-left { left: 3%; }
-  .cloth-scroll-right { right: 3%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cloth-edge, .cloth-scroll-motifs { transform: none; }
+  .cloth-edge { transform: none; }
 }

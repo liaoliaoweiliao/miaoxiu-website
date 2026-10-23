@@ -50,7 +50,7 @@ test('continuous embroidery responds to scrolling and respects reduced motion', 
   await expect.poll(progress).toBe(0);
   await page.evaluate(() => window.scrollTo({ top: 3200, behavior: 'instant' }));
   expect(await left.evaluate((element) => getComputedStyle(element).transform)).toBe('none');
-  expect(await page.locator('.cloth-scroll-left').evaluate((element) => getComputedStyle(element).transform)).toBe('none');
+  await expect(page.locator('.cloth-scroll-motifs')).toHaveCount(0);
 });
 
 test('color challenge remains fully clickable above the footer at every layout', async ({ page }) => {
@@ -92,7 +92,7 @@ test('title, seal, navigation and search stay separate across header breakpoints
     });
     expect(bounds.seal.x).toBeGreaterThan(bounds.title.x);
     expect(bounds.seal.right).toBeLessThanOrEqual(bounds.tools.x - 8);
-    expect(bounds.seal.bottom).toBeLessThanOrEqual(bounds.bar.bottom);
+    expect(bounds.seal.bottom).toBeLessThanOrEqual(bounds.bar.bottom - 6);
     expect(bounds.tools.right).toBeLessThanOrEqual(width);
     if (width > 760) {
       expect(bounds.title.right).toBeLessThanOrEqual(bounds.nav.x - 8);
