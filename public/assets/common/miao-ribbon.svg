@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="12" viewBox="0 0 120 12" fill="none">
+  <!-- Original geometric stitch band; shared by the navigation, cloth and footer. -->
+  <path fill="#091e2c" d="M0 0h120v12H0z"/>
+  <path stroke="#c3d4d5" stroke-width=".65" stroke-dasharray="2 3" d="M0 1h120M0 11h120" opacity=".65"/>
+  <path stroke="#dcb77d" stroke-width=".8" d="m0 6 6-4 6 4-6 4Zm24 0 6-4 6 4-6 4Zm48 0 6-4 6 4-6 4Zm24 0 6-4 6 4-6 4Z"/>
+  <path fill="#cf5149" d="m6 4 3 2-3 2-3-2Zm24 0 3 2-3 2-3-2Zm48 0 3 2-3 2-3-2Zm24 0 3 2-3 2-3-2Z"/>
+  <path stroke="#57b9b0" stroke-width="1" d="m14 4 3 2-3 2m6-4 3 2-3 2m64-4 3 2-3 2m6-4 3 2-3 2M38 6h7m10 0h7m48 0h10"/>
+  <path fill="#cf5149" stroke="#dcb77d" stroke-width=".65" d="m50 1 2 3 4 2-4 2-2 3-2-3-4-2 4-2Z"/>
+  <path fill="#dcb77d" d="m66 4 2 2-2 2-2-2Zm48 0 2 2-2 2-2-2Z"/>
+</svg>

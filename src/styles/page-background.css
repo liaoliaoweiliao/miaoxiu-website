@@ -1,20 +1,26 @@
-/* Fresh indigo cloth: no legacy background imagery or page-specific wallpaper. */
+/* Indigo cloth with vermilion, peacock and gold embroidery, shared by all pages. */
 :root {
-  --page-indigo: #202b43;
-  --page-indigo-raised: #283851;
-  --page-indigo-deep: #1a263c;
-  --surface-indigo: #24334a;
-  --surface-indigo-deep: #1c293f;
-  --nav-indigo: rgb(23 34 53 / 98%);
-  --nav-text: #e1e0db;
-  --nav-gold: #d0b58b;
-  --border-thread: rgb(195 171 134 / 34%);
-  --border-quiet: rgb(175 187 202 / 22%);
-  --motif-opacity: .07;
-  --edge-motif-opacity: .12;
-  --weave-opacity: .045;
-  --cloth-ground: radial-gradient(ellipse at 42% 5%, rgb(67 88 114 / 16%), transparent 65%),
-    linear-gradient(165deg, var(--page-indigo), var(--page-indigo-deep));
+  --page-indigo: #0b2638;
+  --page-indigo-raised: #153b4c;
+  --page-indigo-deep: #071b2b;
+  --surface-indigo: #123346;
+  --surface-indigo-deep: #0a2233;
+  --nav-indigo: #091e2c;
+  --nav-text: #eee4d5;
+  --nav-gold: #f0cb8b;
+  --thread-vermilion: #cf5149;
+  --thread-peacock: #57b9b0;
+  --thread-gold: #dcb77d;
+  --thread-silver: #c3d4d5;
+  --border-thread: rgb(220 183 125 / 44%);
+  --border-quiet: rgb(156 191 198 / 25%);
+  --motif-opacity: .62;
+  --field-opacity: .16;
+  --edge-motif-opacity: .32;
+  --weave-opacity: .085;
+  --cloth-ground: radial-gradient(ellipse at 0 18%, rgb(26 91 96 / 24%), transparent 46%),
+    radial-gradient(ellipse at 100% 78%, rgb(110 40 50 / 16%), transparent 42%),
+    linear-gradient(120deg, var(--page-indigo-deep), var(--page-indigo) 45%, #0c293b 68%, var(--page-indigo-deep));
 }
 
 body {
@@ -40,28 +46,67 @@ body {
   opacity: var(--weave-opacity);
 }
 
-.cloth-edge {
-  width: clamp(170px, 18vw, 280px);
-  height: min(1000px, 110vh);
-  background: url('/assets/common/indigo-embroidery.svg') left top / 100% auto no-repeat;
-  opacity: var(--motif-opacity);
-  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 70%) 55%, transparent 95%);
+.cloth-field {
+  inset: 0;
+  background: url('/assets/common/miao-stitch-field.svg') 50% 0 / 240px 240px;
+  opacity: var(--field-opacity);
+  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 28%) 35% 65%, #000);
 }
-.cloth-edge-left { left: -28px; top: 16vh; }
-.cloth-edge-right { right: -50px; bottom: -18vh; transform: scaleX(-1); }
+
+.cloth-edge {
+  top: 0;
+  bottom: 0;
+  width: clamp(240px, 23vw, 390px);
+  background: url('/assets/common/miao-embroidery.svg') left top / 100% auto repeat-y;
+  opacity: var(--motif-opacity);
+  mask-image: linear-gradient(90deg, #000, rgb(0 0 0 / 68%) 18%, rgb(0 0 0 / 18%) 55%, transparent 92%);
+}
+.cloth-edge-left { left: -42px; }
+.cloth-edge-right { right: -42px; transform: scaleX(-1); background-position-y: 210px; }
+
+.cloth-selvedge {
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  opacity: .72;
+}
+/* Rotate the same woven band along each outer edge without affecting layout. */
+.cloth-selvedge::before {
+  content: '';
+  position: absolute;
+  width: 100dvh;
+  height: 12px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) translateY(-12px);
+  background: url('/assets/common/miao-ribbon.svg') 0 0 / 120px 12px repeat-x;
+}
+.cloth-selvedge-left { left: 0; }
+.cloth-selvedge-right { right: 0; }
 
 body.bloom {
-  --motif-opacity: .10;
-  --edge-motif-opacity: .18;
+  --motif-opacity: .85;
+  --field-opacity: .25;
+  --edge-motif-opacity: .48;
 }
 
 .footer {
   border-top: 1px solid var(--border-quiet);
-  background: linear-gradient(180deg, rgb(26 38 60 / 65%), #1a263c);
+  background: linear-gradient(180deg, rgb(7 27 43 / 88%), #071b2b);
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 12px;
+  background: url('/assets/common/miao-ribbon.svg') center / 120px 12px repeat-x;
+  opacity: .85;
+  pointer-events: none;
 }
 
 @media (max-width: 760px) {
-  .cloth-edge { width: 160px; opacity: calc(var(--motif-opacity) * .7); }
-  .cloth-edge-left { left: -65px; top: 12vh; }
-  .cloth-edge-right { right: -80px; bottom: -24vh; }
+  .cloth-edge { width: 240px; opacity: calc(var(--motif-opacity) * .6); }
+  .cloth-edge-left { left: -128px; }
+  .cloth-edge-right { right: -128px; }
+  .cloth-field { background-size: 200px 200px; opacity: calc(var(--field-opacity) * .65); }
+  .cloth-selvedge { width: 5px; opacity: .45; overflow: hidden; }
 }

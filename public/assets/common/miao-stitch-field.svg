@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Small counted stitches leave the reading area quiet. -->
+  <g stroke="#57b9b0" stroke-width=".8">
+    <path d="m30 24 6 6-6 6-6-6Zm120 120 6 6-6 6-6-6Z"/>
+    <path d="M24 30h12m-6-6v12m114 114h12m-6-6v12"/>
+  </g>
+  <g stroke="#dcb77d" stroke-width=".7">
+    <path d="m150 25 5 5-5 5-5-5Zm-120 120 5 5-5 5-5-5Z"/>
+    <path d="M26 82v16m-8-8h16m112 112v16m-8-8h16" stroke-dasharray="1 4"/>
+  </g>
+  <g stroke="#cf5149" stroke-width=".9">
+    <path d="m88 87 4 4-4 4-4-4Zm120 120 4 4-4 4-4-4Z"/>
+    <path d="m204 86 4 4-4 4m8-8-4 4 4 4M84 206l4 4-4 4m8-8-4 4 4 4"/>
+  </g>
+</svg>

@@ -86,7 +86,7 @@ miaoxiu-website/
 
 页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
 
-全站背景由 `src/components/SiteBackground.jsx` 统一承载，底色、内容承托色、导航色、边框与纹样强度集中在 `src/styles/page-background.css` 的 CSS 变量中调整。旧花鸟背景和页脚花纹已移除；新设计由靛蓝渐变、`indigo-weave.svg` 细微布纹、`indigo-embroidery.svg` 蝴蝶与菱形针脚组成。纹样从首页已有苗绣图形提炼，仅在两侧稀疏显示，默认透明度 0.07、装饰开关开启后 0.10，手机进一步降低。装饰不拦截点击，不改变作品、地图或人物颜色。公共导航（含印章、针脚标记和手机搜索）的样式集中在 `embroidered-theme.css`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航与绣框 → 光标 → 响应式规则。
+全站背景由 `src/components/SiteBackground.jsx` 统一承载，底色、内容承托色、导航色、边框与纹样强度集中在 `src/styles/page-background.css` 的 CSS 变量中调整。2026-10-23 按用户要求强化苗绣风格，改为深靛蓝布底、朱红与孔雀青绣线、暖金及银白针脚。`indigo-weave.svg` 提供布纹，新绘 `miao-embroidery.svg` 以蝴蝶、八角星、菱形及枝叶组成两侧绣纹，`miao-stitch-field.svg` 提供细小底纹，`miao-ribbon.svg` 串联导航、两侧布边和页脚。两侧大纹样向正文方向渐隐，默认装饰层透明度 0.62、开关开启后 0.85；细底纹为 0.16/0.25，手机进一步降低。旧低对比 `indigo-embroidery.svg` 已删除。装饰不拦截点击，不改变作品、地图或人物颜色。公共导航（含印章、朱红选中底、彩色针脚标记和手机搜索）的样式集中在 `embroidered-theme.css`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航与绣框 → 光标 → 响应式规则。
 
 ## 图片与子路径
 
