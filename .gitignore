@@ -6,3 +6,5 @@ playwright-report/
 test-results/
 *.local
 __pycache__/
+release/
+desktop-test-results/

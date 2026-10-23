@@ -6,7 +6,7 @@
 
 ## 快速开始
 
-需要 Node.js 20.19 及以上的 20.x 版本，或 22.12 及以上版本，并确保终端能够运行 `node` 和 `npm`。版本范围以 [package.json](package.json) 的 `engines` 为准。
+开发与打包需要 Node.js 22.12 及以上版本（建议 Node 24），并确保终端能够运行 `node` 和 `npm`。版本范围以 [package.json](package.json) 的 `engines` 为准。普通用户运行桌面便携版无需开发环境。
 
 在工程根目录执行：
 
@@ -38,7 +38,13 @@ npm run build:standalone
 
 该命令在 `standalone/` 内生成内联 JavaScript/CSS 的 HTML 和配套素材。保留整个目录，即可双击 `standalone/index.html`，或使用根目录的 `双击打开.html`。这是从当前 React 源码重新构建的演示，和历史归档不同；`standalone/` 是忽略的构建产物。
 
-## 目录管理
+## Windows 桌面便携版
+
+执行 `npm run desktop:pack` 生成内置 Chromium 和全部素材的 Windows x64 单文件免安装程序：`release/Miaoxiu-1.0.0-win-x64-portable.exe`。可单独复制、断网双击运行，不需要安装 Node.js 或浏览器。`release/win-unpacked/` 是中间输出，不作为单文件便携版交付。
+
+桌面收藏与穿戴自动存于 `%APPDATA%\MiaoxiuDesktop\`，效果图通过 Windows“另存为”选择位置。原网页开发、生产部署和 standalone 命令保留。构建步骤、安全边界、数据备份和桌面测试见 [桌面版说明](docs/desktop.md)，实际交付与未验证范围见 [桌面验收](docs/desktop-validation.md)。
+
+## 工程目录
 
 ```text
 miaoxiu-website/
@@ -49,6 +55,9 @@ miaoxiu-website/
 ├─ vite.config.js             # React 插件、资源基路径与端口
 ├─ vite.standalone.config.js  # 离线演示构建
 ├─ playwright.config.js       # 浏览器测试配置
+├─ electron/                  # 主进程、隔离 preload 与图标
+├─ electron-builder.yml       # Windows x64 portable 配置
+├─ scripts/package-desktop.mjs # 桌面打包与同盘缓存
 ├─ src/
 │  ├─ main.jsx                # React 挂载与样式入口
 │  ├─ App.jsx                 # Hash 导航、搜索、主题、作品弹窗
@@ -71,7 +80,7 @@ miaoxiu-website/
 └─ AGENTS.md                  # 项目协作和提交推送约束
 ```
 
-`node_modules/`、`dist/`、`standalone/`、`playwright-report/`、`test-results/` 是依赖或生成目录，已列入 `.gitignore`。远程旧版本中曾误提交的依赖和产物不作为源码维护，使用上述命令重新生成。
+`node_modules/`、`dist/`、`standalone/`、`release/`、`desktop-test-results/`、`playwright-report/`、`test-results/` 是依赖或生成目录，已列入 `.gitignore`。远程旧版本中曾误提交的依赖和产物不作为源码维护，使用上述命令重新生成。
 
 ## 模块协作
 

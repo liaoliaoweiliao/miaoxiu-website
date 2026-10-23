@@ -17,6 +17,7 @@ sources: []
 | 2026-10-23 | maintenance | completed | [撤销所有分支合并](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-23-%E6%92%A4%E9%94%80%E6%89%80%E6%9C%89%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6.md) |
 | 2026-10-23 | maintenance | completed | [合并所有分支到main](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-23-%E5%90%88%E5%B9%B6%E6%89%80%E6%9C%89%E5%88%86%E6%94%AF%E5%88%B0main.md) |
 | 2026-10-23 | maintenance | completed | [删除音效分支](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-23-%E5%88%A0%E9%99%A4%E9%9F%B3%E6%95%88%E5%88%86%E6%94%AF.md) |
+| 2026-10-23 | feature | completed | [Electron 离线便携版](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-23-Electron%E7%A6%BB%E7%BA%BF%E4%BE%BF%E6%90%BA%E7%89%88.md) |
 | 2026-10-23 | ui | completed | [轮播箭头居中与纹样文字去底色](UI%E4%BF%AE%E6%94%B9/2026-10-23-%E8%BD%AE%E6%92%AD%E7%AE%AD%E5%A4%B4%E5%B1%85%E4%B8%AD%E4%B8%8E%E7%BA%B9%E6%A0%B7%E6%96%87%E5%AD%97%E5%8E%BB%E5%BA%95%E8%89%B2.md) |
 | 2026-10-23 | ui | completed | [蓝色绣纹滚动导航与页脚](UI%E4%BF%AE%E6%94%B9/2026-10-23-%E8%93%9D%E8%89%B2%E7%BB%A3%E7%BA%B9%E6%BB%9A%E5%8A%A8%E5%AF%BC%E8%88%AA%E4%B8%8E%E9%A1%B5%E8%84%9A.md) |
 | 2026-10-23 | ui | completed | [苗绣彩线背景与导航](UI%E4%BF%AE%E6%94%B9/2026-10-23-%E8%8B%97%E7%BB%A3%E5%BD%A9%E7%BA%BF%E8%83%8C%E6%99%AF%E4%B8%8E%E5%AF%BC%E8%88%AA.md) |

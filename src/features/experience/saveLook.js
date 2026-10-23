@@ -1,5 +1,6 @@
 import { assetUrl } from '../../utils/assets.js';
 import { setById, themeById } from './gameModel.js';
+import { saveImage } from '../../utils/saveImage.js';
 
 function loadImage(path, signal) {
   return new Promise((resolve, reject) => {
@@ -40,6 +41,5 @@ export async function paintLook(canvas, layers, gender, signal) {
 export async function downloadLook({ layers, gender, signal }) {
   const canvas = await paintLook(document.createElement('canvas'), layers, gender, signal);
   if (signal?.aborted) return;
-  const link = document.createElement('a');
-  link.download = `我的苗绣装扮-${gender}.png`; link.href = canvas.toDataURL('image/png'); link.click();
+  return saveImage(canvas.toDataURL('image/png'), `我的苗绣装扮-${gender}.png`);
 }

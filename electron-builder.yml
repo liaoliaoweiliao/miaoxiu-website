@@ -1,0 +1,27 @@
+appId: cn.miaoxiu.desktop
+productName: 苗绣
+directories:
+  output: release
+files:
+  - dist/**/*
+  - electron/main.cjs
+  - electron/preload.cjs
+  - electron/icon.ico
+  - package.json
+asar: true
+compression: normal
+electronFuses:
+  runAsNode: false
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+win:
+  target:
+    - target: portable
+      arch: [x64]
+  icon: electron/icon.ico
+  artifactName: Miaoxiu-${version}-win-x64-portable.${ext}
+  requestedExecutionLevel: asInvoker
+portable:
+  requestExecutionLevel: user

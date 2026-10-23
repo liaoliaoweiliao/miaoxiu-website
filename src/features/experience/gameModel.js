@@ -113,7 +113,7 @@ export function experienceReducer(state, action) {
     }
     case 'reset': return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: null } }, dressed: false, wearRevision: state.wearRevision + 1, saveNote: '已恢复基础形象，藏品仍保留。' };
     case 'saveStart': return { ...state, saving: true, saveNote: '正在生成当前搭配效果图…' };
-    case 'saveDone': return { ...state, saving: false, saveNote: action.error ? '图片尚未加载完成，未能保存。请稍后重试。' : '效果图已生成，已发起下载。' };
+    case 'saveDone': return { ...state, saving: false, saveNote: action.error ? (action.message || '图片尚未加载完成，未能保存。请稍后重试。') : action.result?.status === 'cancelled' ? '已取消保存，可随时重新选择位置。' : action.result?.status === 'saved' ? `效果图已保存至：${action.result.path}` : '效果图已生成，已发起下载。' };
     case 'storageFailed': return { ...state, collectionNote: '当前浏览器无法保存收藏，离开前请保存搭配效果图。' };
     default: return state;
   }

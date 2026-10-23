@@ -71,9 +71,9 @@ export default function ExperiencePage({ state = {}, onAction }) {
     saveRef.current = controller;
     dispatch({ type: 'saveStart' });
     try {
-      await downloadLook({ layers: previewLayers(collection), gender: collection.gender, signal: controller.signal });
-      if (!controller.signal.aborted) dispatch({ type: 'saveDone' });
-    } catch { if (!controller.signal.aborted) dispatch({ type: 'saveDone', error: true }); }
+      const result = await downloadLook({ layers: previewLayers(collection), gender: collection.gender, signal: controller.signal });
+      if (!controller.signal.aborted) dispatch({ type: 'saveDone', result });
+    } catch (error) { if (!controller.signal.aborted) dispatch({ type: 'saveDone', error: true, message: error.message }); }
     finally { if (!controller.signal.aborted) saveRef.current = null; }
   }
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { assetUrl } from '../utils/assets.js';
+import { saveImage } from '../utils/saveImage.js';
 
 const initialView = { scale: 1, x: 0, y: 0 };
 
@@ -12,6 +13,8 @@ export default function ImageLightbox({ artwork, onClose }) {
   const dragRef = useRef(null);
   const [view, setView] = useState(initialView);
   const [dragging, setDragging] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveNote, setSaveNote] = useState('');
   const title = artwork.title || '苗绣图片';
   const source = assetUrl(artwork.src);
   const extension = artwork.src.split('.').pop().toLowerCase();
@@ -102,9 +105,18 @@ export default function ImageLightbox({ artwork, onClose }) {
         <div className="image-viewer-caption">
           <h2 id="image-viewer-title">{title}</h2>
           <button type="button" className="image-viewer-zoom" onClick={() => toggleZoom()} aria-pressed={view.scale > 1}>{view.scale > 1 ? '↙ 恢复全图' : '⤢ 放大细节'}</button>
-          <a className="image-viewer-save" href={source} download={filename}>⇩ 保存图片</a>
+          <a className="image-viewer-save" href={source} download={filename} aria-disabled={saving} onClick={async (event) => {
+            if (!window.miaoxiuDesktop) return;
+            event.preventDefault();
+            if (saving) return;
+            setSaving(true);
+            try { const result = await saveImage(source, filename); setSaveNote(result.status === 'saved' ? `图片已保存至：${result.path}` : '已取消保存。'); }
+            catch (error) { setSaveNote(error.message); }
+            finally { setSaving(false); }
+          }}>{saving ? '正在保存…' : '⇩ 保存图片'}</a>
         </div>
         {artwork.description && <p className="image-viewer-details">{artwork.description}</p>}
+        {saveNote && <p role="status">{saveNote}</p>}
         <p className="image-viewer-hint">双击图片放大，再次双击恢复全图；放大后可拖动欣赏。Esc 关闭</p>
       </section>
     </div>,
