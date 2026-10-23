@@ -101,7 +101,7 @@ button, input, select, textarea { max-width: 100%; }
   .hero-dots { bottom: 28px; }
   .hero-controls { bottom: 14px; }
   .feature-editorial .feature-content { padding-inline: clamp(16px, 5vw, 25px); }
-  .thread-section-heading h2 { font-size: clamp(29px, 6vw, 35px); }
+  .thread-section-heading h2 { font-size: clamp(24px, 5vw, 29px); }
   .thread-map-toolbar { flex-wrap: wrap; row-gap: 10px; }
   .thread-dashboard .thread-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .experience-page .pattern-image-frame,
@@ -115,8 +115,6 @@ button, input, select, textarea { max-width: 100%; }
   .target-brief small { margin-left: 0; }
   .decode-actions button { flex: 1 1 125px; margin-left: 0; }
   .decode-image-preview { right: 6px; bottom: 6px; font-size: 11px; padding: 6px 9px; }
-  .costume-draw-stage { min-height: 360px; }
-  .costume-draw-stage > .draw-card, .has-result > .draw-card { height: 360px; }
   .costume-draw-stage > .draw-card > img, .costume-draw-stage .reveal-front > img { height: 250px; }
   .mystery-costume { height: 230px; }
   .owned-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -130,13 +128,13 @@ button, input, select, textarea { max-width: 100%; }
   .thread-map-canvas { padding-block: 48px 40px; }
   .thread-map-peek { display: none; }
   .thread-map-caption { left: 10px; bottom: 7px; }
-  .thread-map-caption > span { font-size: 12px; }
+  .thread-map-caption > span { font-size: 10px; }
   .thread-map-point .thread-selected-pin { width: 30px; height: 38px; }
   .thread-map-point.is-selected .thread-point-label,
   .thread-map-point.is-selected.is-north .thread-point-label {
     left: clamp(calc(65px - var(--point-x) * 100cqw + 12.5px), 50%, calc((1 - var(--point-x)) * 100cqw - 65px + 12.5px));
     bottom: calc(50% + 43px); top: auto; transform: translateX(-50%);
-    font-size: 16px; padding: 5px 8px; letter-spacing: 0; gap: 5px;
+    font-size: 13px; padding: 5px 8px; letter-spacing: 0; gap: 5px;
   }
   .thread-map-point.is-selected.is-north .thread-point-label { top: 26px; bottom: auto; }
   .thread-map-controls { flex-direction: column; align-items: stretch; }
