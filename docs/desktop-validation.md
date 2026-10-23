@@ -3,10 +3,10 @@
 交付：`F:\竞赛\苗绣桌面版交付\苗绣-1.0.0-便携版.exe`。工程原产物：`release/Miaoxiu-1.0.0-win-x64-portable.exe`。两份 SHA-256 相同：
 
 ```text
-41f87a4aa8a6cc44c2ea2ec7e7c592d24207ad56b38ef832dde839bbaf96722d
+49801e3c163c92bb23103e75f7c9afdee879772fd485cb62910c6007976c883b
 ```
 
-大小 **446,623,999 字节（446.62 MB / 425.93 MiB）**。单文件免安装 portable，内置资源自动解压到临时目录；不是安装器，不需要旁边的 `win-unpacked`、源码或 Node.js。使用与重建见 [桌面版说明](desktop.md)。
+大小 **446,892,513 字节（446.89 MB / 426.19 MiB）**。单文件免安装 portable，内置资源自动解压到临时目录；不是安装器，不需要旁边的 `win-unpacked`、源码或 Node.js。使用与重建见 [桌面版说明](desktop.md)。
 
 ## 环境与依据
 
@@ -14,9 +14,17 @@
 
 `npm run desktop:pack -- --config.electronDist=node_modules/.cache/miaoxiu-packaging/mirror-electron.zip` 成功生成最终文件；ZIP 从镜像获取后按官方 npm 包 `checksums.json` 核对 SHA-256 为 `ae53887a23bb640369c93dbd38c408a2af5c0deb86f2fa76c6c244cb444b7f47`。最初官方下载超时，系统缓存重命名遇 EXDEV，随后使用校验 ZIP 和工程同盘工具缓存完成构建，没有关闭 TLS 或校验。
 
-## 实际结果
+## 网站 logo 图标更新
 
-`npm run test:desktop` 最终于北京时间 **17:04** 全部通过；JSON 和截图位于本地忽略目录 `desktop-test-results/`。测试启动的是最终 portable exe，单独复制到 `C:\Users\jytyz\AppData\Local\Temp\苗绣 离线验收 1792746153747\中文 与空格\苗绣 便携版.exe`，该目录仅含这个 exe。工作目录位于工程外，子进程 PATH 只保留 Windows 系统目录；应用自己从临时解压资源的 ASAR 运行。
+用户于2026-10-23提供网站花蝶纹logo，已替换旧“绣”字桌面图标。原图无损保存为 `electron/logo-source.png`（2048×2048，自带透明通道，SHA256 `7a4082ebd491c5f4c289feb5d3a3d5cf11cc8d35d96d43e4df41b979a9adfb11`），由 `scripts/create-desktop-icon.ps1` 裁去外侧空白、保持比例生成16/20/24/32/40/48/64/128/256九尺寸ICO。网页界面和业务逻辑没有改动。
+
+基线main/0d77ed3，执行 `npm run desktop:pack -- --config.electronDist=node_modules/.cache/miaoxiu-packaging/mirror-electron.zip`，包含当前源码的 `npm run build` 通过。重新生成的单文件已同步到交付目录及 `C:/Users/jytyz/Desktop/苗绣-1.0.0-便携版.exe`，三份SHA256一致；已通知Windows刷新图标。
+
+北京时间18:24，实际复制新版到工程外中文空格路径，启动最终portable：提取exe文件图标与通过WM_GETICON读取运行中窗口图标，目视确认均为花蝶纹；ASAR内ICO与源码逐字节一致，九尺寸目录正确。不可达代理+CDP离线下，四栏目及来源页所有实际渲染图片均解码正常，无页面异常或失败资源响应；程序正常关闭。原始记录与图标PNG见本地忽略目录 `desktop-test-results/logo-validation.json`、`logo-exe-icon.png`、`logo-window-icon.png`。本轮只改图标，未重跑状态单元、43项网页流程或下方完整保存/换装验收；这些结果属于前一轮初版。
+
+## 初版完整功能验收（0d77ed3）
+
+`npm run test:desktop` 最终于北京时间 **17:04** 全部通过；JSON 和截图位于本地忽略目录 `desktop-test-results/`。当时测试启动的是初版 portable exe，单独复制到 `C:\Users\jytyz\AppData\Local\Temp\苗绣 离线验收 1792746153747\中文 与空格\苗绣 便携版.exe`，该目录仅含这个 exe。工作目录位于工程外，子进程 PATH 只保留 Windows 系统目录；应用自己从临时解压资源的 ASAR 运行。
 
 | 范围 | 实际验证 |
 | --- | --- |
@@ -30,7 +38,7 @@
 | 持久化 | 正常关闭完整便携程序并重新启动，同一可写测试用户目录的收藏、解锁、角色和男女穿戴 JSON 完全一致，已穿戴状态恢复 |
 | 隔离 | 页面没有 require/process，只暴露 saveImage；无效图片保存请求被拒绝；静态归档只包含生产资源、桌面代码和生产依赖 |
 
-本轮网页 `npm test` **19/19**、`npm run test:e2e` **43/43** 通过，生产构建及 `npm run build:standalone` 成功。修改绝对资源 URL 后重新完成网页回归。查看最终故事、配色、导出 PNG、重开与窗口截图，未见相关布局或资源问题。
+初版网页 `npm test` **19/19**、`npm run test:e2e` **43/43** 通过，生产构建及 `npm run build:standalone` 成功。修改绝对资源 URL 后重新完成网页回归。查看最终故事、配色、导出 PNG、重开与窗口截图，未见相关布局或资源问题。
 
 另外无参数启动固定交付目录中的中文名 exe，确认窗口标题“穿在身上的民族历史——苗绣 · 首页”、默认 `%APPDATA%\MiaoxiuDesktop\Local Storage` 创建成功，然后通过正常关闭窗口退出。
 

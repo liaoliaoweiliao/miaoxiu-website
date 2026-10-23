@@ -29,6 +29,17 @@ npm run desktop:pack
 
 打包缓存默认位于 `node_modules/.cache/electron-builder/`，避免本机用户目录的跨卷重命名错误，可用 `ELECTRON_BUILDER_CACHE` 覆盖。慢网络可预先获取 Electron 官方对应版本 ZIP，按 `node_modules/electron/checksums.json` 核对 SHA-256 后执行 `npm run desktop:pack -- --config.electronDist=该ZIP的路径`。本次使用经官方校验的 45.0.0 win32-x64 ZIP 打包。
 
+## 应用图标
+
+桌面文件、窗口及任务栏图标使用用户提供的网站花蝶纹logo，原图保存在 `electron/logo-source.png`。需要重新转换时，在Windows执行：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/create-desktop-icon.ps1
+npm run desktop:pack
+```
+
+转换脚本保留原图配色和透明通道，裁去外侧空白，保持比例，生成16–256像素九种尺寸的 `electron/icon.ico`。预览写入忽略目录 `desktop-test-results/logo-icon-preview.png`。图标变化不会更改用户数据目录。
+
 ## 桌面实现边界
 
 `electron/main.cjs` 通过 `miao://app/` 提供 ASAR 中的 `dist/`，处理 MIME、中文/空格 URL、路径边界和 CSP，阻断应用内远程资源请求；不启动本地 HTTP 服务。窗口启用 `sandbox`、`contextIsolation` 和 `webSecurity`，关闭 Node 集成、webview 和权限请求。打包启用 ASAR 完整性与相关 Electron fuses。安全设置依据 [Electron 安全建议](https://www.electronjs.org/docs/latest/tutorial/security) 与 [自定义协议说明](https://www.electronjs.org/docs/latest/api/protocol)。
