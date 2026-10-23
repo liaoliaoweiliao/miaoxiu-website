@@ -115,6 +115,8 @@ button, input, select, textarea { max-width: 100%; }
   .target-brief small { margin-left: 0; }
   .decode-actions button { flex: 1 1 125px; margin-left: 0; }
   .decode-image-preview { right: 6px; bottom: 6px; font-size: 11px; padding: 6px 9px; }
+  .costume-draw-stage { min-height: 360px; }
+  .costume-draw-stage > .draw-card, .has-result > .draw-card { height: 360px; }
   .costume-draw-stage > .draw-card > img, .costume-draw-stage .reveal-front > img { height: 250px; }
   .mystery-costume { height: 230px; }
   .owned-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
