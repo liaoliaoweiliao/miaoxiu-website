@@ -407,3 +407,13 @@ body.story-reader-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  .history-page *,.story-animation-overlay *,.story-reader *{animation:none!important;transition:none!important}
 }
+.motif-arrow-btn {
+ display:grid; place-items:center; padding:0; line-height:1;
+}
+.motif-arrow-btn svg {
+ display:block; width:20px; height:20px; fill:none; stroke:currentColor;
+ stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; pointer-events:none;
+}
+@media(max-width:640px) {
+ .motif-arrow-btn svg { width:16px; height:16px; }
+}

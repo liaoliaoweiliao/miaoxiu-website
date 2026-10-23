@@ -10,19 +10,70 @@ async function sampleReveal(stage, time) {
   }, time);
 }
 
-async function openWardrobe(page) {
-  // A full pool lets the next draw repeat the same outfit and exercise animation replay.
+async function openWardrobe(page, owned = costumeSets.filter((costume) => costume.theme === 'star').map((costume) => costume.id)) {
+  // The default full pool exercises repeats; an empty pool also covers the first collection.
   await page.addInitScript((owned) => {
     Math.random = () => 0;
     localStorage.setItem('miao-wardrobe-v4', JSON.stringify({
       unlocked: ['star'], owned, gender: 'girl', equipped: { girl: null, boy: null },
     }));
-  }, costumeSets.filter((costume) => costume.theme === 'star').map((costume) => costume.id));
+  }, owned);
   await page.goto('/#experience');
   await page.locator('[data-action="drawGender"][data-id="girl"]').click();
 }
 
+async function wardrobePosition(page) {
+  return page.evaluate(() => ({
+    scrollY,
+    boxes: ['.wardrobe', '.costume-draw-stage', '.draw-btn', '.draw-note'].map((selector) => {
+      const { y, height } = document.querySelector(selector).getBoundingClientRect();
+      return { y, height };
+    }),
+  }));
+}
+
+function expectSamePosition(actual, expected) {
+  expect(Math.abs(actual.scrollY - expected.scrollY)).toBeLessThanOrEqual(1);
+  actual.boxes.forEach((box, index) => {
+    expect(Math.abs(box.y - expected.boxes[index].y)).toBeLessThanOrEqual(1);
+    expect(Math.abs(box.height - expected.boxes[index].height)).toBeLessThanOrEqual(1);
+  });
+}
+
 for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700 }]) {
+  for (const reducedMotion of ['no-preference', 'reduce']) {
+    test(`wardrobe stays in place through first and repeat draws at ${viewport.width}px (${reducedMotion})`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.emulateMedia({ reducedMotion });
+      if (reducedMotion === 'no-preference') await page.clock.install();
+      await openWardrobe(page, []);
+      if (reducedMotion === 'no-preference') await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+      const stage = page.locator('.costume-draw-stage');
+
+      for (const gender of ['girl', 'girl', 'boy']) {
+        if (gender === 'boy') await page.locator('[data-action="drawGender"][data-id="boy"]').click();
+        await page.locator('.draw-btn').scrollIntoViewIfNeeded();
+        await page.mouse.move(0, 0);
+        const before = await wardrobePosition(page);
+        await page.locator('.draw-btn').click();
+        await page.mouse.move(0, 0);
+        if (reducedMotion === 'no-preference') {
+          await page.clock.runFor(300);
+          expectSamePosition(await wardrobePosition(page), before);
+          await expect(stage).toHaveClass(/is-drawing/);
+          await expect(stage.getByRole('img', { name: '服装套装正在横向循环轮播' })).toBeVisible();
+          await page.clock.runFor(2700);
+          await expect(stage).toHaveClass(/is-revealing/);
+          expectSamePosition(await wardrobePosition(page), before);
+          await page.clock.runFor(1500);
+        }
+        await expect(page.locator('.draw-btn')).toBeEnabled();
+        expectSamePosition(await wardrobePosition(page), before);
+        await expect(stage.locator('.reveal-front')).toBeVisible();
+      }
+    });
+  }
+
   test(`outfit and name stay mounted after the golden reveal at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
