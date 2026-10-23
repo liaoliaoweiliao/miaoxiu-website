@@ -1,5 +1,5 @@
 /* 苗绣探源：根据 UI 原型重做的故事、纹样、针法与色彩页面。 */
-.history-page{position:relative;overflow:hidden;background:transparent;color:#f7f0e5;padding-top:32px}
+.history-page{position:relative;overflow:hidden;background:transparent;color:#f7f0e5;padding-top:32px;padding-bottom:clamp(48px,5vw,76px)}
 .history-page:before,.history-page:after{content:'✾  ❧  ✽  ❧  ✾';position:absolute;z-index:0;pointer-events:none;color:#a06f60;opacity:.15;font-size:65px;letter-spacing:22px;line-height:1.4;transform:rotate(-18deg);white-space:nowrap}
 .history-page:before{left:-140px;top:90px}.history-page:after{right:-190px;top:910px;transform:rotate(22deg)}
 .history-page .container{position:relative;z-index:1;max-width:1380px;width:calc(100% - 80px)}

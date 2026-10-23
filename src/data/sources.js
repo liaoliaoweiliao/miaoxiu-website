@@ -9,7 +9,16 @@ export const materialSources=[
     platform: '本站背景装饰 · AI 生成',
     credits: [],
     group: 'images',
-    usage: '五页公共背景的低对比边角暗纹；苗绣灵感创作，不作为馆藏复刻或传统纹样考据依据',
+    usage: '五页公共背景与页脚的花鸟蝴蝶绣纹；苗绣灵感创作，不作为馆藏复刻或传统纹样考据依据',
+  },
+  {
+    title: '蝴蝶、花朵、水涡与星形线饰',
+    url: assetUrl('common/embroidered-band.svg'),
+    linkLabel: '查看几何绣边',
+    platform: '本站绘制 · SVG 线饰',
+    credits: [],
+    group: 'images',
+    usage: '导航标记与页脚绣边；参考本站纹样主题的当代几何装饰设计，不作为传统纹样复原',
   },
   {
     "title": "苗绣龙纹",

@@ -86,7 +86,7 @@ miaoxiu-website/
 
 页面通过 React props、事件和 hooks 协作；共享行为由 `App.jsx` 管理，互动体验的 reducer 与持久化集中在 `features/experience/`。页面专属样式写入对应 CSS；修改公共样式或公共数据后检查四个页面。新功能沿用此结构，避免恢复旧式 HTML 字符串拼接和整页 DOM 替换。
 
-全站背景由 `src/components/SiteBackground.jsx` 统一承载，底色、内容承托色、导航色、边框与纹样强度集中在 `src/styles/page-background.css` 的 CSS 变量中调整。旧花鸟背景和页脚花纹已移除；现用深靛蓝 `#18263D`、灰靛蓝 `#263A52`、`indigo-weave.svg` 细微布纹，以及从已有 AI 素材转换的 `indigo-embroidery.webp` 花鸟蝴蝶暗纹。两侧按原比例裁切并向中间渐隐，不平铺；纹样默认透明度 0.09、装饰开关开启后 0.13，手机乘 0.75。装饰不拦截点击，不改变作品、地图或人物颜色。公共导航（含印章、疏针脚标记和手机搜索）的样式集中在 `embroidered-theme.css`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航与绣框 → 光标 → 响应式规则。素材来源与取舍见 [靛蓝主题说明](docs/references/indigo-theme.md)。
+全站背景由 `src/components/SiteBackground.jsx` 统一承载，主题变量集中在 `src/styles/page-background.css`。现用鲜明而不泛白的靛蓝 `#245B85` 与 `#2D6B95`、`indigo-weave.svg` 布纹，以及已有 AI 素材转换的 `indigo-embroidery.webp` 花鸟蝴蝶绣纹。两侧按原比例裁切并向中间渐隐，不平铺；lighten 混合保留彩色绣线，透明度默认 0.90、装饰开关后 1.00，手机乘 0.90。背景随滚动产生两侧错位，新增星形、花朵、水涡和蝴蝶小纹样逐渐移动显现；监听以 requestAnimationFrame 合并，减少动态效果偏好下保持静止。装饰不拦截点击，不改变作品、地图或人物颜色。导航采用更大的标题和原图印章、宋体栏目、回旋绣线与四种独立纹样标记，点击无装饰框线，保留键盘焦点。页脚采用蝴蝶线饰、几何绣边和两侧花鸟；探源页配色挑战按钮与页脚之间留出至少 48px。公共导航、页脚与绣框样式集中在 `embroidered-theme.css`，线饰组件为 `EmbroideryOrnament.jsx`。所有样式经 `index.css` 加载，顺序为基础与页面样式 → 公共背景 → 导航、页脚与绣框 → 光标 → 响应式规则。素材来源与取舍见 [靛蓝主题说明](docs/references/indigo-theme.md)。
 
 ## 图片与子路径
 

@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { assetUrl } from '../utils/assets.js';
+import EmbroideryOrnament from './EmbroideryOrnament.jsx';
 
 const navigation = [
   ['home', '首页'],
@@ -7,6 +8,7 @@ const navigation = [
   ['experience', '互动体验'],
   ['gallery', '作品展览'],
 ];
+const navigationMotifs = { home: 'butterfly', history: 'spiral', experience: 'flower', gallery: 'star' };
 
 export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNavigate }) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -47,12 +49,12 @@ export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNav
             >
               <span className="nav-label">{label}</span>
               <span className="nav-marker" aria-hidden="true">
-                <svg viewBox="0 0 144 24" focusable="false">
-                  <path className="nav-scroll-line" d="M12 12H60M84 12H132" />
-                  <path className="nav-scroll-stitches" d="M18 17H53M91 17H126" />
-                  <path className="nav-scroll-knot" d="M72 3L81 12 72 21 63 12Z" />
-                  <path className="nav-scroll-needle" d="M72 10L74 12 72 14 70 12Z" />
+                <svg className="nav-thread" viewBox="0 0 144 28" focusable="false">
+                  <path className="nav-scroll-line" d="M7 14h35q8 0 8-5t-7-2q-4 3 1 6M137 14h-35q-8 0-8-5t7-2q4 3-1 6" />
+                  <path className="nav-scroll-stitches" d="M15 21h34m46 0h34" />
+                  <path className="nav-scroll-knot" d="m2 14 4-4 4 4-4 4Zm132 0 4-4 4 4-4 4Z" />
                 </svg>
+                <EmbroideryOrnament motif={navigationMotifs[target]} />
               </span>
             </button>
           ))}
@@ -109,16 +111,22 @@ export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNav
 export function Footer({ onNavigate }) {
   return (
     <footer className="footer">
-      <div className="motto"><span>苗绣</span> · 不只是技艺，更是一种生活的哲学。</div>
-      <div className="footer-links">
-        {[...navigation, ['sources', '素材来源']].map(([target, label], index) => (
-          <Fragment key={target}>
-            {index > 0 && <i aria-hidden="true">│</i>}
-            <button type="button" data-go={target} onClick={() => onNavigate(target)}>{label}</button>
-          </Fragment>
-        ))}
+      <div className="footer-flora footer-flora-left" aria-hidden="true" />
+      <div className="footer-flora footer-flora-right" aria-hidden="true" />
+      <div className="footer-content">
+        <div className="footer-emblem" aria-hidden="true"><span /><EmbroideryOrnament /><span /></div>
+        <p className="footer-kicker">一针一线 · 生生不息</p>
+        <div className="motto"><span>苗绣</span><div>不只是技艺，更是一种生活的哲学。</div></div>
+        <div className="footer-links">
+          {[...navigation, ['sources', '素材来源']].map(([target, label], index) => (
+            <Fragment key={target}>
+              {index > 0 && <i aria-hidden="true">│</i>}
+              <button type="button" data-go={target} onClick={() => onNavigate(target)}>{label}</button>
+            </Fragment>
+          ))}
+        </div>
+        <p className="footer-note">传承千年针线，遇见穿在身上的民族历史</p>
       </div>
-      <p>传承千年针线，遇见穿在身上的民族历史</p>
     </footer>
   );
 }
