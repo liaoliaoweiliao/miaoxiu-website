@@ -32,6 +32,53 @@ test('ornament switch preserves the original artwork and map colors on every pag
   expect(legacyWallpaper).toEqual([]);
 });
 
+test('continuous embroidery responds to scrolling and respects reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/#gallery');
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  const layer = page.locator('.site-background');
+  const progress = () => layer.evaluate((element) => Number(getComputedStyle(element).getPropertyValue('--scroll-progress')));
+  await expect.poll(progress).toBe(0);
+  const left = page.locator('.cloth-edge-left');
+  const initial = await left.evaluate((element) => getComputedStyle(element).transform);
+  await page.evaluate(() => window.scrollTo({ top: 2200, behavior: 'instant' }));
+  await expect.poll(progress).toBeGreaterThan(0);
+  expect(await left.evaluate((element) => getComputedStyle(element).transform)).not.toBe(initial);
+  expect(await left.evaluate((element) => getComputedStyle(element).backgroundRepeat)).toBe('no-repeat');
+  expect(await layer.evaluate((element) => element.getBoundingClientRect().top)).toBe(0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(progress).toBe(0);
+  await page.evaluate(() => window.scrollTo({ top: 3200, behavior: 'instant' }));
+  expect(await left.evaluate((element) => getComputedStyle(element).transform)).toBe('none');
+  await expect(page.locator('.cloth-scroll-motifs')).toHaveCount(0);
+});
+
+test('color challenge remains fully clickable above the footer at every layout', async ({ page }) => {
+  await page.goto('/#history');
+  const challenge = page.getByRole('button', { name: /配色挑战：为纹样选择三种主色/ });
+  for (const width of [320, 390, 820, 1440]) {
+    await page.setViewportSize({ width, height: 844 });
+    await challenge.scrollIntoViewIfNeeded();
+    const bounds = await challenge.evaluate((element) => {
+      const box = element.getBoundingClientRect();
+      const footer = document.querySelector('.footer').getBoundingClientRect();
+      const main = document.querySelector('main').getBoundingClientRect();
+      return {
+        gap: footer.top - box.bottom,
+        mainBottom: main.bottom,
+        buttonBottom: box.bottom,
+        reachable: [.2, .5, .8].every((fraction) => element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height * fraction))),
+      };
+    });
+    expect(bounds.gap).toBeGreaterThanOrEqual(48);
+    expect(bounds.buttonBottom).toBeLessThan(bounds.mainBottom);
+    expect(bounds.reachable).toBe(true);
+    const previous = await challenge.getAttribute('aria-pressed');
+    await challenge.click();
+    await expect(challenge).toHaveAttribute('aria-pressed', previous === 'true' ? 'false' : 'true');
+  }
+});
+
 test('title, seal, navigation and search stay separate across header breakpoints', async ({ page }) => {
   await page.goto('/#history');
   for (const width of [320, 390, 760, 761, 800, 1024, 1100, 1101, 1280, 1440, 1920]) {
@@ -45,7 +92,7 @@ test('title, seal, navigation and search stay separate across header breakpoints
     });
     expect(bounds.seal.x).toBeGreaterThan(bounds.title.x);
     expect(bounds.seal.right).toBeLessThanOrEqual(bounds.tools.x - 8);
-    expect(bounds.seal.bottom).toBeLessThanOrEqual(bounds.bar.bottom);
+    expect(bounds.seal.bottom).toBeLessThanOrEqual(bounds.bar.bottom - 6);
     expect(bounds.tools.right).toBeLessThanOrEqual(width);
     if (width > 760) {
       expect(bounds.title.right).toBeLessThanOrEqual(bounds.nav.x - 8);

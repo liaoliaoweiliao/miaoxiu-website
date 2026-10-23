@@ -1,7 +1,7 @@
 import { materialSources } from '../data/sources.js';
 
 const groups = [
-  ['images', '影像素材', '摄影、馆藏与纹样图像'],
+  ['images', '影像素材', '纹样科普与作品展览'],
   ['research', '参考文献', '研究资料与开放获取文献'],
 ];
 
@@ -33,7 +33,7 @@ export default function SourcesPage() {
                   {source.doi && <p className="source-credit">DOI：{source.doi}</p>}
                   {source.license && <p className="source-credit">清单所列协议：<a href={source.licenseUrl} target="_blank" rel="noopener noreferrer">{source.license}</a></p>}
                   {source.url ? (
-                    <a className="source-url" href={source.url} target="_blank" rel="noopener noreferrer"><span>{source.url}</span><b aria-hidden="true">↗</b></a>
+                    <a className="source-url" href={source.url} target="_blank" rel="noopener noreferrer"><span>{source.linkLabel || source.url}</span><b aria-hidden="true">↗</b></a>
                   ) : <p className="source-reference">{source.reference || ''}<small>原清单未附网址</small></p>}
                 </div>
               </li>
