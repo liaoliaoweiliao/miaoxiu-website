@@ -142,14 +142,24 @@ test('mobile branch atlas supports point selection and touch controls without pa
 
 test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
   await page.goto('/');
+  const section = page.locator('[data-heritage-journey]');
   const bird = page.locator('[data-heritage-bird]');
-  await bird.click();
+  await expect(section.getByRole('heading', { level: 2 })).toHaveText('让苗绣，走进今天的生活');
+  await expect(section.locator('.heritage-application')).toHaveCount(3);
+  await expect(section.locator('.heritage-chapters [aria-current="step"]')).toContainText('看见纹样');
+  await section.getByRole('button', { name: '跟随小鸟 · 看手艺', exact: true }).click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('02');
+  await expect(section.locator('.heritage-chapters [aria-current="step"]')).toContainText('走近手艺');
+  await expect(section.locator('.heritage-story h3')).toHaveText('一针一线，是传承的起点');
   await bird.click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('03');
-  await bird.click();
+  await expect(section.locator('.heritage-chapters [aria-current="step"]')).toContainText('融入日常');
+  await expect(section.locator('.heritage-story-copy')).toContainText('小鸟落在了笔记本封面上');
+  await section.getByRole('button', { name: '再看一遍小鸟的旅程', exact: true }).focus();
+  await page.keyboard.press('Enter');
   await expect(page.locator('[data-heritage-number]')).toHaveText('01');
   await expect(page.locator('.heritage-whisper')).toContainText('又回到了起点');
+  await expect(section.getByRole('button', { name: '跟随小鸟 · 看手艺', exact: true })).toBeEnabled();
 });
 
 test('stories, motif navigation, stitch animation and three-color palette', async ({ page }) => {
