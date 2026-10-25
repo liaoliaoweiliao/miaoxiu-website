@@ -13,6 +13,7 @@ const slides = [
 const features = [
   {
     className: 'feature-heritage',
+    page: 'history',
     image: 'home/feature-heritage.webp',
     chapter: 'CHAPTER 01',
     subtitle: 'THE ROOTS',
@@ -24,6 +25,7 @@ const features = [
   },
   {
     className: 'feature-experience',
+    page: 'experience',
     image: 'home/feature-experience-photo.jpg',
     chapter: 'CHAPTER 02',
     subtitle: 'THE CRAFT',
@@ -35,6 +37,7 @@ const features = [
   },
   {
     className: 'feature-gallery',
+    page: 'gallery',
     image: 'home/feature-gallery.webp',
     chapter: 'CHAPTER 03',
     subtitle: 'THE WORKS',
@@ -144,7 +147,7 @@ function HeroCarousel({ initialSlide = 0 }) {
   );
 }
 
-export default function HomePage({ state }) {
+export default function HomePage({ state, onNavigate }) {
   return (
     <>
       <HeroCarousel initialSlide={state?.slide || 0} />
@@ -177,7 +180,17 @@ export default function HomePage({ state }) {
                 ) : (
                   <span className="feature-gallery-copy">一针一线的色彩，<span>藏着值得细看的故事。</span></span>
                 )}
-                <span className="feature-foot" aria-hidden="true">{feature.foot[0]} <b>·</b> {feature.foot[1]}</span>
+                <div className="feature-actions">
+                  <span className="feature-foot" aria-hidden="true">{feature.foot[0]} <b>·</b> {feature.foot[1]}</span>
+                  <button
+                    type="button"
+                    className="feature-link"
+                    aria-label={`前往${feature.title}`}
+                    onClick={() => onNavigate(feature.page)}
+                  >
+                    进入栏目 <span aria-hidden="true">→</span>
+                  </button>
+                </div>
               </div>
             </article>
           ))}
