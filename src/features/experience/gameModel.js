@@ -59,7 +59,7 @@ export const isHit = (index, x, y) => hitRegion(index, x, y) >= 0;
 
 export function createExperienceState(storage, random = Math.random) {
   const level = randomImageIndex(random);
-  return { level, theme: levels[level].id, round: 1, completedRounds: 0, found: false, region: 0, dressed: false, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection: readCollection(storage) };
+  return { level, theme: levels[level].id, round: 1, found: false, region: 0, dressed: false, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection: readCollection(storage) };
 }
 
 export function experienceReducer(state, action) {
@@ -79,18 +79,21 @@ export function experienceReducer(state, action) {
       const choices = levels.map((_, index) => index).filter((index) => index !== state.level);
       const sample = Number.isFinite(action.random) ? action.random : 0;
       const level = choices[Math.min(choices.length - 1, Math.max(0, Math.floor(sample * choices.length)))];
-      return { ...state, level, theme: levels[level].id, round: state.round + 1, completedRounds: state.completedRounds + (action.completed ? 1 : 0), drawGender: null, lastDraw: null, reveal: false, found: false, dressed: false, feedback: null, cursor: null, region: 0, unlock: null, selectedCard: null, filter: 'all', collectionNote: '', saveNote: '', dealing: true, notice: '已随机换一张图片。找到纹样，再去抽取绣衣、装扮人物；已有收藏与穿戴会保留。' };
+      return { ...state, level, theme: levels[level].id, round: state.round + 1, drawGender: null, lastDraw: null, reveal: false, found: false, dressed: false, feedback: null, cursor: null, region: 0, unlock: null, selectedCard: null, filter: 'all', collectionNote: '', saveNote: '', dealing: true, notice: '已随机换一张图片。找到纹样，再去抽取绣衣、装扮人物；已有收藏与穿戴会保留。' };
     }
     case 'dealDone': return { ...state, dealing: false };
     case 'pool':
-      return collection.unlocked.includes(action.id) && !state.drawing && !state.reveal ? { ...state, theme: action.id, drawGender: null, lastDraw: null, collectionNote: '', reveal: false } : state;
-    case 'gender':
-    case 'drawGender': {
+      return levels.some((level) => level.id === action.id) && !state.drawing && !state.reveal && !state.lastDraw ? { ...state, theme: action.id, drawGender: null, collectionNote: '', reveal: false } : state;
+    case 'gender': {
       if (!['girl', 'boy'].includes(action.id) || state.drawing || state.reveal) return state;
-      return { ...state, collection: { ...collection, gender: action.id }, lastDraw: null, collectionNote: '', reveal: false, selectedCard: ownedSets(collection, action.id)[0]?.id || null, drawGender: action.type === 'drawGender' ? action.id : state.drawGender };
+      return { ...state, collection: { ...collection, gender: action.id }, selectedCard: ownedSets(collection, action.id)[0]?.id || null, dressed: Boolean(state.found && state.lastDraw && collection.equipped[action.id] === state.lastDraw) };
+    }
+    case 'drawGender': {
+      if (!['girl', 'boy'].includes(action.id) || state.drawing || state.reveal || state.lastDraw || !state.found || state.theme !== levels[state.level].id) return state;
+      return { ...state, collection: { ...collection, gender: action.id }, collectionNote: '', selectedCard: ownedSets(collection, action.id)[0]?.id || null, drawGender: action.id };
     }
     case 'drawStart':
-      return !state.drawing && !state.reveal && state.drawGender && collection.unlocked.includes(state.theme) ? { ...state, collection: { ...collection, gender: state.drawGender }, drawing: true, reveal: false, collectionNote: '绣衣流转中，即将揭晓你的专属套装…' } : state;
+      return state.found && state.theme === levels[state.level].id && !state.lastDraw && !state.drawing && !state.reveal && state.drawGender && collection.unlocked.includes(state.theme) ? { ...state, collection: { ...collection, gender: state.drawGender }, drawing: true, reveal: false, collectionNote: '绣衣流转中，即将揭晓你的专属套装…' } : state;
     case 'drawComplete': {
       if (!state.drawing) return state;
       const pool = costumeSets.filter((costume) => costume.theme === state.theme && costume.gender === state.drawGender);
@@ -109,7 +112,7 @@ export function experienceReducer(state, action) {
     case 'equip': {
       const costume = setById(action.id);
       if (!costume || !collection.owned.includes(action.id) || costume.gender !== collection.gender) return state;
-      return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: costume.id } }, selectedCard: costume.id, dressed: state.found || state.dressed, wearRevision: state.wearRevision + 1, saveNote: '搭配已更新，可保存当前效果图。' };
+      return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: costume.id } }, selectedCard: costume.id, dressed: state.found && state.lastDraw === costume.id, wearRevision: state.wearRevision + 1, saveNote: '搭配已更新，可保存当前效果图。' };
     }
     case 'reset': return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: null } }, dressed: false, wearRevision: state.wearRevision + 1, saveNote: '已恢复基础形象，藏品仍保留。' };
     case 'saveStart': return { ...state, saving: true, saveNote: '正在生成当前搭配效果图…' };

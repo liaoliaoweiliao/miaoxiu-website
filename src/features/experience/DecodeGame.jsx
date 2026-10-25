@@ -37,9 +37,8 @@ const DecodeGame = forwardRef(function DecodeGame({ game, dispatch, onPreview, o
       {game.feedback && <span key={`${game.round}-${game.feedback.x}-${game.feedback.y}-${game.feedback.hit}`} className={`click-ripple ${game.feedback.hit ? 'hit' : 'miss'}`} style={{ left: `${game.feedback.x}%`, top: `${game.feedback.y}%` }} aria-hidden="true">{game.feedback.hit ? '✦' : '×'}</span>}
       {game.cursor && <span className="observation-cursor" style={{ left: `${game.cursor.x}%`, top: `${game.cursor.y}%` }} aria-hidden="true">＋</span>}
     </div><button type="button" className="decode-image-preview" onClick={preview} aria-label={`放大欣赏${level.title}`}>⤢ 欣赏图片</button></div>
-    <div className="decode-actions">{game.found ? <button type="button" onClick={onWardrobe}>前往对应苗绣衣橱 →</button> : <button type="button" data-action="randomImage" onClick={() => onRound(false)} disabled={game.drawing || game.reveal}>↻ 随机抽图</button>}</div>
-    <p className="decode-help">{game.found ? '纹样已点亮。抽取绣衣并完成装扮后，即可随机换图再玩一轮。' : '可随时换一张图；每轮完成装扮后，还能继续新的寻纹之旅。'}</p>
     <p id="decode-feedback" className="decode-feedback" role="status">{game.notice}</p>
+    <div className="decode-actions">{game.found ? <button type="button" onClick={onWardrobe}>前往对应苗绣衣橱 →</button> : <button type="button" data-action="randomImage" onClick={() => onRound(false)} disabled={game.drawing || game.reveal}>↻ 随机抽图</button>}</div>
   </div>;
 });
 export default DecodeGame;

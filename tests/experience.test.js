@@ -85,20 +85,21 @@ test('drawing requires an unlocked pool and explicit role selection', () => {
   assert.strictEqual(reduce(state, { type: 'drawStart' }), state);
 });
 
-test('repeat draws fill missing sets first and completed pools never duplicate collection entries', () => {
+test('draws in separately solved journeys fill missing sets first without duplicate collection entries', () => {
   let state = solve(start());
   for (let count = 1; count <= 6; count += 1) {
+    if (count > 1) state = solve(start(0, storage({ [COLLECTION_KEY]: JSON.stringify(state.collection) })));
     state = draw(state);
     assert.equal(state.collection.owned.length, count);
     assert.equal(state.lastFresh, true);
     assert.equal(state.collection.equipped.girl, null, 'draws collect without auto-equipping');
   }
-  state = draw(state);
+  state = draw(solve(start(0, storage({ [COLLECTION_KEY]: JSON.stringify(state.collection) }))));
   assert.equal(state.collection.owned.length, 6);
   assert.equal(state.lastFresh, false);
   assert.match(state.collectionNote, /重复卡/);
-  assert.equal(state.drawRevision, 7);
-  state = draw(state, 'boy');
+  assert.equal(state.drawRevision, 1);
+  state = draw(solve(start(0, storage({ [COLLECTION_KEY]: JSON.stringify(state.collection) }))), 'boy');
   assert.equal(state.collection.owned.length, 7);
   assert.equal(ownedSets(state.collection).length, 1);
   assert.equal(ownedSets(state.collection, 'girl').length, 6);
@@ -112,7 +113,7 @@ test('whole outfits enforce ownership and gender, preserve separate boys/girls, 
   assert.equal(hasOutfit(state.collection), true);
   assert.equal(state.dressed, true);
   assert.equal(previewLayers(state.collection)[0].src, setById(girlId).portrait);
-  state = draw(state, 'boy');
+  state = draw(solve(start(1, storage({ [COLLECTION_KEY]: JSON.stringify(state.collection) }))), 'boy');
   assert.strictEqual(reduce(state, { type: 'equip', id: girlId }), state);
   const boyId = state.lastDraw;
   state = reduce(state, { type: 'equip', id: boyId });
@@ -135,7 +136,6 @@ test('the loop requires wearing an outfit and chooses a different photograph aft
   const next = reduce(state, { type: 'round', completed: true, random: 0 });
   assert.notEqual(next.level, state.level);
   assert.equal(next.round, 2);
-  assert.equal(next.completedRounds, 1);
   assert.equal(next.theme, levels[next.level].id);
   assert.equal(next.found, false);
   assert.equal(next.dressed, false);
@@ -160,7 +160,6 @@ test('many completed rounds reset transient selections and keep all collected ou
     assert.notEqual(state.level, previous.level);
     assert.equal(state.theme, levels[state.level].id);
     assert.equal(state.round, index + 2);
-    assert.equal(state.completedRounds, index + 1);
     assert.equal(state.filter, 'all', 'an old theme filter must not hide the next outfit');
     assert.equal(state.selectedCard, null);
     assert.equal(state.collectionNote, '');
@@ -173,21 +172,49 @@ test('many completed rounds reset transient selections and keep all collected ou
   }
 });
 
-test('changing unsolved photos always changes the image without counting a completed journey, and reveal blocks round changes', () => {
+test('changing unsolved photos always changes the image, and reveal blocks round changes', () => {
   for (let index = 0; index < levels.length; index += 1) {
     for (const random of [0, 0.5, 0.99, 1]) {
       const state = start(index);
       const next = reduce(state, { type: 'round', completed: false, random });
       assert.notEqual(next.level, index);
-      assert.equal(next.completedRounds, 0);
     }
   }
-  let state = draw(solve(start()));
-  state = reduce(state, { type: 'equip', id: state.lastDraw });
+  let state = reduce(solve(start()), { type: 'drawGender', id: 'girl' });
   state = reduce(state, { type: 'drawStart' });
   assert.strictEqual(reduce(state, { type: 'round', completed: true, random: 0 }), state);
   state = reduce(state, { type: 'drawComplete', random: 0 });
+  state = reduce(state, { type: 'equip', id: state.lastDraw });
   assert.strictEqual(reduce(state, { type: 'round', completed: true, random: 0 }), state);
+});
+
+test('only the discovered theme allows one draw, including after role, pool and dressing changes', () => {
+  const saved = storage({ [COLLECTION_KEY]: JSON.stringify({ unlocked: ['star', 'peony'], owned: ['star-boy-1'], gender: 'girl', equipped: { girl: null, boy: 'star-boy-1' } }) });
+  let state = start(0, saved);
+  assert.strictEqual(reduce(state, { type: 'drawGender', id: 'girl' }), state, 'stored unlocks cannot bypass this round search');
+  state = reduce(state, { type: 'pool', id: 'swirl' });
+  assert.deepEqual(state.collection.unlocked, ['star', 'peony'], 'viewing a locked pool does not unlock it');
+  state = solve(state);
+  assert.equal(state.theme, 'star');
+  state = reduce(state, { type: 'pool', id: 'peony' });
+  assert.strictEqual(reduce(state, { type: 'drawGender', id: 'girl' }), state, 'a previously unlocked different theme cannot be drawn this round');
+  state = reduce(state, { type: 'openWardrobe' });
+  state = draw(state);
+  const drawn = state.lastDraw;
+  assert.strictEqual(reduce(state, { type: 'drawStart' }), state);
+  assert.strictEqual(reduce(state, { type: 'drawGender', id: 'boy' }), state);
+  assert.strictEqual(reduce(state, { type: 'pool', id: 'peony' }), state);
+  state = reduce(state, { type: 'gender', id: 'boy' });
+  state = reduce(state, { type: 'equip', id: 'star-boy-1' });
+  assert.equal(state.dressed, false, 'an older outfit cannot finish the current journey');
+  assert.equal(state.lastDraw, drawn);
+  assert.strictEqual(reduce(state, { type: 'drawStart' }), state);
+  state = reduce(state, { type: 'gender', id: 'girl' });
+  state = reduce(state, { type: 'equip', id: drawn });
+  assert.equal(state.dressed, true);
+  state = reduce(state, { type: 'reset' });
+  assert.equal(state.lastDraw, drawn);
+  assert.strictEqual(reduce(state, { type: 'drawStart' }), state, 'resetting the portrait does not grant another draw');
 });
 
 test('v4 collection restores valid ownership and outfits while rejecting forged or wrong-role entries', () => {

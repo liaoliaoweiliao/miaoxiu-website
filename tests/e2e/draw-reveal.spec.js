@@ -10,8 +10,8 @@ async function sampleReveal(stage, time) {
   }, time);
 }
 
-async function openWardrobe(page, owned = costumeSets.filter((costume) => costume.theme === 'star').map((costume) => costume.id)) {
-  // The default full pool exercises repeats; an empty pool also covers the first collection.
+async function openWardrobe(page, owned = costumeSets.filter((costume) => costume.theme === 'star').map((costume) => costume.id), gender = 'girl') {
+  // A full collection covers an already-owned result; an empty one covers the first collection.
   await page.addInitScript((owned) => {
     Math.random = () => 0;
     localStorage.setItem('miao-wardrobe-v4', JSON.stringify({
@@ -19,7 +19,13 @@ async function openWardrobe(page, owned = costumeSets.filter((costume) => costum
     }));
   }, owned);
   await page.goto('/#experience');
-  await page.locator('[data-action="drawGender"][data-id="girl"]').click();
+  const board = page.locator('.decode-board');
+  await board.locator('img').evaluate((image) => image.decode());
+  const box = await board.boundingBox();
+  await board.click({ position: { x: box.width * 0.2535, y: box.height * 0.0925 } });
+  await page.getByRole('button', { name: '进入对应苗绣衣橱 →', exact: true }).click();
+  await page.locator(`[data-action="drawGender"][data-id="${gender}"]`).click();
+  await expect(page.locator('.wardrobe-draw')).toBeFocused();
 }
 
 async function wardrobePosition(page) {
@@ -41,17 +47,16 @@ function expectSamePosition(actual, expected) {
 }
 
 for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700 }]) {
+ for (const gender of ['girl', 'boy']) {
   for (const reducedMotion of ['no-preference', 'reduce']) {
-    test(`wardrobe stays in place through first and repeat draws at ${viewport.width}px (${reducedMotion})`, async ({ page }) => {
+    test(`wardrobe stays in place through its single ${gender} draw at ${viewport.width}px (${reducedMotion})`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ reducedMotion });
       if (reducedMotion === 'no-preference') await page.clock.install();
-      await openWardrobe(page, []);
+      await openWardrobe(page, [], gender);
       if (reducedMotion === 'no-preference') await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
       const stage = page.locator('.costume-draw-stage');
 
-      for (const gender of ['girl', 'girl', 'boy']) {
-        if (gender === 'boy') await page.locator('[data-action="drawGender"][data-id="boy"]').click();
         await page.locator('.draw-btn').scrollIntoViewIfNeeded();
         await page.mouse.move(0, 0);
         const before = await wardrobePosition(page);
@@ -67,23 +72,22 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700
           expectSamePosition(await wardrobePosition(page), before);
           await page.clock.runFor(1500);
         }
-        await expect(page.locator('.draw-btn')).toBeEnabled();
+        await expect(stage).toHaveClass(/has-result/);
+        await expect(stage).not.toHaveClass(/is-revealing/);
+        await expect(page.locator('.draw-btn')).toBeDisabled();
         expectSamePosition(await wardrobePosition(page), before);
         await expect(stage.locator('.reveal-front')).toBeVisible();
-      }
     });
   }
 
-  test(`outfit and name stay mounted after the golden reveal at ${viewport.width}px`, async ({ page }) => {
+  test(`${gender} outfit and name stay mounted after the golden reveal at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.clock.install();
-    await openWardrobe(page);
+    await openWardrobe(page, undefined, gender);
     await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
     const stage = page.locator('.costume-draw-stage');
 
-    for (const gender of ['girl', 'girl', 'boy']) {
-      if (gender === 'boy') await page.locator('[data-action="drawGender"][data-id="boy"]').click();
       await page.locator('.draw-btn').click();
       await page.clock.runFor(3000);
       await expect(stage).toHaveClass(/is-revealing/);
@@ -117,17 +121,19 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700
       expect(await name.boundingBox()).toEqual(nameBefore);
       expect(await stage.boundingBox()).toEqual(before);
       await expect(stage.locator('.prize-name')).toHaveCSS('opacity', '1');
-      await expect(page.locator('.draw-btn')).toBeEnabled();
+      await expect(page.locator('.draw-btn')).toBeDisabled();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    }
   });
+ }
 }
 
 test('reduced motion shows a stable outfit name immediately without reveal flashes', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await openWardrobe(page);
   await page.locator('.draw-btn').click();
-  await expect(page.locator('.draw-btn')).toBeEnabled();
+  await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
+  await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/);
+  await expect(page.locator('.draw-btn')).toBeDisabled();
   await expect(page.locator('.prize-name')).toHaveText('星华 · 流光');
   await expect(page.locator('.prize-name')).toHaveCSS('opacity', '1');
   for (const selector of ['.prize-sparks', '.reveal-glow', '.reveal-sheen']) {

@@ -23,12 +23,13 @@ for (const width of [1440, 390]) {
     await page.goto('/#experience');
     for (let index = 0; index < 3; index += 1) {
       const gender = index === 1 ? 'boy' : 'girl';
-      await expect(page.locator('.journey-round')).toContainText(`已完成 ${index} 轮`);
+      await expect(page.locator('.level-label')).toContainText(`第 ${index + 1} 轮`);
       await discover(page, index);
       await page.locator(`[data-action="drawGender"][data-id="${gender}"]`).click();
       await page.locator('.draw-btn').click();
-      await expect(page.locator('.draw-btn')).toBeEnabled();
-      await expect(page.locator('.pool-collection-count')).toContainText('1 / 6 套');
+      await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
+      await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/);
+      await expect(page.locator('.draw-btn')).toBeDisabled();
       await page.locator('[data-action="openDressup"]').click();
       const outfit = page.locator(`.owned-card:has([data-id^="${levels[index].id}-${gender}"])`).first();
       await outfit.locator('.wear-full').click();
@@ -38,6 +39,7 @@ for (const width of [1440, 390]) {
       const photograph = await page.locator('.decode-board img').getAttribute('src');
       const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')));
       expect(saved.owned).toHaveLength(index + 1);
+      expect(saved.unlocked).toEqual(levels.slice(0, index + 1).map((level) => level.id));
       await page.evaluate((sample) => { Math.random = () => sample; }, index === 1 ? 0.99 : 0);
       await page.locator('[data-action="finishLoop"]').click();
       await expect(page.locator('.decode-board')).toBeFocused();
@@ -45,11 +47,11 @@ for (const width of [1440, 390]) {
       await expect(page.locator('.decode-board img')).not.toHaveAttribute('src', photograph);
       await expect(page.locator('.decode-counter')).toHaveText('寻找 1 处');
       await expect(page.locator('[data-action="collectionFilter"][data-id="all"]')).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
+      await expect(page.locator('[data-action="finishLoop"]')).toHaveCount(0);
       expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
-    await expect(page.locator('.journey-round')).toContainText('已完成 3 轮');
+    await expect(page.locator('.level-label')).toContainText('第 4 轮');
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')));
     await page.reload();
     expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
@@ -78,10 +80,62 @@ for (const width of [1440, 820, 320]) {
         const main = await page.locator('.wardrobe-main').boundingBox();
         expect(choices.x + choices.width).toBeLessThan(main.x);
       }
-      await page.locator('.draw-btn').click();
-      await expect(page.locator('.draw-btn')).toBeEnabled();
-      await expect(page.locator('.reveal-front')).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
+    await page.locator('.draw-btn').click();
+    await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
+    await expect(page.locator('.reveal-front')).toBeVisible();
+    await expect(page.locator('.draw-btn')).toBeDisabled();
   });
 }
+
+for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768 }, { width: 820, height: 600 }, { width: 390, height: 844 }, { width: 320, height: 700 }, { width: 640, height: 500 }]) {
+  test(`selecting either role fits the complete card and draw button at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    if (viewport.width === 1366 || viewport.width === 390) await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.addInitScript(() => { Math.random = () => 0; });
+    await page.goto('/#experience');
+    await discover(page, 0);
+    for (const gender of ['girl', 'boy']) {
+      await page.locator(`[data-action="drawGender"][data-id="${gender}"]`).click();
+      await expect(page.locator('.wardrobe-draw')).toBeFocused();
+      for (const selector of ['.draw-card', '.draw-btn']) {
+        const box = await page.locator(selector).boundingBox();
+        const header = await page.locator('header').boundingBox();
+        expect(box.y).toBeGreaterThanOrEqual(header.y + header.height);
+        expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+      }
+    }
+    await page.locator('.draw-btn').click();
+    await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
+    await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/);
+    for (const selector of ['.draw-card', '.reveal-front>img', '.draw-btn']) {
+      const box = await page.locator(selector).boundingBox();
+      expect(box.y).toBeGreaterThanOrEqual(62);
+      expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+    }
+    await expect(page.locator('[data-action="drawGender"]:enabled')).toHaveCount(0);
+    await expect(page.locator('.draw-btn')).toHaveText('本轮已抽取一套');
+  });
+}
+
+test('only discoveries unlock themes, removed fill content stays absent and the single hint hugs its image', async ({ page }) => {
+  await page.addInitScript(() => { Math.random = () => 0; });
+  await page.goto('/#experience');
+  await expect(page.locator('.journey-progress,.search-fieldnote,.pool-notebook,.round-completion,.decode-help')).toHaveCount(0);
+  await expect(page.locator('#decode-feedback')).toHaveText('找到任意一处对应纹样，即可解锁该主题衣橱。');
+  const image = await page.locator('.decode-viewport').boundingBox();
+  const hint = await page.locator('#decode-feedback').boundingBox();
+  expect(hint.y - image.y - image.height).toBeLessThanOrEqual(10);
+  await page.locator('[data-action="pool"][data-id="peony"]').click();
+  await expect(page.locator('.pool-locked h3')).toHaveText('牡丹花纹卡池尚未解锁');
+  await expect(page.locator('.pool-locked>span')).toHaveText('♙');
+  await expect(page.locator('.pool-locked>small')).toHaveCount(0);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).unlocked)).toEqual([]);
+  await discover(page, 0);
+  await expect(page.locator('.motif-tab:not(.locked)')).toHaveCount(1);
+  await expect(page.locator('.motif-tab:not(.locked)')).toContainText('八角星纹');
+  await page.locator('[data-action="pool"][data-id="peony"]').click();
+  await expect(page.locator('.pool-locked h3')).toHaveText('牡丹花纹卡池尚未解锁');
+  await expect(page.locator('[data-action="drawGender"]')).toHaveCount(0);
+});
