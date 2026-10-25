@@ -305,7 +305,7 @@ body.look-viewer-open{overflow:hidden}.look-viewer.viewer-expanded{position:fixe
 .costume-draw-stage>.wardrobe-carousel {
  position:absolute; top:50%; left:0; transform:translateY(-50%);
 }
-.costume-draw-stage>.prize-footer { position:absolute; bottom:4px; margin:0; font-size:12px; letter-spacing:2px; }
+.costume-draw-stage>.prize-footer { position:static; margin:8px 0 0; font-size:12px; line-height:1.5; letter-spacing:2px; }
 .wardrobe-draw>.draw-note { min-height:2lh; }
 .wardrobe-draw>.draw-btn { margin-top:10px; width:min(350px,95%); font-size:23px; }
 .wardrobe-draw>.draw-btn:hover { transform:none; }
@@ -331,7 +331,7 @@ body.look-viewer-open{overflow:hidden}.look-viewer.viewer-expanded{position:fixe
 .wardrobe-layout .choice-check{right:8px;top:6px;font-size:13px}
 .wardrobe-draw{--outfit-card-height:clamp(180px,calc(100svh - 330px),440px);max-width:700px;margin:auto;scroll-margin-top:0;outline:none}
 .wardrobe-draw .theme-status{font-size:14px;line-height:1.6;margin:0 0 4px}
-.wardrobe-draw .costume-draw-stage{padding:8px 10px 26px;gap:10px}
+.wardrobe-draw .costume-draw-stage{padding:8px 10px 0;gap:10px}
 .wardrobe-draw .costume-draw-stage>.draw-card{height:var(--outfit-card-height);min-height:0;width:min(320px,94%)}
 .wardrobe-draw .reveal-turn,.wardrobe-draw .reveal-side{height:100%;min-height:0}
 .wardrobe-draw .reveal-side{padding:12px}
@@ -341,7 +341,6 @@ body.look-viewer-open{overflow:hidden}.look-viewer.viewer-expanded{position:fixe
 .wardrobe-draw .costume-draw-stage .draw-reveal-label{font-size:16px;line-height:1.5;letter-spacing:2px;min-height:61px}
 .wardrobe-draw>.draw-btn{margin-top:8px}
 .wardrobe-draw>.draw-note{font-size:13px;line-height:1.8;max-width:430px;margin:8px auto 0}
-.wardrobe-draw .draw-next-step{width:100%;margin:8px auto 0;font-size:15px;padding:10px 14px;background:var(--surface-indigo-inset);border-color:#cda87888}
 .experience-page .decode-feedback{margin:8px 0 0;line-height:1.7}
 .decode-game .decode-actions{margin-top:8px}
 @media(max-width:900px){

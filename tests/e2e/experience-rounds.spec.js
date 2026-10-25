@@ -86,6 +86,11 @@ for (const width of [1440, 820, 320]) {
     await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
     await expect(page.locator('.reveal-front')).toBeVisible();
     await expect(page.locator('.draw-btn')).toBeDisabled();
+    const card = await page.locator('.draw-card').boundingBox();
+    const caption = await page.locator('.prize-footer').boundingBox();
+    const drawButton = await page.locator('.draw-btn').boundingBox();
+    expect(caption.y).toBeGreaterThan(card.y + card.height + 10);
+    expect(caption.y + caption.height).toBeLessThan(drawButton.y);
   });
 }
 
