@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { createPortal, preload } from 'react-dom';
 import { assetUrl } from '../../utils/assets.js';
+
+const closedBookCover = 'history/storybooks/closed-book-user.png';
 
 export default function StoryBook({ item, onClose }) {
   const [phase, setPhase] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'open' : 'cover');
@@ -9,6 +11,7 @@ export default function StoryBook({ item, onClose }) {
   const openingTimer = useRef(null);
   const closing = useRef(false);
   useEffect(() => {
+    preload(assetUrl(closedBookCover), { as: 'image' });
     const previous = document.activeElement;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -23,7 +26,7 @@ export default function StoryBook({ item, onClose }) {
   useEffect(() => {
     if (phase !== 'closing') return undefined;
     // Also finish if animations are interrupted, for example by a motion preference change.
-    const timer = window.setTimeout(onClose, 1600);
+    const timer = window.setTimeout(onClose, 2000);
     return () => window.clearTimeout(timer);
   }, [phase, onClose]);
   function requestClose() {
@@ -47,7 +50,7 @@ export default function StoryBook({ item, onClose }) {
       <div className="story-sparkles" aria-hidden="true">{Array.from({ length: 8 }, (_, index) => <i key={index} />)}</div>
       <div className="story-book-cover" aria-hidden={phase !== 'cover'}><img src={assetUrl('history/storybooks/cover-book-user.png')} alt="苗绣小故事图书" /></div>
       <div className="story-book-open" aria-hidden={phase === 'cover'}>
-        <div className="story-book-spread" style={{ '--story-spread': `url("${assetUrl(item.book)}")`, '--story-cover': `url("${assetUrl('history/storybooks/cover-book-user.png')}")` }}>
+        <div className="story-book-spread" style={{ '--story-spread': `url("${assetUrl(item.book)}")`, '--story-cover': `url("${assetUrl(closedBookCover)}")` }}>
           <img src={assetUrl(item.book)} alt={`${item.title}打开后的页面`} />
           <div className="story-book-fold" aria-hidden="true"><div className="story-book-right" /><div className="story-book-leaf"><div className="story-book-leaf-front" /><div className="story-book-leaf-back" /></div></div>
         </div>

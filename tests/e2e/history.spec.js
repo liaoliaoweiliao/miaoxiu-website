@@ -33,18 +33,40 @@ test('three archive storybooks open, close and restore keyboard focus', async ({
     await close.click();
     await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'closing');
     await expect(page.getByRole('dialog')).toBeVisible();
-    // Pause at half-turn to verify the left leaf moves toward the right-hand page.
+    // Sample the fold, supplied transparent cover, book fade and final overlay fade.
     const fold = await page.locator('.story-book-leaf').evaluate((leaf) => {
-      const animation = leaf.getAnimations()[0];
-      animation.pause();
-      animation.currentTime = 400;
+      const overlay = leaf.closest('.story-animation-overlay');
+      const spread = overlay.querySelector('.story-book-spread');
+      const animations = overlay.getAnimations({ subtree: true }).filter((animation) => animation.animationName?.startsWith('storyBook'));
+      animations.forEach((animation) => animation.pause());
+      const seek = (time) => animations.forEach((animation) => { animation.currentTime = Math.min(time, animation.effect.getTiming().duration); });
+      seek(400);
       const matrix = new DOMMatrix(getComputedStyle(leaf).transform);
       const result = { yRotation: matrix.m13, origin: getComputedStyle(leaf).transformOrigin, width: leaf.offsetWidth };
-      animation.play();
+      seek(1000);
+      const cover = getComputedStyle(leaf.querySelector('.story-book-leaf-back'));
+      result.cover = { image: cover.backgroundImage, color: cover.backgroundColor, size: cover.backgroundSize };
+      result.closed = { book: Number(getComputedStyle(spread).opacity), rightPage: Number(getComputedStyle(overlay.querySelector('.story-book-right')).opacity) };
+      seek(1400);
+      result.fading = { book: Number(getComputedStyle(spread).opacity), overlay: Number(getComputedStyle(overlay).opacity) };
+      seek(1650);
+      result.dismiss = { book: Number(getComputedStyle(spread).opacity), overlay: Number(getComputedStyle(overlay).opacity) };
+      seek(400);
+      animations.forEach((animation) => animation.play());
       return result;
     });
     expect(fold.yRotation).toBeLessThan(0);
     expect(parseFloat(fold.origin)).toBeCloseTo(fold.width, 0);
+    expect(fold.cover.image).toMatch(/closed-book-user\.png/);
+    expect(fold.cover.color).toBe('rgba(0, 0, 0, 0)');
+    expect(fold.cover.size).toBe('contain');
+    expect(fold.closed).toEqual({ book: 1, rightPage: 0 });
+    expect(fold.fading.book).toBeGreaterThan(0);
+    expect(fold.fading.book).toBeLessThan(1);
+    expect(fold.fading.overlay).toBe(1);
+    expect(fold.dismiss.book).toBe(0);
+    expect(fold.dismiss.overlay).toBeGreaterThan(0);
+    expect(fold.dismiss.overlay).toBeLessThan(1);
     await page.keyboard.press('Escape');
     await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'closing');
     await expect(page.getByRole('dialog')).toHaveCount(0);

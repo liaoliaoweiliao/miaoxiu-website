@@ -344,19 +344,23 @@
 .story-book-leaf{left:0;transform-origin:right center;transform-style:preserve-3d;z-index:1}
 .story-book-leaf-front,.story-book-leaf-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px 0 0 10px}
 .story-book-leaf-front{background:var(--story-spread) left center/200% 100% no-repeat}
-.story-book-leaf-back{transform:rotateY(180deg);background:var(--story-cover) center/100% 100% no-repeat #5b2f20;border-radius:6px;box-shadow:0 12px 28px #0009}
+.story-book-leaf-back{transform:rotateY(180deg);background:var(--story-cover) center/contain no-repeat;filter:drop-shadow(0 12px 18px #0009)}
 .story-animation-shell[data-phase="closing"] .story-book-cover{opacity:0;animation:none;transition:none}
 .story-animation-shell[data-phase="closing"] .story-book-open{opacity:1;transform:none;transition:none}
-.story-animation-shell[data-phase="closing"] .story-book-spread{animation:storyBookSettle 1.4s ease both}
+.story-animation-shell[data-phase="closing"]:before{animation:none;opacity:0;transition:opacity .3s}
+.story-animation-shell[data-phase="closing"] .story-book-spread{animation:storyBookSettle 1.8s ease both,storyBookFade 1.8s ease both}
 .story-animation-shell[data-phase="closing"] .story-book-spread>img{visibility:hidden}
 .story-animation-shell[data-phase="closing"] .story-book-fold{display:block}
+.story-animation-shell[data-phase="closing"] .story-book-right{animation:storyBookHidePage .8s step-end both}
 .story-animation-shell[data-phase="closing"] .story-book-leaf{animation:storyBookClose .8s cubic-bezier(.4,0,.2,1) both}
 .story-animation-shell[data-phase="closing"] .story-sparkles{opacity:0}
 .story-animation-shell[data-phase="closing"] .story-animation-close{opacity:0;pointer-events:none}
-.story-animation-overlay.is-closing{animation:storyBookDismiss 1.4s ease both}
+.story-animation-overlay.is-closing{animation:storyBookDismiss 1.8s ease both}
 @keyframes storyBookClose{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
-@keyframes storyBookSettle{0%,60%{transform:translateX(0)}76%,100%{transform:translateX(-25%)}}
-@keyframes storyBookDismiss{0%,80%{opacity:1}100%{opacity:0}}
+@keyframes storyBookHidePage{from{opacity:1}to{opacity:0}}
+@keyframes storyBookSettle{0%,44%{transform:translateX(0)}60%,100%{transform:translateX(-25%)}}
+@keyframes storyBookFade{0%,64%{opacity:1}90%,100%{opacity:0}}
+@keyframes storyBookDismiss{0%,90%{opacity:1}100%{opacity:0}}
 .story-animation-close{position:absolute;right:-4px;top:18px;width:40px;height:40px;border:1px solid #f2c98e;border-radius:50%;background:#7e302ce8;color:#fff2d8;font-size:27px;line-height:1;z-index:4}
 .story-sparkles{position:absolute;inset:3% 14%;pointer-events:none;z-index:2}
 .story-sparkles i{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffe39c;box-shadow:0 0 8px 3px #f8b446,0 0 21px 7px #f29c3c88;animation:storySparkle 1s ease-in-out infinite}
