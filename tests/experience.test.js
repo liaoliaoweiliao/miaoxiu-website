@@ -135,6 +135,8 @@ test('the loop requires wearing an outfit and chooses a different photograph aft
   const next = reduce(state, { type: 'round', completed: true, random: 0 });
   assert.notEqual(next.level, state.level);
   assert.equal(next.round, 2);
+  assert.equal(next.completedRounds, 1);
+  assert.equal(next.theme, levels[next.level].id);
   assert.equal(next.found, false);
   assert.equal(next.dressed, false);
   assert.equal(next.unlock, null);
@@ -145,6 +147,47 @@ test('the loop requires wearing an outfit and chooses a different photograph aft
   const cursor = reduce(next, { type: 'cursor', x: -4, y: 104 });
   assert.deepEqual(cursor.cursor, { x: 0, y: 100 });
   assert.equal(reduce(cursor, { type: 'round', completed: false, random: 0.99 }).level, 2);
+});
+
+test('many completed rounds reset transient selections and keep all collected outfits and separate looks', () => {
+  let state = start();
+  for (let index = 0; index < 9; index += 1) {
+    state = draw(solve(state), index % 2 ? 'boy' : 'girl');
+    state = reduce(state, { type: 'equip', id: state.lastDraw });
+    state = reduce(state, { type: 'filter', id: state.theme });
+    const previous = state;
+    state = reduce(state, { type: 'round', completed: true, random: index % 2 ? 0.99 : 0 });
+    assert.notEqual(state.level, previous.level);
+    assert.equal(state.theme, levels[state.level].id);
+    assert.equal(state.round, index + 2);
+    assert.equal(state.completedRounds, index + 1);
+    assert.equal(state.filter, 'all', 'an old theme filter must not hide the next outfit');
+    assert.equal(state.selectedCard, null);
+    assert.equal(state.collectionNote, '');
+    assert.equal(state.saveNote, '');
+    assert.equal(state.found, false);
+    assert.equal(state.dressed, false);
+    assert.equal(state.drawGender, null);
+    assert.equal(state.lastDraw, null);
+    assert.strictEqual(state.collection, previous.collection, 'ownership and both equipped looks survive');
+  }
+});
+
+test('changing unsolved photos always changes the image without counting a completed journey, and reveal blocks round changes', () => {
+  for (let index = 0; index < levels.length; index += 1) {
+    for (const random of [0, 0.5, 0.99, 1]) {
+      const state = start(index);
+      const next = reduce(state, { type: 'round', completed: false, random });
+      assert.notEqual(next.level, index);
+      assert.equal(next.completedRounds, 0);
+    }
+  }
+  let state = draw(solve(start()));
+  state = reduce(state, { type: 'equip', id: state.lastDraw });
+  state = reduce(state, { type: 'drawStart' });
+  assert.strictEqual(reduce(state, { type: 'round', completed: true, random: 0 }), state);
+  state = reduce(state, { type: 'drawComplete', random: 0 });
+  assert.strictEqual(reduce(state, { type: 'round', completed: true, random: 0 }), state);
 });
 
 test('v4 collection restores valid ownership and outfits while rejecting forged or wrong-role entries', () => {

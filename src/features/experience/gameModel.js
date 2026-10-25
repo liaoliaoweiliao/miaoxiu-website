@@ -59,7 +59,7 @@ export const isHit = (index, x, y) => hitRegion(index, x, y) >= 0;
 
 export function createExperienceState(storage, random = Math.random) {
   const level = randomImageIndex(random);
-  return { level, theme: levels[level].id, round: 1, found: false, region: 0, dressed: false, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection: readCollection(storage) };
+  return { level, theme: levels[level].id, round: 1, completedRounds: 0, found: false, region: 0, dressed: false, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection: readCollection(storage) };
 }
 
 export function experienceReducer(state, action) {
@@ -75,11 +75,11 @@ export function experienceReducer(state, action) {
     }
     case 'cursor': return { ...state, cursor: { x: Math.max(0, Math.min(100, action.x)), y: Math.max(0, Math.min(100, action.y)) } };
     case 'round': {
-      if (state.drawing || state.found && !action.completed || action.completed && (!state.dressed || !hasOutfit(collection))) return state;
-      const choices = action.completed ? [0, 1, 2].filter((index) => index !== state.level) : [0, 1, 2];
+      if (state.drawing || state.reveal || state.found && !action.completed || action.completed && (!state.dressed || !hasOutfit(collection))) return state;
+      const choices = levels.map((_, index) => index).filter((index) => index !== state.level);
       const sample = Number.isFinite(action.random) ? action.random : 0;
       const level = choices[Math.min(choices.length - 1, Math.max(0, Math.floor(sample * choices.length)))];
-      return { ...state, level, round: state.round + 1, drawGender: null, lastDraw: null, reveal: false, found: false, dressed: false, feedback: null, cursor: null, region: 0, unlock: null, dealing: true, notice: '新一轮寻纹已开始，找到纹样后可继续收集服饰、搭配人物。' };
+      return { ...state, level, theme: levels[level].id, round: state.round + 1, completedRounds: state.completedRounds + (action.completed ? 1 : 0), drawGender: null, lastDraw: null, reveal: false, found: false, dressed: false, feedback: null, cursor: null, region: 0, unlock: null, selectedCard: null, filter: 'all', collectionNote: '', saveNote: '', dealing: true, notice: '已随机换一张图片。找到纹样，再去抽取绣衣、装扮人物；已有收藏与穿戴会保留。' };
     }
     case 'dealDone': return { ...state, dealing: false };
     case 'pool':
