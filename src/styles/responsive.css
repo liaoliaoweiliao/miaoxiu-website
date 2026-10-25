@@ -14,6 +14,9 @@ button, input, select, textarea { max-width: 100%; }
 .source-credit, .source-reference { overflow-wrap: anywhere; }
 
 .hero { height: clamp(280px, 52vw, 740px); min-height: 0; }
+.heritage-journey { width: auto; margin-inline: calc(-1 * var(--page-gutter)); }
+.heritage-viewport { height: clamp(440px, 52vw, 740px); min-height: 0; }
+.heritage-whisper { width: min(92%, 760px); }
 .heritage-bird-hint {
   --hint-width: min(230px, calc(100vw - 24px));
   width: max-content; max-width: var(--hint-width); white-space: normal; text-align: center;
@@ -68,6 +71,10 @@ button, input, select, textarea { max-width: 100%; }
 .viewer-viewport { height: clamp(300px, 42vw, 490px); }
 .avatar-panel { top: calc(var(--header-height) + 16px); }
 
+@media (min-width: 1472px) {
+  /* Full-bleed artwork still reaches both edges of a capped content column. */
+  .heritage-journey { margin-inline: calc((1400px - 100vw) / 2); }
+}
 @media (max-width: 1100px) {
   .thread-workspace { grid-template-columns: minmax(0, 1fr); }
   .thread-map-controls { flex-direction: row; align-items: center; }

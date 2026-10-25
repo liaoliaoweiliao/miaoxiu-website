@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { heritageApplications, heritageChapters } from '../../data/heritageJourney.js';
 import { assetUrl } from '../../utils/assets.js';
 
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
@@ -50,7 +49,7 @@ function sample(points, time) {
 }
 
 function initialJourney() {
-  return { stage: 0, number: 1, busy: false, hidden: false, flyingLeft: false, perched: false, x: 585, y: 535, pan: 0, artWidth: 2172, maxPan: 1, worldWidth: 1000, hint: '点击小鸟 · 看纹样的来处', message: '从绣布上的鸟纹出发，看看苗绣如何走进今天的生活。' };
+  return { stage: 0, number: 1, busy: false, hidden: false, flyingLeft: false, perched: false, x: 585, y: 535, pan: 0, artWidth: 2172, maxPan: 1, worldWidth: 1000, hint: '点击小鸟 · 唤醒绣纹', message: '绣片上的小鸟即将启程：先飞向指尖，再沿着绣布走进今天。' };
 }
 
 export default function HeritageJourney() {
@@ -61,7 +60,6 @@ export default function HeritageJourney() {
   const activeRef = useRef(false);
   const pendingRef = useRef(new Set());
   const touchRef = useRef(null);
-  const chapter = heritageChapters[view.stage];
 
   function paint() {
     const model = modelRef.current;
@@ -136,13 +134,13 @@ export default function HeritageJourney() {
       paint();
       if (!(await animate(2600, (time) => { const point = sample(paths[0], time); Object.assign(model, point, { pan: clamp(point.x - model.worldWidth * .52, 0, model.maxPan) }); paint(); }))) return;
       Object.assign(model, { x: 249, y: 367, stage: 1, number: 2, message: '小鸟停在指尖的针线处，轻轻扇动翅膀。' });
-      ready('再次点击小鸟 · 看当代应用');
+      ready('再次点击小鸟 · 飞往本子鸟纹');
     } else if (model.stage === 1) {
       Object.assign(model, { flyingLeft: false, number: 2, message: '小鸟带着绣纹，沿着长卷飞向当代设计。' });
       paint();
       if (!(await animate(8600, (time) => { const point = sample(paths[1], time); Object.assign(model, point, { pan: clamp(point.x - model.worldWidth * 0.52, 0, model.maxPan) }); paint(); }))) return;
       Object.assign(model, { x: 2079, y: 421, pan: model.maxPan, stage: 2, number: 3, message: '小鸟停在本子封面的小鸟纹样上。' });
-      ready('点击小鸟 · 再看一遍旅程');
+      ready('第三次点击小鸟 · 飞向右上方');
     } else {
       Object.assign(model, { flyingLeft: false, number: 3, message: '绣纹继续延伸，飞向画卷以外。' });
       paint();
@@ -174,70 +172,21 @@ export default function HeritageJourney() {
   }
 
   return (
-    <section className="heritage-journey" aria-labelledby="heritage-title" data-heritage-journey="">
-      <header className="heritage-heading">
-        <div>
-          <p className="heritage-eyebrow"><span>04</span> 当代应用与传承</p>
-          <h2 id="heritage-title">让苗绣，走进今天的生活</h2>
-        </div>
-        <p className="heritage-intro">一枚鸟纹，如何从绣布走向日常？<br />跟随小鸟，从绣娘的指尖出发，发现传统纹样的新去处。</p>
-      </header>
-
-      <ol className="heritage-chapters" aria-label="从纹样到日常的三步旅程">
-        {heritageChapters.map((item, index) => (
-          <li key={item.label} aria-current={view.stage === index ? 'step' : undefined} className={index < view.stage ? 'is-complete' : ''}>
-            <span className="heritage-chapter-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <span><strong>{item.label}</strong><small>{item.location}</small></span>
-          </li>
-        ))}
-      </ol>
-
-      <div className="heritage-workspace">
-        <div id="heritage-scene" ref={viewportRef} className="heritage-viewport" tabIndex={0} aria-label="轻触绣布上的小鸟体验三段故事，键盘可使用回车或空格继续" aria-describedby="heritage-howto" onKeyDown={(event) => { if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowLeft'].includes(event.key)) { event.preventDefault(); advance(); } }} onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={() => { touchRef.current = null; }}>
-          <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px` }}>
-            <img className="heritage-panorama" src={assetUrl('home/heritage-long-panorama-wide.webp')} alt="连续的苗绣长卷：绣娘、绵延的绣布与右侧现代设计作品" loading="lazy" draggable={false} />
-            <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''} ${view.stage === 1 ? 'is-at-fingertip' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px`, '--bird-screen-x': `${(view.x - view.pan) * view.artWidth / 2172}px`, '--journey-width': `${view.worldWidth * view.artWidth / 2172}px` }}>
-              <img className="heritage-bird-img" src={assetUrl('home/bird-flap-clean.png')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
-            </button>
-          </div>
-          <span className="heritage-scene-label">互动长卷<span aria-hidden="true"> · </span>传承与新生</span>
-          <div className="heritage-bottom">
-            <p className="heritage-whisper" data-heritage-message="" aria-live="polite">{view.message}</p>
-          </div>
-        </div>
-
-        <aside className="heritage-story" aria-label="当前长卷讲解">
-          <p className="heritage-story-index"><span data-heritage-number="">{String(view.number).padStart(2, '0')}</span><span>/ 03</span><span className="heritage-story-location">{chapter.label}</span></p>
-          <div className="heritage-story-copy">
-            <h3>{chapter.title}</h3>
-            <p>{chapter.description}</p>
-            <div className="heritage-story-detail">
-              <h4>{chapter.detailTitle}</h4>
-              <p>{chapter.detail}</p>
-            </div>
-          </div>
-          <button className="heritage-continue" type="button" onClick={advance} disabled={view.busy} aria-controls="heritage-scene" aria-describedby="heritage-howto">
-            <span>{view.busy ? '小鸟正在带路…' : chapter.action}</span><span aria-hidden="true">↗</span>
+    <section className="heritage-journey" aria-label="传承与新生：绣布小鸟三次互动" data-heritage-journey="">
+      <div ref={viewportRef} className="heritage-viewport" tabIndex={0} aria-label="轻触绣布上的小鸟体验三段故事，键盘可使用回车或空格继续" onKeyDown={(event) => { if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowLeft'].includes(event.key)) { event.preventDefault(); advance(); } }} onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={() => { touchRef.current = null; }}>
+        <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px` }}>
+          <img className="heritage-panorama" src={assetUrl('home/heritage-long-panorama-wide.webp')} alt="连续的苗绣长卷：绣娘、绵延的绣布与右侧现代设计作品" loading="lazy" draggable={false} />
+          <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''} ${view.stage === 1 ? 'is-at-fingertip' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px`, '--bird-screen-x': `${(view.x - view.pan) * view.artWidth / 2172}px`, '--journey-width': `${view.worldWidth * view.artWidth / 2172}px` }}>
+            <img className="heritage-bird-img" src={assetUrl('home/bird-flap-clean.png')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
           </button>
-          <p id="heritage-howto" className="heritage-howto">点击画中小鸟或上方按钮继续；也可在画面上向左轻扫。</p>
-        </aside>
-      </div>
-
-      <div className="heritage-applications-heading">
-        <h3>不止于盛装，也在日常</h3>
-        <p>三种应用灵感<span> · 以下为设计示意</span></p>
-      </div>
-      <div className="heritage-applications">
-        {heritageApplications.map((application) => (
-          <article className="heritage-application" key={application.category}>
-            <div className="heritage-application-image"><img className={application.imageClass} src={assetUrl(application.image)} alt={application.alt} loading="lazy" /></div>
-            <div className="heritage-application-copy">
-              <span className="heritage-application-category">{application.category}</span>
-              <h4>{application.title}</h4>
-              <p>{application.description}</p>
-            </div>
-          </article>
-        ))}
+        </div>
+        <div className="heritage-ink-top" aria-hidden="true" /><div className="heritage-shimmer" aria-hidden="true" /><div className="heritage-floor" aria-hidden="true" />
+        <div className="heritage-topline"><span className="heritage-ornament" aria-hidden="true">✧ ───── ❖ ───── ✧</span><h2>传承与新生</h2><span className="heritage-subtitle">绣纹有灵 · 从指尖飞向未来</span></div>
+        <div className="heritage-bottom">
+          <p className="heritage-stage-index" aria-hidden="true"><span data-heritage-number="">{String(view.number).padStart(2, '0')}</span><span className="heritage-stage-rule" />03</p>
+          <p className="heritage-whisper" data-heritage-message="" aria-live="polite">{view.message}</p>
+          <div className="heritage-progress" aria-hidden="true">{[1, 2, 3].map((number) => <i key={number} className={view.number === number ? 'is-current' : ''} />)}</div>
+        </div>
       </div>
     </section>
   );
