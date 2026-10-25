@@ -10,7 +10,7 @@ test.afterEach(async ({ page }) => { expect(page.historyErrors).toEqual([]); });
 test('three archive storybooks open, close and restore keyboard focus', async ({ page }) => {
   await page.goto('/#history');
   for (const [index, book] of ['stitch', 'lanjuan', 'butterfly'].entries()) {
-    const trigger = page.locator('.story-image').nth(index);
+    const trigger = page.locator('.story-more').nth(index);
     await trigger.click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'cover');
@@ -18,13 +18,59 @@ test('three archive storybooks open, close and restore keyboard focus', async ({
     await expect(spread).toHaveAttribute('src', new RegExp(`${book}-book.webp$`));
     await spread.evaluate((image) => image.decode());
     await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'open');
-    await expect(page.getByRole('button', { name: '合上故事', exact: true })).toBeFocused();
+    const close = page.getByRole('button', { name: '合上故事', exact: true });
+    await expect(close).toBeFocused();
+    await expect(page.getByRole('button', { name: '阅读文字', exact: true })).toHaveCount(0);
+    await expect(page.locator('.story-reader')).toHaveCount(0);
     await page.keyboard.press('Shift+Tab');
-    await expect(page.getByRole('button', { name: '阅读文字', exact: true })).toBeFocused();
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
+    // Finish opening before checking the separate closing animation.
+    await page.locator('.story-book-open').evaluate(async (element) => {
+      await Promise.all(element.getAnimations().map((animation) => animation.finished));
+    });
+    await close.click();
+    await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'closing');
+    await expect(page.getByRole('dialog')).toBeVisible();
+    // Pause at half-turn to verify the left leaf moves toward the right-hand page.
+    const fold = await page.locator('.story-book-leaf').evaluate((leaf) => {
+      const animation = leaf.getAnimations()[0];
+      animation.pause();
+      animation.currentTime = 400;
+      const matrix = new DOMMatrix(getComputedStyle(leaf).transform);
+      const result = { yRotation: matrix.m13, origin: getComputedStyle(leaf).transformOrigin, width: leaf.offsetWidth };
+      animation.play();
+      return result;
+    });
+    expect(fold.yRotation).toBeLessThan(0);
+    expect(parseFloat(fold.origin)).toBeCloseTo(fold.width, 0);
     await page.keyboard.press('Escape');
+    await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'closing');
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(trigger).toBeFocused();
   }
+});
+
+test('Escape and backdrop close through the fold, and closing during opening cancels its timer', async ({ page }) => {
+  await page.goto('/#history');
+  for (const method of ['escape', 'backdrop']) {
+    await page.locator('.story-image').first().click();
+    await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'open');
+    if (method === 'escape') await page.keyboard.press('Escape');
+    else await page.locator('.story-animation-overlay').click({ position: { x: 2, y: 2 } });
+    await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'closing');
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page.locator('.story-image').first()).toBeFocused();
+  }
+  await page.locator('.story-more').first().click();
+  await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'cover');
+  await page.getByRole('button', { name: '合上故事', exact: true }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.waitForTimeout(1100);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.locator('.story-more').first()).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden');
 });
 
 test('archive color masks follow selected order, enforce three colors and reset all motifs', async ({ page }) => {
@@ -88,9 +134,10 @@ test('mobile history keeps the book and all four sections within the viewport', 
   const rect = await book.boundingBox();
   expect(rect.x).toBeGreaterThanOrEqual(0);
   expect(rect.x + rect.width).toBeLessThanOrEqual(390);
-  await page.getByRole('button', { name: '阅读文字', exact: true }).click();
-  await expect(page.locator('.story-reader-text')).toContainText('南迁路途');
-  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: '阅读文字', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: '合上故事', exact: true }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.locator('.story-image').nth(1)).toBeFocused();
   await page.locator('.stitch-item').nth(4).click();
   await expect(page.locator('.stitch-stage')).toHaveClass(/is-complete/);
   await page.locator('.color-swatch').nth(3).click();

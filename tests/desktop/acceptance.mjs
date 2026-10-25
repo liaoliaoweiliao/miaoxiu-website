@@ -119,11 +119,9 @@ try {
     await expect(page.locator('.story-animation-shell')).toHaveAttribute('data-phase', 'open');
     await page.locator('.story-book-open img').evaluate((image) => image.decode());
     if (!index) await screenshot('02-storybook-offline');
-    await page.getByRole('button', { name: '阅读文字', exact: true }).click();
-    await expect(page.locator('.story-reader-count')).toContainText('01 /');
-    await page.keyboard.press('ArrowRight');
-    await expect(page.locator('.story-reader-count')).toContainText('02 /');
-    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: '阅读文字', exact: true })).toHaveCount(0);
+    await page.getByRole('button', { name: '合上故事', exact: true }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
   }
   const paths = new Set();
   for (let index = 0; index < 6; index++) {

@@ -124,9 +124,8 @@ test('image, story and character dialogs fit a short viewport after resizing', a
   await page.goto('/#history');
   await page.locator('.story-image').first().click();
   await expectInside(page.locator('.story-animation-shell'), page.locator('.story-animation-overlay'));
-  await page.getByRole('button', { name: '阅读文字', exact: true }).click();
-  await expectInside(page.locator('.story-reader-panel'), page.locator('.story-reader'));
-  await page.locator('.story-reader-nav button').last().scrollIntoViewIfNeeded();
+  await expectInside(page.locator('.story-book-open img'), page.locator('.story-animation-overlay'));
+  await expectInside(page.getByRole('button', { name: '合上故事', exact: true }), page.locator('.story-animation-overlay'));
   await page.keyboard.press('Escape');
   await page.goto('/#experience');
   await page.getByRole('button', { name: '全屏观赏', exact: true }).click();
