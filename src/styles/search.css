@@ -1,4 +1,6 @@
 .search { position: relative; }
+.search .search-trigger { display: grid; place-items: center; align-self: stretch; flex: none; padding: 0 10px; line-height: 1; }
+.search-icon { display: block; width: 18px; height: 18px; transform: translateY(-1px); }
 .search-popover {
   position: absolute; top: calc(100% + 10px); right: 0; z-index: 60;
   width: min(360px, calc(100vw - 24px)); max-height: calc(100dvh - var(--header-height) - 36px);
@@ -24,6 +26,8 @@
 .history-page [data-search-section]:focus { outline: none; }
 @media(max-width:760px) {
   .search { position: static; }
+  .search .search-trigger { padding: 0 6px; }
+  .search-icon { width: 22px; height: 22px; }
   .search-popover { top: calc(100% + 62px); left: var(--page-gutter); right: var(--page-gutter); width: auto; max-height: calc(100dvh - var(--header-height) - 82px); }
   .search-key-hint { display: none; }
 }

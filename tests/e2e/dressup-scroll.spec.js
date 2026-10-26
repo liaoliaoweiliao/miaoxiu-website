@@ -28,6 +28,38 @@ async function prepareDressup(page) {
 }
 
 for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600 }]) {
+  test(`reaching the collection bottom reveals the portrait controls at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await prepareDressup(page);
+    const panel = page.locator('.avatar-panel');
+    const collection = page.locator('.collection-panel');
+    expect(await panel.evaluate((element) => element.scrollTop)).toBe(0);
+    const bounds = await collection.boundingBox();
+    await page.mouse.move(bounds.x + bounds.width / 2, viewport.height / 2);
+    for (let step = 0; step < 20; step += 1) {
+      const box = await collection.boundingBox();
+      if (box.y + box.height <= viewport.height) break;
+      const previousY = await page.evaluate(() => window.scrollY);
+      await page.mouse.wheel(0, viewport.height / 2);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(previousY);
+    }
+    const end = await collection.boundingBox();
+    expect(end.y + end.height).toBeLessThanOrEqual(viewport.height);
+    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    const finish = page.locator('[data-action="finishLoop"]');
+    const box = await finish.boundingBox();
+    expect(box.y).toBeGreaterThanOrEqual(75);
+    expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+    // Reaching the right end must not lock later manual scrolling in the left pane.
+    const before = await panel.evaluate((element) => element.scrollTop);
+    const panelBox = await panel.boundingBox();
+    await page.mouse.move(panelBox.x + panelBox.width / 2, Math.max(100, panelBox.y + 30));
+    await page.mouse.wheel(0, -120);
+    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeLessThan(before);
+    await finish.click();
+    await expect(page.locator('.level-label')).toContainText('第 2 轮');
+  });
+
   test(`scrolling over the portrait reaches finish without traversing the collection at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await prepareDressup(page);

@@ -58,7 +58,7 @@ export default function SiteSearch({ page, nav, query, onQueryChange, onSelect, 
       if (window.matchMedia('(max-width:760px)').matches && !expanded) {
         show(); window.requestAnimationFrame(() => input.current?.focus());
       } else submit();
-    }}>⌕</button>
+    }}><svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg></button>
     {open && <div className="search-popover">
       <p className="search-summary" role="status">{!query.trim() ? '试试搜索' : total ? `找到 ${total} 项${total > items.length ? `，先显示 ${items.length} 项` : ''}` : '没有找到相关内容，试试这些关键词'}</p>
       {items.length > 0 ? <div id="site-search-results" role="listbox" aria-label="搜索结果">
