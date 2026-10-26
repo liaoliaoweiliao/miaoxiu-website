@@ -142,6 +142,7 @@ test('mobile branch atlas supports point selection and touch controls without pa
 
 test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: '绣线长卷', exact: true }).click();
   const bird = page.locator('[data-heritage-bird]');
   await bird.click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('02');

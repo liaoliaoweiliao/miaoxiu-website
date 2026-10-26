@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Atlas from './AtlasPage.jsx';
-import HeritageJourney from '../features/home/HeritageJourney.jsx';
+import HeritageRebirth from '../features/home/HeritageRebirth.jsx';
 import { assetUrl } from '../utils/assets.js';
 
 const slides = [
@@ -196,7 +196,7 @@ export default function HomePage({ state, onNavigate }) {
           ))}
         </section>
         <Atlas />
-        <HeritageJourney />
+        <HeritageRebirth />
       </main>
     </>
   );

@@ -1,0 +1,99 @@
+.heritage-rebirth {
+  --rebirth-ink: #ecdef4;
+  --rebirth-muted: #a8b6d0;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  margin: clamp(56px, 7vw, 100px) 0 40px;
+  color: var(--rebirth-ink);
+}
+.heritage-rebirth::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -50px calc((100% - 100vw) / 2) -50px;
+  background: radial-gradient(ellipse at 65% 44%, #292952a8, transparent 53%), linear-gradient(180deg, transparent, #081a32e8 13%, #07162de8 86%, transparent);
+  pointer-events: none;
+}
+.rebirth-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 0 20px; border-bottom: 1px solid #b3acc336; }
+.rebirth-topbar p { display: flex; align-items: center; gap: 16px; margin: 0; color: #d3c8dc; font-size: 12px; letter-spacing: 3px; }
+.rebirth-topbar p > span { color: #c7a6e9; font: 22px Georgia, serif; letter-spacing: 0; }
+.rebirth-modes { display: flex; gap: 6px; }
+.rebirth-modes button { padding: 9px 16px; border: 1px solid transparent; border-radius: 24px; color: #a8b7d1; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+.rebirth-modes button[aria-pressed='true'] { border-color: #ba9bd568; color: #efddff; background: #ad8ad512; }
+.rebirth-digital { position: relative; display: grid; grid-template-columns: minmax(240px, .8fr) minmax(0, 1.55fr); align-items: center; column-gap: 20px; }
+.rebirth-copy { position: relative; z-index: 2; padding: 45px 0; pointer-events: none; }
+.rebirth-eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 28px; color: #b6a7d2; font: 10px/1.4 Georgia, serif; letter-spacing: 2px; }
+.rebirth-eyebrow > span { width: 22px; height: 1px; background: #bf9fdd; }
+.rebirth-copy h2 { margin: 0; color: #cab8d9; font: 15px/1.4 serif; letter-spacing: 6px; }
+.rebirth-copy h2 > span { display: block; margin-top: 18px; color: #f4e7f7; font-size: clamp(30px, 3.2vw, 48px); line-height: 1.55; letter-spacing: 3px; font-weight: 400; }
+.rebirth-description { margin: 24px 0 25px; color: #b6bfd1; font-size: 13px; line-height: 2.25; letter-spacing: 1.3px; }
+.rebirth-palette { display: flex; flex-wrap: wrap; gap: 9px; pointer-events: auto; }
+.rebirth-palette button { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; min-height: 38px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: #bec6d8; font: inherit; font-size: 12px; cursor: pointer; }
+.rebirth-palette button[aria-pressed='true'] { border-color: #c3a5df73; background: #ba93da0d; color: #f5e1ff; }
+.rebirth-palette i { display: block; width: 13px; height: 13px; border-radius: 50%; box-shadow: inset 0 0 0 1px #ffffff26; }
+.rebirth-art-note { margin: 22px 0 0; color: #a5aec5; font-size: 10px; letter-spacing: 1px; }
+.rebirth-artwork { position: relative; min-width: 0; height: clamp(460px, 45vw, 610px); }
+.rebirth-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; outline-offset: -7px; cursor: grab; touch-action: pan-y; }
+.rebirth-canvas:active { cursor: grabbing; }
+.rebirth-orbit { position: absolute; width: 78%; height: 20%; left: 11%; bottom: 13%; border: 1px solid #b28ad61c; border-radius: 50%; transform: rotate(-8deg); background: radial-gradient(ellipse, #8f5ba214, transparent 68%); pointer-events: none; }
+.rebirth-orbit::before { content: ''; position: absolute; inset: 15%; border: 1px dashed #b98bd21e; border-radius: 50%; }
+.rebirth-axis { position: absolute; inset: 27px 0 auto; display: flex; justify-content: space-between; padding: 0 5%; color: #b5afca; font-size: 9px; letter-spacing: 2px; pointer-events: none; }
+.rebirth-axis span::before { content: '+'; margin-right: 8px; color: #947fa6; }
+.rebirth-art-caption { position: absolute; bottom: 11%; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 17px; color: #c6b5d4; font: 12px serif; letter-spacing: 4px; pointer-events: none; }
+.rebirth-art-caption i { width: 40px; height: 1px; background: #bd99d54d; }
+.rebirth-gesture { position: absolute; bottom: 4%; left: 0; right: 0; margin: 0; color: #aebbd0; text-align: center; font-size: 10px; line-height: 1.7; letter-spacing: 1px; pointer-events: none; }
+.rebirth-controls { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr minmax(170px, .9fr) auto; align-items: center; gap: clamp(16px, 3vw, 42px); padding: 24px 0; border-top: 1px solid #b3acc336; }
+.rebirth-phase { display: flex; align-items: center; gap: 16px; }
+.rebirth-phase > span { color: #bea0df; font: italic 32px Georgia, serif; }
+.rebirth-phase strong { display: block; color: #ebddef; font: 16px/1.6 serif; letter-spacing: 3px; }
+.rebirth-phase small { display: block; color: #a8b6ca; font-size: 10px; line-height: 1.8; letter-spacing: 1px; }
+.rebirth-scatter label, .rebirth-scatter > div { display: flex; align-items: center; justify-content: space-between; color: #c3bdd2; font-size: 10px; letter-spacing: 1px; }
+.rebirth-scatter output { color: #d5bce8; font: 11px Georgia, serif; }
+.rebirth-scatter input { display: block; width: 100%; height: 24px; margin: 3px 0; accent-color: #c7a4ea; cursor: pointer; }
+.rebirth-scatter > div { color: #a7afc4; font-size: 9px; }
+.rebirth-actions { display: flex; align-items: center; gap: 8px; }
+.rebirth-actions button { min-height: 42px; padding: 10px 12px; border: 1px solid transparent; border-radius: 3px; color: #b4bbcf; background: transparent; font: inherit; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.rebirth-actions .rebirth-transform { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 18px; border-color: #bca1db89; color: #f4ddff; background: #a778d015; font-size: 12px; letter-spacing: 1px; }
+.rebirth-transform > span { color: #cbb5ea; font-size: 17px; line-height: 1; }
+.rebirth-actions button:hover, .rebirth-palette button:hover, .rebirth-modes button:hover { color: #fff0ff; background: #b899d921; }
+.heritage-rebirth button:focus-visible, .rebirth-canvas:focus-visible, .rebirth-scatter input:focus-visible { outline: 2px solid #ead0ff; outline-offset: 4px; }
+.heritage-rebirth button:disabled, .rebirth-scatter input:disabled { opacity: .45; cursor: default; }
+.rebirth-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rebirth-digital[data-rebirth-state='unavailable'] .rebirth-canvas { visibility: hidden; }
+.heritage-rebirth.is-journey .heritage-journey { margin-top: 0; }
+@media (min-width: 1450px) { .rebirth-artwork { height: 650px; } }
+@media (max-width: 850px) {
+  .rebirth-digital { grid-template-columns: minmax(200px, .85fr) minmax(0, 1.25fr); gap: 0; }
+  .rebirth-copy h2 > span { font-size: 32px; letter-spacing: 1px; }
+  .rebirth-artwork { height: 470px; }
+  .rebirth-controls { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .rebirth-actions { grid-column: 1 / -1; justify-content: flex-end; }
+}
+@media (max-width: 580px) {
+  .heritage-rebirth { margin-top: 52px; }
+  .rebirth-topbar { gap: 8px; padding-bottom: 16px; }
+  .rebirth-topbar p { gap: 8px; font-size: 10px; letter-spacing: 1px; }
+  .rebirth-topbar p > span { font-size: 19px; }
+  .rebirth-modes { gap: 0; }
+  .rebirth-modes button { min-height: 38px; padding: 8px 10px; font-size: 10px; }
+  .rebirth-digital { display: flex; flex-direction: column; align-items: stretch; }
+  .rebirth-copy { padding: 30px 4px 0; }
+  .rebirth-eyebrow { margin-bottom: 18px; font-size: 9px; }
+  .rebirth-copy h2 { font-size: 12px; letter-spacing: 4px; }
+  .rebirth-copy h2 > span { margin-top: 10px; font-size: clamp(27px, 7.5vw, 38px); line-height: 1.5; }
+  .rebirth-copy h2 br { display: none; }
+  .rebirth-description { margin: 13px 0; font-size: 11px; line-height: 1.9; letter-spacing: .7px; }
+  .rebirth-description br { display: none; }
+  .rebirth-art-note { margin-top: 12px; font-size: 9px; }
+  .rebirth-artwork { height: clamp(350px, 110vw, 510px); margin-top: 4px; }
+  .rebirth-axis { top: 12px; }
+  .rebirth-art-caption { bottom: 8%; font-size: 10px; }
+  .rebirth-gesture { bottom: 1%; font-size: 9px; letter-spacing: .4px; }
+  .rebirth-controls { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; padding: 22px 4px; }
+  .rebirth-phase > span { font-size: 28px; }
+  .rebirth-phase strong { font-size: 15px; }
+  .rebirth-scatter { grid-row: 2; }
+  .rebirth-actions { grid-column: auto; justify-content: stretch; gap: 12px; }
+  .rebirth-actions .rebirth-transform { flex: 1; }
+}

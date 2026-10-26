@@ -59,6 +59,7 @@ test('resizing keeps every selected map pin and the three bird stages reachable'
       expect(await page.locator('.thread-map-scroll').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
     }
   }
+  await page.getByRole('button', { name: '绣线长卷', exact: true }).click();
   const bird = page.locator('[data-heritage-bird]');
   const journey = page.locator('.heritage-viewport');
   for (const [index, width] of [390, 640, 320].entries()) {
