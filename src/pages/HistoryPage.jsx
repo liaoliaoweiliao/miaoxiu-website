@@ -42,7 +42,7 @@ function MotifArt({ item }) {
 }
 
 
-export default function HistoryPage() {
+export default function HistoryPage({ onNavigate }) {
   const [state, dispatch] = useReducer(historyReducer, undefined, () => ({ ...sessionHistoryState, playing: false }));
   useEffect(() => { sessionHistoryState = state; }, [state]);
   const [story, setStory] = useState(null);
@@ -55,7 +55,9 @@ export default function HistoryPage() {
       </div>
     </section>
     <section className="history-stitches container"><Heading title="六大针法">一针一线，传承千年的匠心</Heading><StitchExplorer state={state} dispatch={dispatch} /></section>
-    <section className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} /></section>
+    <section className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} />
+      <div className="history-experience-entry"><button type="button" className="history-experience-button" onClick={() => onNavigate('experience')}>精彩继续，开启互动体验<span aria-hidden="true">→</span></button></div>
+    </section>
     {story !== null && <StoryBook key={story} item={stories[story]} onClose={() => setStory(null)} />}
   </main>;
 }
