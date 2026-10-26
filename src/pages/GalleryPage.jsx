@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { assetUrl } from '../utils/assets.js';
 import { galleryDisplayWorks } from '../data/gallery.js';
+import SilverChimes from '../features/gallery/SilverChimes.jsx';
 
 function routeThrough(points) {
   if (points.length < 2) return '';
@@ -235,6 +236,7 @@ export default function GalleryPage({ state = {}, onAction }) {
         <path className="thread-glint" />
       </svg>
       <header className="jing-heading">
+        <SilverChimes active={!state.modal} />
         <span className="jing-eyebrow"><i aria-hidden="true" />苗绣 · 锦绣长卷<i aria-hidden="true" /></span>
         <div className="jing-title-block">
           <h1 aria-label="作品展览"><span>作品</span><em>展览</em></h1>
