@@ -124,6 +124,23 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
   });
 }
 
+for (const width of [1440, 390]) {
+  test(`the four far-left star fragments accept clicks at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.addInitScript(() => { Math.random = () => 0; });
+    for (const y of [0.17, 0.394, 0.621, 0.847]) {
+      await page.goto('/#experience');
+      const board = page.locator('.decode-board');
+      await board.locator('img').evaluate((image) => image.decode());
+      const box = await board.boundingBox();
+      await board.click({ position: { x: box.width * 0.025, y: box.height * y } });
+      await expect(page.getByRole('dialog')).toContainText('八角星纹');
+      expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).unlocked)).toEqual(['star']);
+      await page.reload();
+    }
+  });
+}
+
 test('only discoveries unlock themes, removed fill content stays absent and the single hint hugs its image', async ({ page }) => {
   await page.addInitScript(() => { Math.random = () => 0; });
   await page.goto('/#experience');
@@ -181,7 +198,16 @@ for (const width of [1440, 390]) {
     await page.locator('[data-action="resetOutfit"]').click();
     await expect(portrait).toHaveAttribute('src', /girl-base\.webp$/);
     await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
-    await suit.click();
+    // Earlier full outfits remain eligible, including a role different from the draw.
+    await page.locator('[data-action="gender"][data-id="boy"]').click();
+    await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
+    await page.locator('.owned-card:has([data-id="star-boy-1"]) .wear-full').click();
+    await expect(page.locator('[data-action="finishLoop"]')).toBeEnabled();
+    await page.locator('[data-action="gender"][data-id="girl"]').click();
+    await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
+    await page.locator('.owned-card:has([data-id="star-girl-1"]) .wear-full').click();
+    await expect(portrait).toHaveAttribute('src', new RegExp(`${setById('star-girl-1').portrait.split('/').pop()}$`));
+    await expect(page.locator('[data-action="finishLoop"]')).toBeEnabled();
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')));
     await page.locator('[data-action="finishLoop"]').click();
     await expect(page.locator('.level-label')).toContainText('第 2 轮');

@@ -64,6 +64,16 @@ test('each random photograph unlocks only its theme and repeat hits do not dupli
   }
 });
 
+test('all four clipped stars on the far left unlock the star wardrobe without accepting the adjacent trim', () => {
+  for (const y of [17, 39.4, 62.1, 84.7]) {
+    const state = reduce(start(), { type: 'find', x: 2.5, y });
+    assert.equal(state.found, true);
+    assert.deepEqual(state.collection.unlocked, ['star']);
+    assert.equal(isHit(0, 6.8, y), false, 'the red hanging strip is not a star');
+  }
+  for (const y of [5, 28, 50, 73, 97]) assert.equal(isHit(0, 2.5, y), false, 'the small separator motifs stay outside the star targets');
+});
+
 test('drawing requires an unlocked pool and explicit role selection', () => {
   let state = start();
   assert.strictEqual(reduce(state, { type: 'drawStart' }), state);
@@ -206,7 +216,8 @@ test('only the discovered theme allows one draw, including after role, pool and 
   assert.strictEqual(reduce(state, { type: 'pool', id: 'peony' }), state);
   state = reduce(state, { type: 'gender', id: 'boy' });
   state = reduce(state, { type: 'equip', id: 'star-boy-1' });
-  assert.equal(state.dressed, false, 'an older outfit cannot finish the current journey');
+  assert.equal(state.dressed, true, 'an explicitly worn older full outfit can finish the current journey');
+  assert.equal(reduce(state, { type: 'round', completed: true, random: 0 }).round, 2);
   assert.equal(state.lastDraw, drawn);
   assert.strictEqual(reduce(state, { type: 'drawStart' }), state);
   state = reduce(state, { type: 'gender', id: 'girl' });
@@ -215,6 +226,27 @@ test('only the discovered theme allows one draw, including after role, pool and 
   state = reduce(state, { type: 'reset' });
   assert.equal(state.lastDraw, drawn);
   assert.strictEqual(reduce(state, { type: 'drawStart' }), state, 'resetting the portrait does not grant another draw');
+});
+
+test('any owned full outfit can finish after a draw, including other themes and a choice made before drawing', () => {
+  const saved = storage({ [COLLECTION_KEY]: JSON.stringify({ unlocked: ['star', 'peony'], owned: ['peony-girl-2-1', 'peony-boy-2-1'], gender: 'girl', equipped: { girl: 'peony-girl-2-1', boy: 'peony-boy-2-1' } }) });
+  let state = solve(start(0, saved));
+  state = reduce(state, { type: 'equip', id: 'peony-girl-2-1' });
+  assert.equal(state.dressed, false, 'wearing old clothes does not skip the round draw');
+  assert.strictEqual(reduce(state, { type: 'round', completed: true }), state);
+  state = draw(state);
+  assert.equal(state.dressed, true, 'an explicit earlier choice remains valid when the draw finishes');
+  assert.notEqual(state.lastDraw, state.collection.equipped.girl);
+  state = reduce(state, { type: 'gender', id: 'boy' });
+  assert.equal(state.dressed, false, 'a stored but unchosen role still shows the base figure');
+  state = reduce(state, { type: 'equip', id: 'peony-boy-2-1' });
+  assert.equal(state.dressed, true);
+  state = reduce(state, { type: 'gender', id: 'girl' });
+  assert.equal(state.dressed, true, 'switching back recognizes the explicitly worn other-theme outfit');
+  const next = reduce(state, { type: 'round', completed: true, random: 0 });
+  assert.equal(next.round, 2);
+  assert.equal(hasOutfit(visibleCollection(next)), false);
+  assert.deepEqual(next.collection, state.collection);
 });
 
 test('v4 collection restores valid ownership and outfits while rejecting forged or wrong-role entries', () => {

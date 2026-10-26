@@ -67,7 +67,10 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700
           expectSamePosition(await wardrobePosition(page), before);
           await expect(stage).toHaveClass(/is-drawing/);
           await expect(stage.getByRole('img', { name: '服装套装正在横向循环轮播' })).toBeVisible();
-          await page.clock.runFor(2700);
+          await expect(stage.locator('.carousel-track')).toHaveCSS('animation-duration', '0.65s');
+          await page.clock.runFor(1499);
+          await expect(stage).toHaveClass(/is-drawing/);
+          await page.clock.runFor(1);
           await expect(stage).toHaveClass(/is-revealing/);
           expectSamePosition(await wardrobePosition(page), before);
           await page.clock.runFor(1500);
@@ -89,7 +92,7 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700
     const stage = page.locator('.costume-draw-stage');
 
       await page.locator('.draw-btn').click();
-      await page.clock.runFor(3000);
+      await page.clock.runFor(1800);
       await expect(stage).toHaveClass(/is-revealing/);
       const name = await stage.locator('.prize-name').elementHandle();
       const image = await stage.locator('.reveal-front>img').elementHandle();
@@ -98,6 +101,7 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 700
       // The name enters once after the flip, then remains fully visible.
       await sampleReveal(stage, 200);
       await expect(stage.locator('.prize-name')).toHaveCSS('opacity', '0');
+      await expect(stage.locator('.reveal-front>img')).toHaveCSS('opacity', '0');
       await sampleReveal(stage, 800);
       const enteringOpacity = await name.evaluate((element) => Number(getComputedStyle(element).opacity));
       expect(enteringOpacity).toBeGreaterThan(0);

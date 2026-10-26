@@ -3,10 +3,11 @@ import { waterRegions } from './water-regions.js';
 const rect=(x,y,w,h)=>({shape:'rect',x,y,w,h});
 const ellipse=(cx,cy,rx,ry)=>({shape:'ellipse',cx,cy,rx,ry});
 export const levels = [
-  {id:'star',name:'八角星纹',icon:'✵',title:'彩色苗绣纹样特写',image:'close-up of colourful Miao embroidery motifs.jpg',description:'左侧粉红色方框、右侧红色方框与最右侧蓝色方框中，都绣有鲜明的八角星形图案。',regions:[
+  {id:'star',name:'八角星纹',icon:'✵',title:'彩色苗绣纹样特写',image:'close-up of colourful Miao embroidery motifs.jpg',description:'最左侧露出的彩色星纹、粉红色方框、右侧红色方框与最右侧蓝色方框中，都绣有鲜明的八角星形图案。',regions:[
     rect(19.6,1,11.5,16.5),rect(19.6,25.4,11.5,17),rect(19.2,49.4,11.5,17.3),rect(19.4,74.3,11.5,17),
     rect(65.3,0,11.3,17.3),rect(65.1,26.1,11.8,16.5),rect(64.5,51.1,12.3,15.8),rect(64.2,75.5,12.5,16.6),
-    rect(91.1,0,8.9,11.4),rect(91.1,20.1,8.9,17.2),rect(91.1,44.3,8.9,17.4),rect(91.1,68.5,8.9,17.3),rect(91.1,92.4,8.9,7.6)
+    rect(91.1,0,8.9,11.4),rect(91.1,20.1,8.9,17.2),rect(91.1,44.3,8.9,17.4),rect(91.1,68.5,8.9,17.3),rect(91.1,92.4,8.9,7.6),
+    rect(0,10.4,4.7,13.2),rect(0,32.7,5.5,13.4),rect(0,55.1,5.2,14),rect(0,77.8,5.1,13.8)
   ]},
   {id:'peony',name:'牡丹花纹',icon:'❀',title:'苗族传统服饰与绣花裙',image:'traditional Miao costumes and embroidered skirts.jpg',description:'左侧两位女性的黑色裙子上，大朵粉红色牡丹与绿色叶子相互映衬。',regions:[
     ellipse(19.2,71.6,4.4,4.2),ellipse(22,79.8,4.7,4.8),ellipse(24,87,5.2,6.1),ellipse(23,94.8,4.6,4.9),ellipse(12.7,92,3.4,6.3),ellipse(11.8,82,2.2,4),
@@ -82,7 +83,7 @@ export function experienceReducer(state, action) {
     }
     case 'cursor': return { ...state, cursor: { x: Math.max(0, Math.min(100, action.x)), y: Math.max(0, Math.min(100, action.y)) } };
     case 'round': {
-      if (state.drawing || state.reveal || state.found && !action.completed || action.completed && (!state.dressed || !hasOutfit(visibleCollection(state)))) return state;
+      if (state.drawing || state.reveal || state.found && !action.completed || action.completed && (!state.found || !state.lastDraw || !state.dressed || !hasOutfit(visibleCollection(state)))) return state;
       const choices = levels.map((_, index) => index).filter((index) => index !== state.level);
       const sample = Number.isFinite(action.random) ? action.random : 0;
       const level = choices[Math.min(choices.length - 1, Math.max(0, Math.floor(sample * choices.length)))];
@@ -93,7 +94,7 @@ export function experienceReducer(state, action) {
       return levels.some((level) => level.id === action.id) && !state.drawing && !state.reveal && !state.lastDraw ? { ...state, theme: action.id, drawGender: null, collectionNote: '', reveal: false } : state;
     case 'gender': {
       if (!['girl', 'boy'].includes(action.id) || state.drawing || state.reveal) return state;
-      return { ...state, collection: { ...collection, gender: action.id }, selectedCard: ownedSets(collection, action.id)[0]?.id || null, dressed: Boolean(state.found && state.lastDraw && state.outfitChosen[action.id] && collection.equipped[action.id] === state.lastDraw) };
+      return { ...state, collection: { ...collection, gender: action.id }, selectedCard: ownedSets(collection, action.id)[0]?.id || null, dressed: Boolean(state.found && state.lastDraw && state.outfitChosen[action.id] && collection.equipped[action.id]) };
     }
     case 'drawGender': {
       if (!['girl', 'boy'].includes(action.id) || state.drawing || state.reveal || state.lastDraw || !state.found || state.theme !== levels[state.level].id) return state;
@@ -110,7 +111,7 @@ export function experienceReducer(state, action) {
       const sample = Number.isFinite(action.random) ? action.random : 0;
       const costume = candidates[Math.min(candidates.length - 1, Math.max(0, Math.floor(sample * candidates.length)))];
       const fresh = !collection.owned.includes(costume.id);
-      return { ...state, collection: fresh ? { ...collection, owned: [...collection.owned, costume.id] } : collection, drawing: false, reveal: true, lastDraw: costume.id, selectedCard: costume.id, drawRevision: state.drawRevision + 1, lastFresh: fresh, collectionNote: fresh ? `已收藏「${costume.name}」整套服装，可前往人物装扮一键穿戴。` : `「${costume.name}」已在藏品库中，可再次试穿；重复卡不占用新位置。` };
+      return { ...state, collection: fresh ? { ...collection, owned: [...collection.owned, costume.id] } : collection, drawing: false, reveal: true, lastDraw: costume.id, dressed: hasOutfit(visibleCollection(state)), selectedCard: costume.id, drawRevision: state.drawRevision + 1, lastFresh: fresh, collectionNote: fresh ? `已收藏「${costume.name}」整套服装，可前往人物装扮一键穿戴。` : `「${costume.name}」已在藏品库中，可再次试穿；重复卡不占用新位置。` };
     }
     case 'revealDone': return { ...state, reveal: false };
     case 'dismiss': return { ...state, unlock: null };
@@ -119,7 +120,7 @@ export function experienceReducer(state, action) {
     case 'equip': {
       const costume = setById(action.id);
       if (!costume || !collection.owned.includes(action.id) || costume.gender !== collection.gender) return state;
-      return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: costume.id } }, outfitChosen: { ...state.outfitChosen, [collection.gender]: true }, selectedCard: costume.id, dressed: state.found && state.lastDraw === costume.id, wearRevision: state.wearRevision + 1, saveNote: '搭配已更新，可保存当前效果图。' };
+      return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: costume.id } }, outfitChosen: { ...state.outfitChosen, [collection.gender]: true }, selectedCard: costume.id, dressed: Boolean(state.found && state.lastDraw), wearRevision: state.wearRevision + 1, saveNote: '搭配已更新，可保存当前效果图。' };
     }
     case 'reset': return { ...state, collection: { ...collection, equipped: { ...collection.equipped, [collection.gender]: null } }, outfitChosen: { ...state.outfitChosen, [collection.gender]: false }, dressed: false, wearRevision: state.wearRevision + 1, saveNote: '已恢复基础形象，藏品仍保留。' };
     case 'saveStart': return { ...state, saving: true, saveNote: '正在生成当前搭配效果图…' };
