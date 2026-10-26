@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Atlas from './AtlasPage.jsx';
-import HeritageJourney from '../features/home/HeritageJourney.jsx';
+import ParticleHeritage from '../features/home/ParticleHeritage.jsx';
+import '../styles/particle-heritage.css';
 import { assetUrl } from '../utils/assets.js';
 
 const slides = [
@@ -183,7 +184,7 @@ export default function HomePage({ state }) {
           ))}
         </section>
         <Atlas />
-        <HeritageJourney />
+        <ParticleHeritage />
       </main>
     </>
   );

@@ -140,16 +140,16 @@ test('mobile branch atlas supports point selection and touch controls without pa
   await expectImagesLoaded(page);
 });
 
-test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
+test('home replaces the bird journey with selectable particle motifs', async ({ page }) => {
   await page.goto('/');
-  const bird = page.locator('[data-heritage-bird]');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('02');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('03');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('01');
-  await expect(page.locator('.heritage-whisper')).toContainText('又回到了起点');
+  await expect(page.locator('[data-heritage-bird],.heritage-panorama')).toHaveCount(0);
+  const section=page.locator('.particle-heritage');
+  await section.getByRole('button', {name:'绣包新生',exact:true}).click();
+  await expect(section).toHaveAttribute('data-motif','1');
+  await expect(section.getByRole('heading', {level:3})).toHaveText('让绣纹，走进今天');
+  await section.getByRole('button', {name:'蝴蝶纹',exact:true}).click();
+  await expect(section).toHaveAttribute('data-motif','0');
+  await expectImagesLoaded(page);
 });
 
 test('stories, motif navigation, stitch animation and three-color palette', async ({ page }) => {

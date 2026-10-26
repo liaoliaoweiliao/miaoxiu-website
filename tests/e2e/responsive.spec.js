@@ -46,7 +46,7 @@ for (const viewport of [{ width: 320, height: 700 }, { width: 640, height: 500 }
   });
 }
 
-test('resizing keeps every selected map pin and the three bird stages reachable', async ({ page }) => {
+test('resizing keeps every selected map pin and particle controls reachable', async ({ page }) => {
   await page.goto('/');
   const canvas = page.locator('.thread-map-canvas');
   const selected = page.locator('.thread-map-point.is-selected');
@@ -59,21 +59,15 @@ test('resizing keeps every selected map pin and the three bird stages reachable'
       expect(await page.locator('.thread-map-scroll').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
     }
   }
-  const bird = page.locator('[data-heritage-bird]');
-  const journey = page.locator('.heritage-viewport');
-  for (const [index, width] of [390, 640, 320].entries()) {
-    await page.setViewportSize({ width, height: 700 });
-    await expectInside(bird, journey);
-    await expectInside(page.locator('.heritage-bird-hint'), journey);
-    await bird.click();
-    await expect(page.locator('[data-heritage-number]')).toHaveText(index === 2 ? '01' : `0${index + 2}`);
-    await expectInside(bird, journey);
-    await expectInside(page.locator('.heritage-bird-hint'), journey);
-    if (index === 0) {
-      const birdBounds = await bird.boundingBox();
-      const hintBounds = await page.locator('.heritage-bird-hint').boundingBox();
-      expect(hintBounds.y).toBeGreaterThanOrEqual(birdBounds.y + birdBounds.height);
+  const experience=page.locator('.particle-experience');
+  for (const width of [390,640,320]) {
+    await page.setViewportSize({width,height:700});
+    for (const name of ['蝴蝶纹','绣包新生','开启摄像头','开启麦克风']) {
+      await expectInside(experience.getByRole('button',{name,exact:true}),experience);
     }
+    await experience.getByRole('button',{name:'绣包新生',exact:true}).click();
+    await expect(page.locator('.particle-heritage')).toHaveAttribute('data-motif','1');
+    await expectInside(page.locator('.particle-stage'),experience);
   }
 });
 

@@ -1,0 +1,47 @@
+.particle-heritage{margin:64px 0 48px;color:#f2e5cb;isolation:isolate}
+.particle-heading{text-align:center;margin:0 16px 32px}
+.particle-heading>span{font-size:11px;letter-spacing:4px;color:#dcb980}
+.particle-heading h2{font-family:serif;font-size:clamp(30px,3.8vw,50px);font-weight:500;letter-spacing:.18em;margin:12px 0}
+.particle-heading p{font-size:14px;letter-spacing:2px;color:#d2dcde;margin:0;line-height:1.8}
+.particle-experience{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);border:1px solid #d1ad7155;border-radius:18px;background:linear-gradient(135deg,#09283cdd,#103e57e8);overflow:hidden;box-shadow:0 18px 70px #021b343d}
+.particle-stage{position:relative;min-width:0;min-height:600px;overflow:hidden;background:radial-gradient(ellipse at 48% 43%,#205c6d66,transparent 62%),radial-gradient(ellipse at 40% 110%,#c5954414,transparent 65%),#071e30}
+.particle-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;touch-action:pan-y;cursor:grab;outline-offset:-4px}
+.particle-stage canvas.is-ready{opacity:1}.particle-stage canvas:active{cursor:grabbing}
+.particle-stage canvas:focus-visible{outline:2px solid #e9c68c}
+.particle-original{position:absolute;inset:10%;width:80%;height:80%;object-fit:contain}
+.particle-stage-tag,.particle-stage-hint{position:absolute;pointer-events:none;left:24px;right:24px;letter-spacing:2px;font-size:10px;color:#b9c9cc;line-height:1.8}
+.particle-stage-tag{top:24px;color:#dec59899;font-family:Georgia,serif}
+.particle-stage-hint{bottom:24px;text-align:center;font-size:11px;letter-spacing:1px}
+.particle-orbit{position:absolute;inset:22% 15%;border:1px solid #e0bc7220;border-radius:50%;transform:rotate(-25deg);pointer-events:none}
+.particle-orbit:after{content:'';position:absolute;inset:-13% 14%;border:1px solid #e0bc7212;border-radius:50%;transform:rotate(55deg)}
+.particle-guide{padding:32px 28px;border-left:1px solid #d1ad7133;min-width:0}
+.particle-chapter{color:#d9b97c;font-size:11px;letter-spacing:3px}
+.particle-guide h3{font-size:clamp(21px,2vw,28px);font-weight:500;margin:16px 0;line-height:1.5}
+.particle-description{font-size:14px;color:#c5d6db;line-height:1.9;min-height:80px;margin:0 0 24px}
+.particle-motifs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.particle-motifs button{display:flex;gap:9px;align-items:center;padding:8px;border:1px solid #d1ad7144;border-radius:8px;background:#0a2c41;color:#d8e3df;font-size:13px;min-width:0}
+.particle-motifs img{width:46px;height:46px;object-fit:contain;flex-shrink:0}
+.particle-motifs button[aria-pressed=true]{background:#b9974d20;border-color:#e5c88e;color:#ffe3a9}
+.particle-regroup{width:100%;border:1px solid #d9b977;border-radius:7px;padding:12px;background:linear-gradient(120deg,#d9b878,#f0d7a1);color:#142e40;font-size:15px;letter-spacing:3px}
+.particle-playback{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.particle-playback button{background:transparent;border:0;color:#d6d4c1;font-size:12px;padding:8px 0;text-underline-offset:4px}
+.particle-playback button:hover{text-decoration:underline}.particle-playback button:disabled{opacity:.5;cursor:default;text-decoration:none}
+.particle-sensors{margin-top:18px;padding-top:20px;border-top:1px solid #d1ad713d}
+.particle-sensors h4{font-size:16px;font-weight:500;color:#f0d69c;margin:0 0 10px}
+.particle-sensors>p{font-size:12px;line-height:1.85;color:#c3d4d7;margin:8px 0}
+.particle-sensor-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.particle-sensor-buttons button{position:relative;overflow:hidden;border:1px solid #7ba6ac88;border-radius:6px;background:#174358;color:#e6e8d6;font-size:12px;padding:11px 5px;isolation:isolate}
+.particle-sensor-buttons button[aria-pressed=true]{border-color:#d8bc80;color:#ffe4ad}
+.particle-sensor-buttons i{position:absolute;left:0;bottom:0;height:3px;width:calc(var(--level)*100%);background:#eacb85;pointer-events:none;transition:width .1s}
+.particle-sensors .particle-privacy{font-size:11px;color:#acbfc4}
+.particle-device-status{min-height:38px;color:#e6d4ac!important}
+.particle-camera{display:none;position:absolute;left:18px;bottom:55px;width:112px;border:1px solid #d5b77a66;border-radius:7px;overflow:hidden;background:#071e30}
+.particle-camera.is-on{display:block}.particle-camera video{display:block;width:100%;height:76px;object-fit:cover;transform:scaleX(-1)}
+.particle-camera span{display:block;text-align:center;font-size:10px;padding:4px;color:#e9d4a7}
+.particle-fallback{position:absolute;bottom:52px;left:20px;right:20px;text-align:center;font-size:12px;line-height:1.7;background:#092b42d9;padding:8px;border-radius:5px}
+.particle-motion-note{font-size:11px;line-height:1.7;color:#bfccd0}
+.particle-guide button:focus-visible{outline:2px solid #f4d79b;outline-offset:3px}
+.particle-guide button:hover{filter:brightness(1.12)}
+@media(max-width:1000px){.particle-guide{padding:25px 20px}.particle-stage{min-height:620px}.particle-motifs button{flex-direction:column;gap:5px}}
+@media(max-width:760px){.particle-heritage{margin:40px 0}.particle-experience{grid-template-columns:1fr}.particle-stage{min-height:0;height:clamp(360px,105vw,560px)}.particle-guide{border-left:0;border-top:1px solid #d1ad7133;padding:24px}.particle-description{min-height:0}.particle-motifs button{flex-direction:row;justify-content:center}.particle-heading{margin-bottom:24px}.particle-heading p{font-size:12px;letter-spacing:1px}.particle-sensors>p{font-size:13px}.particle-stage-tag{top:18px;left:18px}.particle-stage-hint{bottom:15px;font-size:10px;left:10px;right:10px}}
+@media(max-width:360px){.particle-guide{padding:20px 16px}.particle-stage{height:340px}.particle-motifs img{width:34px;height:34px}.particle-motifs button{gap:4px;font-size:12px}.particle-stage-tag{letter-spacing:1px}}
