@@ -350,19 +350,9 @@ body.look-viewer-open{overflow:hidden}.look-viewer.viewer-expanded{position:fixe
 .experience-page .decode-feedback{margin:8px 0 0;line-height:1.7}
 .decode-game .decode-actions{margin-top:8px}
 
-/* Approved static embroidery: corner flowers and stitched rules by each title. */
-.embroidery-trim{display:block;width:min(220px,100%);height:auto;margin:22px 0 6px;pointer-events:none;color:#d6b57d;opacity:.72;overflow:visible}
-.trim-thread{stroke:currentColor;stroke-width:.8;opacity:.65}
-.trim-stitches{stroke:currentColor;stroke-width:.8;stroke-dasharray:2 4;opacity:.6}
-.trim-petal{stroke:#d6b57d;stroke-width:.7;fill:#b2644b12}
-.trim-heart{fill:#b36852;stroke:#f0cf96;stroke-width:.7}
-.trim-knot{fill:var(--surface-indigo);stroke:currentColor;stroke-width:.8}
-.wardrobe-layout>.side-heading>.embroidery-trim{margin-top:18px}
-.dressup-heading .embroidery-trim{width:240px;margin-top:16px;margin-bottom:0}
-@media(max-width:760px){.embroidery-trim{width:180px;margin-top:14px}.dressup-heading .embroidery-trim{width:190px}}
 @media(max-width:900px){
  .wardrobe-layout>.side-heading{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
- .wardrobe-layout>.side-heading>.gender-prompt{grid-column:2;grid-row:1/5;margin:0;border-top:0;border-left:1px solid #c9a3705c;padding:0 0 0 24px}
+ .wardrobe-layout>.side-heading>.gender-prompt{grid-column:2;grid-row:1/4;margin:0;border-top:0;border-left:1px solid #c9a3705c;padding:0 0 0 24px}
 }
 @media(max-width:760px){
  .wardrobe-layout>.side-heading{display:block}
