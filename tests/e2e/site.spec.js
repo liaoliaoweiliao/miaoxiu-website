@@ -140,19 +140,6 @@ test('mobile branch atlas supports point selection and touch controls without pa
   await expectImagesLoaded(page);
 });
 
-test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: '绣线长卷', exact: true }).click();
-  const bird = page.locator('[data-heritage-bird]');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('02');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('03');
-  await bird.click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('01');
-  await expect(page.locator('.heritage-whisper')).toContainText('又回到了起点');
-});
-
 test('stories, motif navigation, stitch animation and three-color palette', async ({ page }) => {
   await page.goto('/#history');
   await page.locator('.story-image').first().click();

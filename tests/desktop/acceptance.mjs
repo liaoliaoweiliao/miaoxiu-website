@@ -101,17 +101,23 @@ try {
   expect(failures).toEqual([]);
   record('全部本地资源', `${allAssets.length} bundled assets readable offline; every raster/SVG decodes, including Chinese and spaces`);
   await images();
-  const bird = page.locator('[data-heritage-bird]');
-  for (const expected of ['02', '03', '01']) {
-    await expect(bird).toBeEnabled({ timeout: 12000 });
-    await bird.click();
-    await expect(page.locator('[data-heritage-number]')).toHaveText(expected, { timeout: 12000 });
+  const embroidery = page.locator('[data-heritage-rebirth]');
+  await embroidery.scrollIntoViewIfNeeded();
+  await expect(embroidery.getByRole('button', { name: '绣线长卷', exact: true })).toHaveCount(0);
+  await expect(embroidery.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', /ready|unavailable/);
+  if (await embroidery.locator('[data-rebirth-state]').getAttribute('data-rebirth-state') === 'ready') {
+    await embroidery.getByRole('button', { name: '散作星尘', exact: true }).click();
+    await expect(embroidery.locator('output')).toHaveText('100%');
+    await embroidery.getByRole('button', { name: '聚拢成衣', exact: true }).click();
+    await expect(embroidery.locator('output')).toHaveText('0%');
+  } else {
+    await expect(embroidery.getByRole('img', { name: '紫青色花纹交织的数字绣衣静态图' })).toBeVisible();
   }
   await page.getByRole('group', { name: '选择地域支系' }).getByRole('button', { name: /黔东南/ }).click();
   await page.getByLabel('选择苗乡地点').selectOption('taijiang');
   await expect(page.locator('.thread-place-card')).toContainText('施洞型服饰');
   await screenshot('01-home-offline');
-  record('首页地图与互动长卷', 'Region filtering, selected place, bird 3-stage cycle');
+  record('首页地图与数字绣境', 'Region filtering, selected place, particle garment or static fallback; long scroll removed');
   await page.goto('miao://app/#history');
   await images();
   for (let index = 0; index < 3; index++) {

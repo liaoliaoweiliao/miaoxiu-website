@@ -25,11 +25,13 @@ async function changedPixels(page, first, second) {
   }, [first.toString('base64'), second.toString('base64')]);
 }
 
-test('digital embroidery renders, rotates, disperses and resets without losing the long scroll', async ({ page }) => {
+test('digital embroidery renders, rotates, disperses and resets without the removed long scroll', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   const section = page.locator('[data-heritage-rebirth]');
+  await expect(section.getByRole('button', { name: '绣线长卷', exact: true })).toHaveCount(0);
+  await expect(page.locator('[data-heritage-journey]')).toHaveCount(0);
   await section.scrollIntoViewIfNeeded();
   await expect(section.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', 'ready');
   const canvas = section.locator('canvas');
@@ -52,11 +54,6 @@ test('digital embroidery renders, rotates, disperses and resets without losing t
   await section.getByRole('button', { name: '重置', exact: true }).click();
   await expect(canvas).toHaveAttribute('data-rotation', '0.00');
   await expect(section.getByRole('button', { name: '紫霓', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await section.getByRole('button', { name: '绣线长卷', exact: true }).click();
-  await page.locator('[data-heritage-bird]').click();
-  await expect(page.locator('[data-heritage-number]')).toHaveText('02');
-  await section.getByRole('button', { name: '数字绣境', exact: true }).click();
-  await expect(section.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', 'ready');
   await expect(section.locator('output')).toHaveText('0%');
   expect(errors).toEqual([]);
 });
@@ -82,7 +79,7 @@ test('mobile controls fit and horizontal touch rotation leaves vertical scrollin
   }
 });
 
-test('devices without WebGL show a readable static garment and retain the bird experience', async ({ page }) => {
+test('devices without WebGL show a readable static garment', async ({ page }) => {
   await page.addInitScript(() => {
     const original = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (type, ...options) {
@@ -94,8 +91,7 @@ test('devices without WebGL show a readable static garment and retain the bird e
   await expect(section.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', 'unavailable');
   await expect(section.getByRole('img', { name: '紫青色花纹交织的数字绣衣静态图' })).toBeVisible();
   await expect(section.getByRole('slider')).toBeDisabled();
-  await section.getByRole('button', { name: '绣线长卷', exact: true }).click();
-  await expect(page.locator('[data-heritage-bird]')).toBeVisible();
+  await expect(section.locator('.rebirth-gesture')).toHaveText('当前设备展示静态绣衣');
 });
 
 test('a lost graphics context falls back and restores without a broken control', async ({ page }) => {

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import HeritageJourney from './HeritageJourney.jsx';
 import { createEmbroideryScene } from './embroideryScene.js';
 import { rebirthPalettes } from '../../data/heritageRebirth.js';
 
@@ -128,7 +127,7 @@ function DigitalEmbroidery() {
           }}
         />
         <div className="rebirth-art-caption" aria-hidden="true"><span>虚实之间</span><i /><span>一线新生</span></div>
-        <p className="rebirth-gesture" id="rebirth-gesture">{unavailable ? '当前设备展示静态绣衣，仍可切换绣线长卷' : '拖动旋转 · 轻触下方，解开一件绣衣'}</p>
+        <p className="rebirth-gesture" id="rebirth-gesture">{unavailable ? '当前设备展示静态绣衣' : '拖动旋转 · 轻触下方，解开一件绣衣'}</p>
       </div>
 
       <div className="rebirth-controls">
@@ -145,11 +144,10 @@ function DigitalEmbroidery() {
 }
 
 export default function HeritageRebirth() {
-  const [mode, setMode] = useState('digital');
   return (
-    <section className={`heritage-rebirth ${mode === 'journey' ? 'is-journey' : ''}`} aria-label="传承与新生：数字绣境与绣线长卷" data-heritage-rebirth="">
-      <div className="rebirth-topbar"><p><span>04</span> 一根绣线的未来</p><div className="rebirth-modes" role="group" aria-label="传承与新生体验"><button type="button" aria-pressed={mode === 'digital'} aria-controls="rebirth-panel" onClick={() => setMode('digital')}>数字绣境</button><button type="button" aria-pressed={mode === 'journey'} aria-controls="rebirth-panel" onClick={() => setMode('journey')}>绣线长卷</button></div></div>
-      <div id="rebirth-panel">{mode === 'digital' ? <DigitalEmbroidery /> : <HeritageJourney />}</div>
+    <section className="heritage-rebirth" aria-label="传承与新生：数字绣境" data-heritage-rebirth="">
+      <div className="rebirth-topbar"><p><span>04</span> 一根绣线的未来</p><span className="rebirth-label">数字绣境</span></div>
+      <DigitalEmbroidery />
     </section>
   );
 }

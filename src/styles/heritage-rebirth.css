@@ -18,9 +18,7 @@
 .rebirth-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 0 20px; border-bottom: 1px solid #b3acc336; }
 .rebirth-topbar p { display: flex; align-items: center; gap: 16px; margin: 0; color: #d3c8dc; font-size: 12px; letter-spacing: 3px; }
 .rebirth-topbar p > span { color: #c7a6e9; font: 22px Georgia, serif; letter-spacing: 0; }
-.rebirth-modes { display: flex; gap: 6px; }
-.rebirth-modes button { padding: 9px 16px; border: 1px solid transparent; border-radius: 24px; color: #a8b7d1; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
-.rebirth-modes button[aria-pressed='true'] { border-color: #ba9bd568; color: #efddff; background: #ad8ad512; }
+.rebirth-label { color: #a8b7d1; font-size: 12px; letter-spacing: 2px; }
 .rebirth-digital { position: relative; display: grid; grid-template-columns: minmax(240px, .8fr) minmax(0, 1.55fr); align-items: center; column-gap: 20px; }
 .rebirth-copy { position: relative; z-index: 2; padding: 45px 0; pointer-events: none; }
 .rebirth-eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 28px; color: #b6a7d2; font: 10px/1.4 Georgia, serif; letter-spacing: 2px; }
@@ -56,12 +54,11 @@
 .rebirth-actions button { min-height: 42px; padding: 10px 12px; border: 1px solid transparent; border-radius: 3px; color: #b4bbcf; background: transparent; font: inherit; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .rebirth-actions .rebirth-transform { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 18px; border-color: #bca1db89; color: #f4ddff; background: #a778d015; font-size: 12px; letter-spacing: 1px; }
 .rebirth-transform > span { color: #cbb5ea; font-size: 17px; line-height: 1; }
-.rebirth-actions button:hover, .rebirth-palette button:hover, .rebirth-modes button:hover { color: #fff0ff; background: #b899d921; }
+.rebirth-actions button:hover, .rebirth-palette button:hover { color: #fff0ff; background: #b899d921; }
 .heritage-rebirth button:focus-visible, .rebirth-canvas:focus-visible, .rebirth-scatter input:focus-visible { outline: 2px solid #ead0ff; outline-offset: 4px; }
 .heritage-rebirth button:disabled, .rebirth-scatter input:disabled { opacity: .45; cursor: default; }
 .rebirth-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
 .rebirth-digital[data-rebirth-state='unavailable'] .rebirth-canvas { visibility: hidden; }
-.heritage-rebirth.is-journey .heritage-journey { margin-top: 0; }
 @media (min-width: 1450px) { .rebirth-artwork { height: 650px; } }
 @media (max-width: 850px) {
   .rebirth-digital { grid-template-columns: minmax(200px, .85fr) minmax(0, 1.25fr); gap: 0; }
@@ -75,8 +72,7 @@
   .rebirth-topbar { gap: 8px; padding-bottom: 16px; }
   .rebirth-topbar p { gap: 8px; font-size: 10px; letter-spacing: 1px; }
   .rebirth-topbar p > span { font-size: 19px; }
-  .rebirth-modes { gap: 0; }
-  .rebirth-modes button { min-height: 38px; padding: 8px 10px; font-size: 10px; }
+  .rebirth-label { font-size: 10px; letter-spacing: 1px; }
   .rebirth-digital { display: flex; flex-direction: column; align-items: stretch; }
   .rebirth-copy { padding: 30px 4px 0; }
   .rebirth-eyebrow { margin-bottom: 18px; font-size: 9px; }

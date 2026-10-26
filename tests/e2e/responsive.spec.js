@@ -46,7 +46,7 @@ for (const viewport of [{ width: 320, height: 700 }, { width: 640, height: 500 }
   });
 }
 
-test('resizing keeps every selected map pin and the three bird stages reachable', async ({ page }) => {
+test('resizing keeps every selected map pin reachable', async ({ page }) => {
   await page.goto('/');
   const canvas = page.locator('.thread-map-canvas');
   const selected = page.locator('.thread-map-point.is-selected');
@@ -57,23 +57,6 @@ test('resizing keeps every selected map pin and the three bird stages reachable'
       await expectInside(selected.locator('.thread-selected-pin'), canvas);
       await expectInside(selected.locator('.thread-point-label'), canvas);
       expect(await page.locator('.thread-map-scroll').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-    }
-  }
-  await page.getByRole('button', { name: '绣线长卷', exact: true }).click();
-  const bird = page.locator('[data-heritage-bird]');
-  const journey = page.locator('.heritage-viewport');
-  for (const [index, width] of [390, 640, 320].entries()) {
-    await page.setViewportSize({ width, height: 700 });
-    await expectInside(bird, journey);
-    await expectInside(page.locator('.heritage-bird-hint'), journey);
-    await bird.click();
-    await expect(page.locator('[data-heritage-number]')).toHaveText(index === 2 ? '01' : `0${index + 2}`);
-    await expectInside(bird, journey);
-    await expectInside(page.locator('.heritage-bird-hint'), journey);
-    if (index === 0) {
-      const birdBounds = await bird.boundingBox();
-      const hintBounds = await page.locator('.heritage-bird-hint').boundingBox();
-      expect(hintBounds.y).toBeGreaterThanOrEqual(birdBounds.y + birdBounds.height);
     }
   }
 });
