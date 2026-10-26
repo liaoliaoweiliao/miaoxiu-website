@@ -8,7 +8,7 @@ import LookViewer from '../features/experience/LookViewer.jsx';
 import MiaoDivider from '../features/experience/MiaoDivider.jsx';
 import UnlockDialog from '../features/experience/UnlockDialog.jsx';
 import useExperience from '../features/experience/useExperience.js';
-import { CULTURE, hasOutfit, levels, ownedSets, previewLayers, setById, themeById } from '../features/experience/gameModel.js';
+import { CULTURE, hasOutfit, levels, ownedSets, previewLayers, setById, themeById, visibleCollection } from '../features/experience/gameModel.js';
 import { downloadLook } from '../features/experience/saveLook.js';
 
 const genders = [['girl', '苗绣姑娘'], ['boy', '苗绣少年']];
@@ -26,7 +26,7 @@ function SealTitle({ kind, image, title, heading = 'h2' }) {
 
 export default function ExperiencePage({ state = {}, onAction }) {
   const [game, dispatch] = useExperience(state.experienceTheme, state.experienceThemeRequest);
-  const { collection } = game;
+  const collection = visibleCollection(game);
   const theme = themeById(game.theme);
   const unlocked = collection.unlocked.includes(game.theme) && game.found && game.theme === levels[game.level].id;
   const last = setById(game.lastDraw);

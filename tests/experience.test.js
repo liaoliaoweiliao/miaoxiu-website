@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { costumeSets } from '../src/data/catalog.js';
-import { COLLECTION_KEY, levels, readCollection, createExperienceState, experienceReducer, hitRegion, isHit, ownedSets, hasOutfit, previewLayers, setById } from '../src/features/experience/gameModel.js';
+import { COLLECTION_KEY, levels, readCollection, createExperienceState, experienceReducer, hitRegion, isHit, ownedSets, hasOutfit, previewLayers, setById, visibleCollection } from '../src/features/experience/gameModel.js';
 
 function storage(initial = {}) {
   const items = new Map(Object.entries(initial));
@@ -227,6 +227,46 @@ test('v4 collection restores valid ownership and outfits while rejecting forged 
   const resumed = start(2, storage({ [COLLECTION_KEY]: JSON.stringify(collection) }));
   assert.deepEqual(resumed.collection, collection);
   assert.equal(resumed.found, false, 'reload begins a new search while retaining collection');
+});
+
+test('saved outfits stay in history while each unchosen role shows its original appearance', () => {
+  const saved = { unlocked: ['star'], owned: ['star-girl-1', 'star-boy-1'], gender: 'girl', equipped: { girl: 'star-girl-1', boy: 'star-boy-1' } };
+  let state = start(0, storage({ [COLLECTION_KEY]: JSON.stringify(saved) }));
+  for (const gender of ['girl', 'boy', 'girl']) {
+    state = reduce(state, { type: 'gender', id: gender });
+    assert.equal(hasOutfit(visibleCollection(state)), false);
+    assert.equal(previewLayers(visibleCollection(state))[0].src, `experience/catalog/${gender}-base.webp`);
+    assert.deepEqual(state.collection.equipped, saved.equipped, 'showing the original figure must not erase saved looks');
+  }
+  state = reduce(state, { type: 'equip', id: 'star-girl-1' });
+  assert.equal(previewLayers(visibleCollection(state))[0].src, setById('star-girl-1').portrait);
+  state = reduce(state, { type: 'gender', id: 'boy' });
+  assert.equal(previewLayers(visibleCollection(state))[0].src, 'experience/catalog/boy-base.webp');
+  state = reduce(state, { type: 'gender', id: 'girl' });
+  assert.equal(previewLayers(visibleCollection(state))[0].src, setById('star-girl-1').portrait, 'an explicit choice remains while switching roles in the same round');
+  state = reduce(state, { type: 'reset' });
+  assert.equal(previewLayers(visibleCollection(state))[0].src, 'experience/catalog/girl-base.webp');
+  assert.equal(state.collection.equipped.boy, 'star-boy-1');
+  assert.deepEqual(state.collection.owned, saved.owned);
+});
+
+test('drawing does not select a suit, and wearing waits for the finish action before a new original figure', () => {
+  const saved = { unlocked: ['star'], owned: ['star-girl-1'], gender: 'girl', equipped: { girl: 'star-girl-1', boy: null } };
+  let state = draw(solve(start(0, storage({ [COLLECTION_KEY]: JSON.stringify(saved) }))));
+  assert.equal(previewLayers(visibleCollection(state))[0].src, 'experience/catalog/girl-base.webp');
+  assert.equal(state.dressed, false);
+  assert.strictEqual(reduce(state, { type: 'round', completed: true, random: 0 }), state);
+  state = reduce(state, { type: 'equip', id: state.lastDraw });
+  assert.equal(state.dressed, true);
+  assert.equal(state.round, 1, 'wearing an entire suit does not advance automatically');
+  assert.equal(previewLayers(visibleCollection(state))[0].setId, state.lastDraw);
+  const history = state.collection;
+  state = reduce(state, { type: 'round', completed: true, random: 0 });
+  assert.equal(state.round, 2);
+  assert.equal(hasOutfit(visibleCollection(state)), false);
+  assert.equal(previewLayers(visibleCollection(state))[0].src, 'experience/catalog/girl-base.webp');
+  assert.strictEqual(state.collection, history);
+  assert.equal(hasOutfit(visibleCollection(start(0, storage({ [COLLECTION_KEY]: JSON.stringify(history) })))), false);
 });
 
 test('v3 whole-component outfits and v2 discovery migrate; corrupt/blocked storage is recoverable', () => {

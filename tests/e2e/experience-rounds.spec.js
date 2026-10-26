@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { levels } from '../../src/features/experience/gameModel.js';
+import { levels, setById } from '../../src/features/experience/gameModel.js';
 
 test.use({ reducedMotion: 'reduce' });
 
@@ -144,3 +144,54 @@ test('only discoveries unlock themes, removed fill content stays absent and the 
   await expect(page.locator('.pool-locked h3')).toHaveText('牡丹花纹卡池尚未解锁');
   await expect(page.locator('[data-action="drawGender"]')).toHaveCount(0);
 });
+
+for (const width of [1440, 390]) {
+  test(`unchosen outfits show original figures and a worn suit advances only on finish at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.addInitScript(() => {
+      Math.random = () => 0;
+      if (!localStorage.getItem('miao-wardrobe-v4')) localStorage.setItem('miao-wardrobe-v4', JSON.stringify({
+        unlocked: ['star'], owned: ['star-girl-1', 'star-boy-1'], gender: 'girl', equipped: { girl: 'star-girl-1', boy: 'star-boy-1' },
+      }));
+    });
+    await page.goto('/#experience');
+    const portrait = page.locator('.look-viewer .whole-avatar');
+    for (const gender of ['girl', 'boy', 'girl']) {
+      await page.locator(`[data-action="gender"][data-id="${gender}"]`).click();
+      await expect(portrait).toHaveAttribute('src', new RegExp(`${gender}-base\\.webp$`));
+      await expect(page.locator('.outfit-summary strong')).toHaveText('原始形象');
+      await expect(page.locator('.wear-full[aria-pressed="true"]')).toHaveCount(0);
+      await expect(page.locator('[data-action="save"]')).toBeDisabled();
+    }
+    await discover(page, 0);
+    await page.locator('[data-action="drawGender"][data-id="girl"]').click();
+    await page.locator('.draw-btn').click();
+    await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
+    await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/);
+    await page.locator('[data-action="openDressup"]').click();
+    await expect(portrait).toHaveAttribute('src', /girl-base\.webp$/);
+    await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
+    const drawnId = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).owned.find((id) => !['star-girl-1', 'star-boy-1'].includes(id)));
+    const suit = page.locator(`.owned-card:has([data-id="${drawnId}"]) .wear-full`);
+    await suit.click();
+    await expect(portrait).toHaveAttribute('src', new RegExp(`${setById(drawnId).portrait.split('/').pop()}$`));
+    await expect(page.locator('[data-action="finishLoop"]')).toBeEnabled();
+    await expect(page.locator('[data-action="save"]')).toBeEnabled();
+    await expect(page.locator('.level-label')).toContainText('第 1 轮');
+    await page.locator('[data-action="resetOutfit"]').click();
+    await expect(portrait).toHaveAttribute('src', /girl-base\.webp$/);
+    await expect(page.locator('[data-action="finishLoop"]')).toBeDisabled();
+    await suit.click();
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')));
+    await page.locator('[data-action="finishLoop"]').click();
+    await expect(page.locator('.level-label')).toContainText('第 2 轮');
+    await expect(page.locator('.decode-board')).toBeFocused();
+    await expect(portrait).toHaveAttribute('src', /girl-base\.webp$/);
+    await expect(page.locator('.outfit-summary strong')).toHaveText('原始形象');
+    await expect(page.locator('[data-action="save"]')).toBeDisabled();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
+    await page.reload();
+    await expect(portrait).toHaveAttribute('src', /girl-base\.webp$/);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
+  });
+}
