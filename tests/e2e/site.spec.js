@@ -143,13 +143,20 @@ test('mobile branch atlas supports point selection and touch controls without pa
 test('heritage bird completes its three-part story and returns to the start', async ({ page }) => {
   await page.goto('/');
   const bird = page.locator('[data-heritage-bird]');
+  await expect(page.locator('.heritage-progress [aria-current]')).toContainText('指尖传承');
+  await expect(page.locator('.heritage-hand-light')).toHaveClass(/is-lit/);
   await bird.click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('02');
+  await expect(page.locator('.heritage-flower-light.is-lit')).toHaveCount(7);
   await bird.click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('03');
+  await expect(page.getByRole('group', { name: /原图花卉边饰对照/ })).toBeVisible();
+  await expect(page.locator('.heritage-whisper')).toContainText('本子封面的细窄边饰');
   await bird.click();
   await expect(page.locator('[data-heritage-number]')).toHaveText('01');
-  await expect(page.locator('.heritage-whisper')).toContainText('又回到了起点');
+  await expect(page.locator('.heritage-whisper')).toHaveText('一针一线之间，技艺在指尖延续。');
+  await expect(page.locator('.heritage-flower-light.is-lit')).toHaveCount(0);
+  await expect(page.locator('.heritage-comparison')).toHaveCount(0);
 });
 
 test('stories, motif navigation, stitch animation and three-color palette', async ({ page }) => {

@@ -69,7 +69,7 @@ test('resizing keeps every selected map pin and the three bird stages reachable'
     await expect(page.locator('[data-heritage-number]')).toHaveText(index === 2 ? '01' : `0${index + 2}`);
     await expectInside(bird, journey);
     await expectInside(page.locator('.heritage-bird-hint'), journey);
-    if (index === 0) {
+    if (index === 2) {
       const birdBounds = await bird.boundingBox();
       const hintBounds = await page.locator('.heritage-bird-hint').boundingBox();
       expect(hintBounds.y).toBeGreaterThanOrEqual(birdBounds.y + birdBounds.height);
