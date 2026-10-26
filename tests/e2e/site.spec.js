@@ -171,8 +171,7 @@ test('stories, motif navigation, stitch animation and three-color palette', asyn
   await expect(page.locator('.stitch-item').nth(2)).toHaveAttribute('aria-pressed', 'true');
   for (let index = 0; index < 3; index++) await page.locator('.color-swatch').nth(index).click();
   await expect(page.locator('.palette-readout > b')).toContainText('3/3');
-  await page.locator('.color-challenge').click();
-  await expect(page.locator('.color-challenge')).toContainText('三色配色已完成');
+  await expect(page.locator('.color-example-row,.meaning-bottom-art,.color-challenge')).toHaveCount(0);
   await page.getByRole('button', { name: '清空选择', exact: true }).click();
   await expect(page.locator('.palette-readout > b')).toHaveText('未上色线稿');
   await expectImagesLoaded(page);

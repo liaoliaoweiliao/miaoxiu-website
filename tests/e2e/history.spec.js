@@ -102,9 +102,25 @@ test('Escape and backdrop close through the fold, and closing during opening can
   expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden');
 });
 
+test('dragon motif uses the supplied photo in both the display and magnifier', async ({ page }) => {
+  await page.goto('/#history');
+  await page.getByRole('button', { name: '查看龙纹', exact: true }).click();
+  const photo = page.locator('.motif-base-image');
+  await expect(photo).toHaveAttribute('src', /motif-dragon-user\.png$/);
+  await photo.evaluate((image) => image.decode());
+  expect(await photo.evaluate((image) => [image.naturalWidth, image.naturalHeight])).toEqual([1655, 950]);
+  await page.locator('[data-magnifier]').hover();
+  await expect(page.locator('.motif-magnifier')).toHaveClass(/is-visible/);
+  await expect(page.locator('.motif-zoom-image')).toHaveAttribute('src', await photo.getAttribute('src'));
+  await expect(page.locator('.motif-art-copy h3')).toHaveText('龙纹');
+});
+
 test('archive color masks follow selected order, enforce three colors and reset all motifs', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/#history');
+  await expect(page.locator('.color-example-row,.meaning-bottom-art,.color-challenge')).toHaveCount(0);
+  await expect(page.locator('.color-lab-panel')).toHaveCount(3);
+  await expect(page.locator('.color-motif-tab')).toHaveCount(3);
   const swatches = page.locator('.color-swatch');
   await swatches.nth(5).click();
   await expect(page.locator('.color-motif-paint')).toHaveCount(3);

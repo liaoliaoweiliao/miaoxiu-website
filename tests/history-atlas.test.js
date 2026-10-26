@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { colorChoices, colorExamples, colorMotifs, motifGroups, stories, stitches } from '../src/data/history.js';
+import { colorChoices, colorMotifs, motifGroups, stories, stitches } from '../src/data/history.js';
 import { ATLAS_RECORDS, initialAtlasState, TIMES } from '../src/data/atlas.js';
 import { colorLayerPlan, historyReducer, initialHistoryState } from '../src/features/history/historyModel.js';
 import { atlasReducer, filteredAtlas } from '../src/features/history/atlasModel.js';
@@ -54,7 +54,6 @@ test('all active archive images, storybook spreads and color masks exist locally
     ...Object.values(motifGroups).flatMap((group) => group.items.map((item) => item.image)),
     ...stitches.flatMap((item) => [item.thumb, item.finish]),
     ...colorChoices.flatMap((item) => [item.swatch, item.image]),
-    ...colorExamples.map((item) => item[1]),
     ...colorMotifs.map((item) => item.line),
   ];
   for (const motif of colorMotifs) {

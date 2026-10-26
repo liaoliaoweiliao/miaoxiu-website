@@ -2,7 +2,7 @@ import { colorChoices, motifGroups, stitches } from '../../data/history.js';
 
 export const initialHistoryState = {
   group: 'animal', motif: 0, stitch: 0, step: 0, playing: false, run: 0,
-  colorMotif: 0, color: -1, colors: [], colorExample: 0, challenge: false,
+  colorMotif: 0, color: -1, colors: [],
 };
 
 export function colorLayerPlan(picked) {
@@ -35,8 +35,6 @@ export function historyReducer(state, action) {
       return { ...idle, colors: picked, color: action.index };
     }
     case 'colorReset': return { ...idle, colors: [], color: -1 };
-    case 'example': return Number.isInteger(action.index) && action.index >= 0 && action.index < 3 ? { ...idle, colorExample: action.index } : state;
-    case 'challenge': return { ...idle, challenge: !state.challenge };
     default: return state;
   }
 }

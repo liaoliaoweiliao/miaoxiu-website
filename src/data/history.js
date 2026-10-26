@@ -41,7 +41,7 @@ export const motifGroups = {
     items: [
       { name: '蝴蝶纹', icon: '🦋', image: 'history/motifs/motif-butterfly.webp', alt: '蝴蝶纹苗绣图案', desc: '象征生命、祖先与美好，\n是苗族最具代表性的纹样。' },
       { name: '鸟纹', icon: '◈', image: 'history/motifs/motif-bird.webp', alt: '鸟纹苗绣图案', desc: '记录飞翔与迁徙的愿望，\n寄托自由、祝福与远方。' },
-      { name: '龙纹', icon: '✦', image: 'history/motifs/motif-dragon.webp', alt: '龙纹苗绣图案', desc: '融合山川与神话想象，\n守护家园，也守护团聚。' },
+      { name: '龙纹', icon: '✦', image: 'history/motifs/motif-dragon-user.png', alt: '龙纹苗绣图案', desc: '融合山川与神话想象，\n守护家园，也守护团聚。' },
       { name: '鱼纹', icon: '◉', image: 'history/motifs/motif-fish.webp', alt: '鱼纹苗绣图案', desc: '水波中的鱼游向丰收，\n寓意富足、繁衍与生生不息。' },
       { name: '蛙纹', icon: '✺', image: 'history/motifs/motif-frog.webp', alt: '蛙纹苗绣图案', desc: '来自田野与雨水的灵动符号，\n寄托对丰年的期盼。' },
       { name: '牛纹', icon: '♢', image: 'history/motifs/motif-cattle.webp', alt: '牛纹苗绣图案', desc: '把勤劳与力量绣入衣襟，\n讲述人与土地相依的故事。' }
@@ -83,9 +83,4 @@ export const colorMotifs = [
   { name: '蝴蝶纹', key: 'butterfly', line: 'history/color-motifs/butterfly-line.webp', desc: '生命、自由与繁衍的象征' },
   { name: '花卉纹', key: 'flower', line: 'history/color-motifs/flower-line.webp', desc: '自然、丰收与吉祥的祝愿' },
   { name: '鸟纹', key: 'bird', line: 'history/color-motifs/bird-line.webp', desc: '迁徙、远方与自由的记忆' }
-];
-export const colorExamples = [
-  ['传统纹样', 'history/color-examples/07-traditional-festival-image-no-text.webp'],
-  ['山野清雅', 'history/color-examples/08-mountain-elegant-image-no-text.webp'],
-  ['现代苗风', 'history/color-examples/09-modern-miao-image-no-text.webp']
 ];

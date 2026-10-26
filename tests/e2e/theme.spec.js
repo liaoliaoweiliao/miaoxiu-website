@@ -53,18 +53,19 @@ test('continuous embroidery responds to scrolling and respects reduced motion', 
   await expect(page.locator('.cloth-scroll-motifs')).toHaveCount(0);
 });
 
-test('color challenge remains fully clickable above the footer at every layout', async ({ page }) => {
+test('remaining color controls stay usable without removed extras at every layout', async ({ page }) => {
   await page.goto('/#history');
-  const challenge = page.getByRole('button', { name: /配色挑战：为纹样选择三种主色/ });
+  const reset = page.getByRole('button', { name: '清空选择', exact: true });
   for (const width of [320, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 844 });
-    await challenge.scrollIntoViewIfNeeded();
-    const bounds = await challenge.evaluate((element) => {
+    await expect(page.locator('.color-example-row,.meaning-bottom-art,.color-challenge')).toHaveCount(0);
+    await reset.scrollIntoViewIfNeeded();
+    const bounds = await reset.evaluate((element) => {
       const box = element.getBoundingClientRect();
       const footer = document.querySelector('.footer').getBoundingClientRect();
       const main = document.querySelector('main').getBoundingClientRect();
       return {
-        gap: footer.top - box.bottom,
+        gap: footer.top - document.querySelector('.color-lab').getBoundingClientRect().bottom,
         mainBottom: main.bottom,
         buttonBottom: box.bottom,
         reachable: [.2, .5, .8].every((fraction) => element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height * fraction))),
@@ -73,9 +74,10 @@ test('color challenge remains fully clickable above the footer at every layout',
     expect(bounds.gap).toBeGreaterThanOrEqual(48);
     expect(bounds.buttonBottom).toBeLessThan(bounds.mainBottom);
     expect(bounds.reachable).toBe(true);
-    const previous = await challenge.getAttribute('aria-pressed');
-    await challenge.click();
-    await expect(challenge).toHaveAttribute('aria-pressed', previous === 'true' ? 'false' : 'true');
+    await page.locator('.color-swatch').first().click();
+    await expect(page.locator('.color-motif-paint')).toHaveCount(3);
+    await reset.click();
+    await expect(page.locator('.color-motif-paint')).toHaveCount(0);
   }
 });
 
