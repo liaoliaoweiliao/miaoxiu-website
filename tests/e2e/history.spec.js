@@ -42,7 +42,12 @@ test('three archive storybooks open, close and restore keyboard focus', async ({
       const seek = (time) => animations.forEach((animation) => { animation.currentTime = Math.min(time, animation.effect.getTiming().duration); });
       seek(400);
       const matrix = new DOMMatrix(getComputedStyle(leaf).transform);
-      const result = { yRotation: matrix.m13, origin: getComputedStyle(leaf).transformOrigin, width: leaf.offsetWidth };
+      const rightPage = overlay.querySelector('.story-book-right');
+      const result = { yRotation: matrix.m13, origin: getComputedStyle(leaf).transformOrigin, width: leaf.offsetWidth, exposedPage: Number(getComputedStyle(rightPage).opacity) };
+      // The stationary page must already be gone when the cover faces the reader,
+      // including the nearly-closed frame where it used to protrude at the left edge.
+      seek(700);
+      result.nearlyClosedPage = Number(getComputedStyle(rightPage).opacity);
       seek(1000);
       const cover = getComputedStyle(leaf.querySelector('.story-book-leaf-back'));
       result.cover = { image: cover.backgroundImage, color: cover.backgroundColor, size: cover.backgroundSize };
@@ -57,6 +62,8 @@ test('three archive storybooks open, close and restore keyboard focus', async ({
     });
     expect(fold.yRotation).toBeLessThan(0);
     expect(parseFloat(fold.origin)).toBeCloseTo(fold.width, 0);
+    expect(fold.exposedPage).toBe(0);
+    expect(fold.nearlyClosedPage).toBe(0);
     expect(fold.cover.image).toMatch(/closed-book-user\.png/);
     expect(fold.cover.color).toBe('rgba(0, 0, 0, 0)');
     expect(fold.cover.size).toBe('contain');

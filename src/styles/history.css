@@ -351,13 +351,13 @@
 .story-animation-shell[data-phase="closing"] .story-book-spread{animation:storyBookSettle 1.8s ease both,storyBookFade 1.8s ease both}
 .story-animation-shell[data-phase="closing"] .story-book-spread>img{visibility:hidden}
 .story-animation-shell[data-phase="closing"] .story-book-fold{display:block}
-.story-animation-shell[data-phase="closing"] .story-book-right{animation:storyBookHidePage .8s step-end both}
+.story-animation-shell[data-phase="closing"] .story-book-right{animation:storyBookHidePage .8s linear both}
 .story-animation-shell[data-phase="closing"] .story-book-leaf{animation:storyBookClose .8s cubic-bezier(.4,0,.2,1) both}
 .story-animation-shell[data-phase="closing"] .story-sparkles{opacity:0}
 .story-animation-shell[data-phase="closing"] .story-animation-close{opacity:0;pointer-events:none}
 .story-animation-overlay.is-closing{animation:storyBookDismiss 1.8s ease both}
 @keyframes storyBookClose{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
-@keyframes storyBookHidePage{from{opacity:1}to{opacity:0}}
+@keyframes storyBookHidePage{0%,25%{opacity:1}35%,100%{opacity:0}}
 @keyframes storyBookSettle{0%,44%{transform:translateX(0)}60%,100%{transform:translateX(-25%)}}
 @keyframes storyBookFade{0%,64%{opacity:1}90%,100%{opacity:0}}
 @keyframes storyBookDismiss{0%,90%{opacity:1}100%{opacity:0}}
