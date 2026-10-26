@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-10-26 | feature | completed | [搜索结果直达具体内容](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E7%9B%B4%E8%BE%BE%E5%85%B7%E4%BD%93%E5%86%85%E5%AE%B9.md) |
 | 2026-10-26 | feature | completed | [任意整套通关与寻纹抽取反馈](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E4%BB%BB%E6%84%8F%E6%95%B4%E5%A5%97%E9%80%9A%E5%85%B3%E4%B8%8E%E5%AF%BB%E7%BA%B9%E6%8A%BD%E5%8F%96%E5%8F%8D%E9%A6%88.md) |
 | 2026-10-26 | bug | completed | [未选套装显示原始形象与手动完成轮次](Bug%E5%A4%84%E7%90%86/2026-10-26-%E6%9C%AA%E9%80%89%E5%A5%97%E8%A3%85%E6%98%BE%E7%A4%BA%E5%8E%9F%E5%A7%8B%E5%BD%A2%E8%B1%A1%E4%B8%8E%E6%89%8B%E5%8A%A8%E5%AE%8C%E6%88%90%E8%BD%AE%E6%AC%A1.md) |
 | 2026-10-26 | bug | completed | [撤回标题绣饰与人物区独立滚动](Bug%E5%A4%84%E7%90%86/2026-10-26-%E6%92%A4%E5%9B%9E%E6%A0%87%E9%A2%98%E7%BB%A3%E9%A5%B0%E4%B8%8E%E4%BA%BA%E7%89%A9%E5%8C%BA%E7%8B%AC%E7%AB%8B%E6%BB%9A%E5%8A%A8.md) |

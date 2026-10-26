@@ -46,7 +46,7 @@ test('five-page navigation, carousel, controlled search and hash history', async
   await page.goto('/');
   await expect(page.locator('.hero')).toHaveAttribute('data-slide', '0');
   await expectImagesLoaded(page);
-  const search = page.getByRole('searchbox', { name: '搜索苗绣内容' });
+  const search = page.getByRole('combobox', { name: '搜索苗绣内容' });
   await search.fill('苗绣');
   await page.getByRole('button', { name: '下一张图片', exact: true }).click();
   await expect(page.locator('.hero')).toHaveAttribute('data-slide', '1');
@@ -54,6 +54,7 @@ test('five-page navigation, carousel, controlled search and hash history', async
   await page.getByRole('button', { name: '查看第 4 张图片', exact: true }).click();
   await expect(page.locator('.hero-current')).toHaveText('04');
   await search.press('Enter');
+  await page.getByRole('option', { name: '苗绣探源 苗绣探源 · 故事与文化' }).click();
   await expect(page).toHaveURL(/#history$/);
   await expect(page.locator('.story-card')).toHaveCount(3);
   await expect(page.locator('.stitch-item')).toHaveCount(6);
@@ -294,7 +295,7 @@ test('decorative theme keeps scrolled image dialogs in the viewport', async ({ p
 test('repeating the same theme search still selects its unlocked wardrobe', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('miao-wardrobe-v4', JSON.stringify({ unlocked: ['star', 'peony'], owned: [], gender: 'girl', equipped: { girl: null, boy: null } })));
   await page.goto('/#experience');
-  const search = page.getByRole('searchbox', { name: '搜索苗绣内容' });
+  const search = page.getByRole('combobox', { name: '搜索苗绣内容' });
   await search.fill('八角星纹');
   await search.press('Enter');
   await expect(page.locator('.motif-tab.selected strong')).toHaveText('八角星纹');

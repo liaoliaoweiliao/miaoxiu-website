@@ -56,6 +56,11 @@ export default function ExperiencePage({ state = {}, onAction }) {
   }, [destination]);
 
   const moveTo = (kind, selector) => setDestination({ kind, selector });
+  useEffect(() => {
+    const target = state.searchTarget;
+    if (!target || target.page !== 'experience') return;
+    moveTo(target.section, target.kind === 'theme' ? `[data-action="pool"][data-id="${target.theme}"]` : undefined);
+  }, [state.searchTarget]);
   function openWardrobe() {
     if (!game.found) return;
     dispatch({ type: 'openWardrobe' });
