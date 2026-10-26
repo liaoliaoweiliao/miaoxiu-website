@@ -173,7 +173,8 @@ test('stories, motif navigation, stitch animation and three-color palette', asyn
   await expect(page.locator('.palette-readout > b')).toContainText('3/3');
   await expect(page.locator('.color-example-row,.meaning-bottom-art,.color-challenge')).toHaveCount(0);
   await page.getByRole('button', { name: '清空选择', exact: true }).click();
-  await expect(page.locator('.palette-readout > b')).toHaveText('未上色线稿');
+  await expect(page.locator('.palette-readout > b')).toHaveCount(0);
+  await expect(page.locator('.palette-empty')).toHaveText('先选一种颜色上色，可继续添加到三种颜色');
   await expectImagesLoaded(page);
 });
 

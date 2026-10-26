@@ -72,12 +72,12 @@ export const stitches = [
   { name: '打籽绣', desc: '绣粒如珠，层次分明', thumb: 'history/stitches/02-dazixiu.webp', finish: 'history/stitch-results/02-dazixiu.webp', hotspots: [[33.52,35.89],[64.54,42.78],[63.89,71.33]], knots: [[38,44],[45,47],[53,46],[61,51],[43,58],[51,61],[59,60],[67,56],[47,70],[57,70]] }
 ];
 export const colorChoices = [
-  { name: '藏青', color: '#123b66', swatch: 'history/color-swatches/01-navy-swatch-no-text.webp', image: 'history/color-thread-closeups/01-navy-thread-closeup.png', meaning: '沉静深远，象征山川、夜色与坚韧。' },
-  { name: '朱砂红', color: '#bd3d2f', swatch: 'history/color-swatches/02-vermilion-swatch-no-text.webp', image: 'history/color-thread-closeups/02-vermilion-thread-closeup.png', meaning: '热烈喜庆，常用于节庆服饰与重要纹样。' },
-  { name: '暖金', color: '#d6a252', swatch: 'history/color-swatches/03-warm-gold-swatch-no-text.webp', image: 'history/color-thread-closeups/03-warm-gold-thread-closeup.png', meaning: '温暖明亮，寓意丰收、祝福与希望。' },
-  { name: '靛蓝', color: '#416da3', swatch: 'history/color-swatches/indigo-swatch-user.png', image: 'history/color-thread-closeups/04-indigo-thread-closeup.png', meaning: '清雅沉稳，连接河流、天空与远行。' },
-  { name: '米白', color: '#eee6d5', swatch: 'history/color-swatches/ivory-swatch-user.png', image: 'history/color-thread-closeups/05-ivory-thread-closeup.png', meaning: '质朴纯净，衬托彩线与细密针脚。' },
-  { name: '翠绿', color: '#3c8068', swatch: 'history/color-swatches/jade-swatch-user.png', image: 'history/color-thread-closeups/06-jade-thread-closeup.png', meaning: '生机盎然，象征植物、春天与新生。' }
+  { name: '藏青', color: '#123b66', swatch: 'history/color-swatches/01-navy-swatch-no-text.webp', image: 'history/color-thread-closeups/01-navy-thread-closeup.png', meaning: '藏青色调深沉，让人联想到连绵山岭和静谧夜色，传递沉稳、坚韧的感受。作为主色时，可以托住画面的大块结构，衬出朱砂红与暖金的明亮；用于花鸟或几何纹的边缘时，也能加强轮廓，让细密针脚更清晰。' },
+  { name: '朱砂红', color: '#bd3d2f', swatch: 'history/color-swatches/02-vermilion-swatch-no-text.webp', image: 'history/color-thread-closeups/02-vermilion-thread-closeup.png', meaning: '朱砂红带来热烈、喜庆的视觉感受，像火光与盛放的花朵，为纹样增添生机和祝福的意味。用在花瓣、蝶翼或几何纹的重点处，可与藏青形成鲜明对比；搭配米白时，针脚轮廓更清楚，少量暖金则能让画面更温暖。' },
+  { name: '暖金', color: '#d6a252', swatch: 'history/color-swatches/03-warm-gold-swatch-no-text.webp', image: 'history/color-thread-closeups/03-warm-gold-thread-closeup.png', meaning: '暖金接近阳光与成熟谷物的颜色，温暖明亮，可寄托丰收、祝福和对美好生活的期待。少量用于花心、纹样边线或重复的小点，能提亮深色区域，突出细节；与朱砂红相配更显热烈，与藏青相配则能形成清楚而稳重的层次。' },
+  { name: '靛蓝', color: '#416da3', swatch: 'history/color-swatches/indigo-swatch-user.png', image: 'history/color-thread-closeups/04-indigo-thread-closeup.png', meaning: '靛蓝比藏青明亮，带有河流、天空般清雅开阔的感觉，也让人联想到远行与流动的记忆。用于较大的纹样区域时，画面显得舒展、安静；与米白搭配可突出线条的清爽，与翠绿衔接更柔和，加入少量暖金则能形成醒目的点缀。' },
+  { name: '米白', color: '#eee6d5', swatch: 'history/color-swatches/ivory-swatch-user.png', image: 'history/color-thread-closeups/05-ivory-thread-closeup.png', meaning: '米白带有柔和的暖意，给人质朴、纯净、亲近织物本身的感受。它既能在深色纹样之间留出明亮的呼吸空间，也能衬托彩线的方向与针脚的细密变化；配藏青、靛蓝时层次清楚，配朱砂红、暖金时则能缓和色彩之间的强烈对比。' },
+  { name: '翠绿', color: '#3c8068', swatch: 'history/color-swatches/jade-swatch-user.png', image: 'history/color-thread-closeups/06-jade-thread-closeup.png', meaning: '翠绿让人想到新叶、山林与春天，传递生长、繁盛和新生的感受。用于枝叶、花鸟纹样的连接部分，能把分散的色块连成整体；与朱砂红相配，可形成花与叶般鲜明的对照，与靛蓝相配更显清润，加入暖金则能让局部细节更明亮。' }
 ];
 export const colorMotifs = [
   { name: '蝴蝶纹', key: 'butterfly', line: 'history/color-motifs/butterfly-line.webp', desc: '生命、自由与繁衍的象征' },

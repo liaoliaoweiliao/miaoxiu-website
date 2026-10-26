@@ -55,6 +55,6 @@ export default function StitchExplorer({ state, dispatch }) {
         <div className="stitch-demo-footer"><span>{hints[item.name]}</span><span role="status">{complete ? '✓ 成品' : state.playing ? '● 绣制中' : '点击针法开始'}</span></div>
       </div>
     </div>
-    <div className="stitch-list">{stitches.map((stitch, index) => <button key={stitch.name} type="button" className={`stitch-item stitch-${index + 1} ${index === state.stitch ? 'is-selected' : ''}`} onClick={() => dispatch({ type: 'stitch', index })} aria-pressed={index === state.stitch}><span className="stitch-swatch"><img src={assetUrl(stitch.thumb)} alt={`${stitch.name}针法缩略图`} /></span><span><strong>{stitch.name}</strong><small>{stitch.desc}</small></span><b>›</b></button>)}</div>
+    <div className="stitch-list">{stitches.map((stitch, index) => <button key={stitch.name} type="button" className={`stitch-item stitch-${index + 1} ${index === state.stitch ? 'is-selected' : ''}`} onClick={() => dispatch({ type: 'stitch', index })} aria-pressed={index === state.stitch} aria-label={`${stitch.name}：${stitch.desc}`}><span className="stitch-swatch"><img src={assetUrl(stitch.thumb)} alt={`${stitch.name}针法缩略图`} /></span><span className="stitch-label"><strong>{stitch.name}</strong><small className="stitch-desc">{stitch.desc}</small></span><b>›</b></button>)}</div>
   </div>;
 }

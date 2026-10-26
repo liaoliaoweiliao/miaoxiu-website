@@ -424,9 +424,13 @@ body.story-reader-open{overflow:hidden}
 
 .history-colors .color-motif-art img.color-motif-line{padding:8px;box-sizing:border-box}
 .history-page .stitch-item{grid-template-columns:44px minmax(0,1fr) 16px;column-gap:10px}
+.history-page .stitch-label{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:8px;align-items:start;min-width:0;font-size:15px;line-height:1.4}
+.history-page .stitch-label strong,.history-page .stitch-item .stitch-desc{font-size:inherit;font-weight:700;line-height:inherit;margin:0;white-space:normal;overflow:visible;text-overflow:clip}
+.history-page .stitch-item .stitch-desc{visibility:hidden;opacity:0;transition:opacity .18s}
+.history-page .stitch-item:hover .stitch-desc,.history-page .stitch-item:focus-visible .stitch-desc{visibility:visible;opacity:1}
 .history-page .color-swatch b,.history-page .color-swatch small{display:block}
 .history-page .color-swatch small{margin-top:4px;font-size:10px}
-@media(max-width:640px){.history-page .stitch-item{grid-template-columns:31px minmax(0,1fr) 12px;column-gap:5px}}
+@media(max-width:640px){.history-page .stitch-item{grid-template-columns:31px minmax(0,1fr) 12px;column-gap:5px}.history-page .stitch-label{font-size:11px;column-gap:5px}}
 @media(prefers-reduced-motion:reduce){
  .history-page *,.story-animation-overlay *,.story-reader *{animation:none!important;transition:none!important}
 }

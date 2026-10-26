@@ -146,7 +146,58 @@ test('archive color masks follow selected order, enforce three colors and reset 
   await expect(swatches.nth(0)).toBeEnabled();
   await page.getByRole('button', { name: '清空选择', exact: true }).click();
   await expect(page.locator('.color-motif-paint')).toHaveCount(0);
-  await expect(page.locator('.palette-readout > b')).toHaveText('未上色线稿');
+  await expect(page.locator('.palette-readout > b')).toHaveCount(0);
+  await expect(page.locator('.palette-empty')).toHaveText('先选一种颜色上色，可继续添加到三种颜色');
+});
+
+test('six color meanings provide detailed descriptions while the empty palette keeps its hint', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#history');
+  await expect(page.getByText('未上色线稿', { exact: true })).toHaveCount(0);
+  await expect(page.locator('.palette-empty')).toBeVisible();
+  await expect(page.locator('.color-motif-art > span')).toHaveText('生命、自由与繁衍的象征');
+  const descriptions = new Set();
+  for (const name of ['藏青', '朱砂红', '暖金', '靛蓝', '米白', '翠绿']) {
+    const choice = page.getByRole('button', { name: `选择${name}`, exact: true });
+    await choice.click();
+    await expect(page.locator('.meaning-copy strong')).toHaveText(name);
+    const description = await page.locator('.meaning-copy p').textContent();
+    expect(description.length).toBeGreaterThan(80);
+    descriptions.add(description);
+    await choice.click();
+  }
+  expect(descriptions.size).toBe(6);
+  await expect(page.locator('.palette-empty')).toBeVisible();
+});
+
+test('stitch descriptions appear beside each name at matching size on hover and keyboard focus', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#history');
+  const buttons = page.locator('.stitch-item');
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.mouse.move(0, 0);
+    for (const button of await buttons.all()) await expect(button.locator('.stitch-desc')).toBeHidden();
+    for (const button of await buttons.all()) {
+      await button.hover();
+      await expect(button.locator('.stitch-desc')).toBeVisible();
+      const layout = await button.evaluate((element) => {
+        const name = element.querySelector('strong'), description = element.querySelector('.stitch-desc');
+        const a = name.getBoundingClientRect(), b = description.getBoundingClientRect();
+        return { nameSize: getComputedStyle(name).fontSize, descriptionSize: getComputedStyle(description).fontSize, nameRight: a.right, descriptionLeft: b.left, nameTop: a.top, descriptionTop: b.top, fits: b.right <= element.getBoundingClientRect().right };
+      });
+      expect(layout.nameSize).toBe(layout.descriptionSize);
+      expect(layout.descriptionLeft).toBeGreaterThan(layout.nameRight);
+      expect(layout.descriptionTop).toBeCloseTo(layout.nameTop, 0);
+      expect(layout.fits).toBe(true);
+    }
+    await page.mouse.move(0, 0);
+    for (const button of await buttons.all()) await expect(button.locator('.stitch-desc')).toBeHidden();
+  }
+  await buttons.first().focus();
+  await page.keyboard.press('Tab');
+  await expect(buttons.nth(1).locator('.stitch-desc')).toBeVisible();
+  await expect(page.locator('.stitch-stage')).toHaveClass(/is-idle/);
 });
 
 test('six stitch techniques draw distinct paths with a moving needle and show their finished image', async ({ page }) => {
