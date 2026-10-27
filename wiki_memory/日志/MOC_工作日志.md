@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-10-26
+updated: 2026-10-27
 topic: work-log-index
 sources: []
 ---
@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-10-27 | ui | completed | [撤销银铃引绣交互](UI%E4%BF%AE%E6%94%B9/2026-10-27-%E6%92%A4%E9%94%80%E9%93%B6%E9%93%83%E5%BC%95%E7%BB%A3%E4%BA%A4%E4%BA%92.md) |
 | 2026-10-26 | feature | completed | [银铃引绣 · 风过花醒](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E9%93%B6%E9%93%83%E5%BC%95%E7%BB%A3%E9%A3%8E%E8%BF%87%E8%8A%B1%E9%86%92.md) |
 | 2026-10-26 | feature | completed | [搜索结果直达具体内容](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E7%9B%B4%E8%BE%BE%E5%85%B7%E4%BD%93%E5%86%85%E5%AE%B9.md) |
 | 2026-10-26 | feature | completed | [任意整套通关与寻纹抽取反馈](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E4%BB%BB%E6%84%8F%E6%95%B4%E5%A5%97%E9%80%9A%E5%85%B3%E4%B8%8E%E5%AF%BB%E7%BA%B9%E6%8A%BD%E5%8F%96%E5%8F%8D%E9%A6%88.md) |
