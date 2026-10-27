@@ -35,9 +35,8 @@
 }
 .experience-page .decode-board { aspect-ratio: auto; }
 .experience-page .decode-board img { height: auto; object-fit: contain; }
-.experience-page .decode-toolbar { justify-content: flex-start; margin-bottom: 10px; }
+.experience-page .decode-toolbar { margin-bottom: 10px; }
 .experience-page .target-brief { margin-bottom: 10px; }
-.experience-page .target-brief small { margin-left: 0; }
 .experience-page .decode-image-preview { max-width: calc(100% - 24px); }
 
 /* Reserve identical space for the card back, procession and full outfit. */
