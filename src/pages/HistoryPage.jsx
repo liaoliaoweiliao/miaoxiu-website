@@ -42,20 +42,57 @@ function MotifArt({ item }) {
 }
 
 
-export default function HistoryPage({ onNavigate }) {
+export default function HistoryPage({ state: appState = {}, onNavigate }) {
   const [state, dispatch] = useReducer(historyReducer, undefined, () => ({ ...sessionHistoryState, playing: false }));
   useEffect(() => { sessionHistoryState = state; }, [state]);
   const [story, setStory] = useState(null);
+  const handledSearch = useRef(null);
+  const positionedSearch = useRef(null);
+  useEffect(() => {
+    const target = appState.searchTarget;
+    if (!target || target.page !== 'history' || handledSearch.current === target.revision) return;
+    handledSearch.current = target.revision;
+    const section = document.getElementById(target.section);
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+    if (target.kind === 'story') {
+      section?.querySelectorAll('.story-image')[target.index]?.focus({ preventScroll: true });
+      section?.scrollIntoView({ block: 'start', behavior });
+      setStory(target.index);
+      return undefined;
+    }
+    setStory(null);
+    if (target.kind === 'stitch') dispatch({ type: 'stitch', index: target.index });
+    if (target.kind === 'motif') {
+      dispatch({ type: 'group', group: target.group });
+      dispatch({ type: 'motif', index: target.index });
+    }
+  }, [appState.searchTarget]);
+  useEffect(() => {
+    const target = appState.searchTarget;
+    if (!target || target.page !== 'history' || target.kind === 'story' || positionedSearch.current === target.revision) return undefined;
+    // Focus after the chosen group/technique is rendered, including in StrictMode.
+    if (target.kind === 'stitch' && state.stitch !== target.index
+      || target.kind === 'motif' && (state.group !== target.group || state.motif !== target.index)) return undefined;
+    const section = document.getElementById(target.section);
+    const frame = window.requestAnimationFrame(() => {
+      positionedSearch.current = target.revision;
+      const focus = target.kind === 'stitch' ? section?.querySelectorAll('.stitch-item')[target.index]
+        : target.kind === 'motif' ? section?.querySelectorAll('.motif-menu-item')[target.index] : section;
+      focus?.focus({ preventScroll: true });
+      section?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [appState.searchTarget, state.group, state.motif, state.stitch]);
   const group = motifGroups[state.group], item = group.items[state.motif];
   return <main className="history-page">
-    <section className="history-story container"><Heading title="苗族小故事" first>在绣线之间，听见代代相传的声音</Heading><div className="story-grid">{stories.map((entry, index) => <StoryCard key={entry.title} item={entry} index={index} onOpen={() => setStory(index)} />)}</div></section>
-    <section className="history-pattern container"><Heading title="纹样图案">一纹一世界，图案里的自然与信仰</Heading>
+    <section id="history-stories" data-search-section tabIndex={-1} className="history-story container"><Heading title="苗族小故事" first>在绣线之间，听见代代相传的声音</Heading><div className="story-grid">{stories.map((entry, index) => <StoryCard key={entry.title} item={entry} index={index} onOpen={() => setStory(index)} />)}</div></section>
+    <section id="history-patterns" data-search-section tabIndex={-1} className="history-pattern container"><Heading title="纹样图案">一纹一世界，图案里的自然与信仰</Heading>
       <div className="motif-explorer"><aside className="motif-menu" aria-label="纹样分类">{Object.entries(motifGroups).map(([key, entry]) => <div key={key} className={`motif-menu-section ${state.group === key ? 'is-open' : ''}`}><button type="button" className={`motif-group-title ${state.group === key ? 'is-open' : ''}`} onClick={() => dispatch({ type: 'group', group: key })} aria-expanded={state.group === key}><span>{entry.icon}</span>{entry.title} <b>{state.group === key ? '⌃' : '›'}</b></button>{state.group === key && entry.items.map((motif, index) => <button key={motif.name} type="button" className={`motif-menu-item ${index === state.motif ? 'is-active' : ''}`} onClick={() => dispatch({ type: 'motif', index })} aria-label={`查看${motif.name}`} aria-pressed={index === state.motif}><span className="motif-glyph">{motif.icon}</span><strong>{motif.name}</strong><span className="motif-arrow">›</span></button>)}</div>)}</aside>
         <div className="motif-feature"><button type="button" className="motif-arrow-btn prev" onClick={() => dispatch({ type: 'motifMove', direction: -1 })} aria-label="上一个纹样"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m13 3-6 7 6 7" /></svg></button><MotifArt key={item.name} item={item} /><button type="button" className="motif-arrow-btn next" onClick={() => dispatch({ type: 'motifMove', direction: 1 })} aria-label="下一个纹样"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m7 3 6 7-6 7" /></svg></button></div>
       </div>
     </section>
-    <section className="history-stitches container"><Heading title="六大针法">一针一线，传承千年的匠心</Heading><StitchExplorer state={state} dispatch={dispatch} /></section>
-    <section className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} />
+    <section id="history-stitches" data-search-section tabIndex={-1} className="history-stitches container"><Heading title="六大针法">一针一线，传承千年的匠心</Heading><StitchExplorer state={state} dispatch={dispatch} /></section>
+    <section id="history-colors" data-search-section tabIndex={-1} className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} />
       <div className="history-experience-entry"><button type="button" className="history-experience-button" onClick={() => onNavigate('experience')}><span className="history-experience-copy"><span>探源之后，</span><strong>开启互动体验</strong></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></button></div>
     </section>
     {story !== null && <StoryBook key={story} item={stories[story]} onClose={() => setStory(null)} />}

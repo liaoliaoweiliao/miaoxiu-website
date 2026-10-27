@@ -30,6 +30,7 @@ export default function LookViewer({ collection, revision }) {
 
   useEffect(() => { setView(initialView); points.current.clear(); pinch.current = 0; setDragging(false); }, [appearance]);
   useEffect(() => {
+    if (!expanded) return undefined;
     const viewport = viewportRef.current;
     function wheel(event) {
       if (event.ctrlKey || event.metaKey) return;
@@ -92,7 +93,7 @@ export default function LookViewer({ collection, revision }) {
 
   const viewer = <div ref={rootRef} className={`look-viewer look-arriving ${expanded ? 'viewer-expanded' : ''}`} role={expanded ? 'dialog' : 'region'} aria-modal={expanded || undefined} aria-label="人物服饰观看器" onKeyDown={onKeyDown}>
     <div className="viewer-header"><span>✧ 服饰观赏</span><small>{outfit ? '整套穿戴' : '原始形象'}</small></div>
-    <div ref={viewportRef} className={`viewer-viewport ${dragging ? 'is-dragging' : ''}`} tabIndex={0} role="group" aria-label="拖拽移动人物，滚轮或双指缩放，方向键移动，加减号缩放，零键复位" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onDoubleClick={reset}>
+    <div ref={viewportRef} className={`viewer-viewport ${dragging ? 'is-dragging' : ''}`} tabIndex={0} role="group" aria-label={`拖拽移动人物，${expanded ? '滚轮或双指' : '双指或按钮'}缩放，方向键移动，加减号缩放，零键复位`} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onDoubleClick={reset}>
       <div className="viewer-halo" aria-hidden="true" /><div className="viewer-floor" aria-hidden="true" />
       <div className="viewer-actor" style={{ transform: `translate(${view.x}px,${view.y}px) scale(${view.scale})` }}><div className="avatar-canvas" aria-label="当前人物预览"><div key={appearance} className="garment-display garment-enter" data-appearance={appearance}>
         <img className={`whole-avatar ${dressed ? 'is-dressed' : ''}`} src={assetUrl(layer.src)} alt={dressed ? '已穿戴整套服装的人物' : collection.gender === 'girl' ? '原始女孩形象' : '原始男孩形象'} />
@@ -101,7 +102,7 @@ export default function LookViewer({ collection, revision }) {
     </div>
     <div className="viewer-caption">{outfit ? outfit.name : collection.gender === 'girl' ? '苗绣姑娘' : '苗绣少年'}</div>
     <div className="viewer-tools" role="group" aria-label="观赏控制"><button type="button" onClick={() => change((current) => ({ ...current, scale: current.scale - 0.25 }))} aria-label="缩小人物" disabled={view.scale <= 1}>−</button><output className="viewer-scale" aria-live="polite">{Math.round(view.scale * 100)}%</output><button type="button" onClick={() => change((current) => ({ ...current, scale: current.scale + 0.25 }))} aria-label="放大人物" disabled={view.scale >= 3}>＋</button><span /><button type="button" onClick={reset}>复位</button><button ref={expandButton} type="button" onClick={() => setExpanded(!expanded)} aria-label={expanded ? '退出全屏观赏' : '全屏观赏'} aria-pressed={expanded}>{expanded ? '收起' : '全屏'}</button></div>
-    <p className="viewer-hint">拖拽移动 · 滚轮 / 双指缩放 · 双击复位</p>
+    <p className="viewer-hint">拖拽移动 · {expanded ? '滚轮 / 双指缩放' : '双指 / 按钮缩放'} · 双击复位</p>
   </div>;
   return expanded ? createPortal(viewer, document.getElementById('overlay-root') || document.body) : viewer;
 }

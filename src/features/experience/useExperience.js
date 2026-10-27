@@ -44,7 +44,7 @@ export default function useExperience(requestedTheme, requestRevision) {
       image.src = assetUrl(costume.card);
       return image;
     });
-    const timer = window.setTimeout(() => dispatch({ type: 'drawComplete', random: Math.random() }), reducedMotion() ? 0 : 3000);
+    const timer = window.setTimeout(() => dispatch({ type: 'drawComplete', random: Math.random() }), reducedMotion() ? 0 : 1800);
     return () => { window.clearTimeout(timer); images.forEach((image) => { image.onload = null; image.onerror = null; }); };
   }, [state.drawing, state.theme, state.drawGender]);
 

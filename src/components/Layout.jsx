@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment } from 'react';
+import SiteSearch from './SiteSearch.jsx';
 import { assetUrl } from '../utils/assets.js';
 import EmbroideryOrnament from './EmbroideryOrnament.jsx';
 
@@ -10,22 +11,7 @@ const navigation = [
 ];
 const navigationMotifs = { home: 'butterfly', history: 'spiral', experience: 'flower', gallery: 'star' };
 
-export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNavigate }) {
-  const [searchOpen, setSearchOpen] = useState(false);
-  const searchRef = useRef(null);
-  const searchButtonRef = useRef(null);
-  useEffect(() => { if (searchOpen) searchRef.current?.focus(); }, [searchOpen]);
-  useEffect(() => { setSearchOpen(false); }, [page]);
-
-  function search() {
-    if (window.matchMedia('(max-width: 760px)').matches && !searchOpen) {
-      if (nav) onAction('nav');
-      setSearchOpen(true);
-      return;
-    }
-    onAction('search');
-  }
-
+export function Header({ page, nav, query, bloom, onQueryChange, onSearchSelect, onAction, onNavigate }) {
   return (
     <header className="topbar">
       <div className="nav-inner">
@@ -60,28 +46,7 @@ export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNav
           ))}
         </nav>
         <div className="nav-tools">
-          <div className={`search ${searchOpen ? 'is-open' : ''}`}>
-            <input
-              ref={searchRef}
-              id="search"
-              type="search"
-              value={query}
-              placeholder="请输入关键词"
-              aria-label="搜索苗绣内容"
-              onChange={(event) => onQueryChange(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Escape') {
-                  setSearchOpen(false);
-                  searchButtonRef.current?.focus();
-                }
-                if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
-                  event.preventDefault();
-                  onAction('search');
-                }
-              }}
-            />
-            <button ref={searchButtonRef} type="button" onClick={search} aria-label="搜索" aria-controls="search" aria-expanded={searchOpen || undefined}>⌕</button>
-          </div>
+          <SiteSearch page={page} nav={nav} query={query} onQueryChange={onQueryChange} onSelect={onSearchSelect} onOpen={() => { if (nav) onAction('nav'); }} />
           <button
             type="button"
             className="mini-flower"
@@ -95,7 +60,7 @@ export function Header({ page, nav, query, bloom, onQueryChange, onAction, onNav
           <button
             type="button"
             className="hamburger"
-            onClick={() => { setSearchOpen(false); onAction('nav'); }}
+            onClick={() => onAction('nav')}
             aria-label={nav ? '收起导航' : '展开导航'}
             aria-expanded={Boolean(nav)}
             aria-controls="primary-navigation"

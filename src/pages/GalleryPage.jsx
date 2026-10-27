@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { assetUrl } from '../utils/assets.js';
 import { galleryDisplayWorks } from '../data/gallery.js';
 
@@ -57,7 +57,7 @@ function ThreadKnot({ closing = false }) {
   );
 }
 
-export default function GalleryPage({ onAction }) {
+export default function GalleryPage({ state = {}, onAction }) {
   const works = galleryDisplayWorks();
   const stageRef = useRef(null);
   const startRef = useRef(null);
@@ -68,6 +68,7 @@ export default function GalleryPage({ onAction }) {
   const cardRefs = useRef([]);
   const revealedRef = useRef(new Set());
   const reducedMotionRef = useRef(false);
+  const handledSearch = useRef(null);
 
   const revealCard = useCallback((index) => {
     const card = cardRefs.current[index];
@@ -75,6 +76,19 @@ export default function GalleryPage({ onAction }) {
     revealedRef.current.add(index);
     card.classList.add('is-visible');
   }, []);
+
+  useEffect(() => {
+    const target = state.searchTarget;
+    if (!target || target.kind !== 'work' || handledSearch.current === target.revision) return;
+    const work = works[target.index];
+    if (!work) return;
+    handledSearch.current = target.revision;
+    revealCard(target.index);
+    const card = cardRefs.current[target.index];
+    card?.focus({ preventScroll: true });
+    card?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    onAction('modal', 0, { src: work.src, title: `${work.kind ? `${work.kind}｜` : ''}${work.title}`, description: work.catalogue ? work.desc : '' });
+  }, [state.searchTarget, works, onAction, revealCard]);
 
   useLayoutEffect(() => {
     const stage = stageRef.current;

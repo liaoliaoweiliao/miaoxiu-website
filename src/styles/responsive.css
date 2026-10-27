@@ -69,7 +69,16 @@ button, input, select, textarea { max-width: 100%; }
 .viewer-header, .viewer-caption, .viewer-tools, .viewer-hint { flex-shrink: 0; }
 .viewer-tools { flex-wrap: wrap; }
 .viewer-viewport { height: clamp(300px, 42vw, 490px); }
-.avatar-panel { top: calc(var(--header-height) + 16px); }
+.avatar-panel {
+  top: calc(var(--header-height) + 16px);
+  max-height: calc(100dvh - var(--header-height) - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  scroll-padding-block: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #b5905e var(--surface-indigo-deep);
+}
 
 @media (min-width: 1472px) {
   /* Full-bleed artwork still reaches both edges of a capped content column. */
@@ -92,7 +101,7 @@ button, input, select, textarea { max-width: 100%; }
   .story-reader-panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(70px, 25%) minmax(0, 1fr); }
   .story-reader-art { min-height: 0; max-height: none; }
   .atelier-grid { grid-template-columns: minmax(0, 1fr); }
-  .avatar-panel { position: static; width: 100%; max-width: 430px; margin-inline: auto; }
+  .avatar-panel { position: static; width: 100%; max-width: 430px; margin-inline: auto; max-height: none; overflow: visible; padding-right: 0; }
   .experience-page .wardrobe-layout { grid-template-columns: minmax(0, 1fr); }
   .wardrobe-layout > .side-heading br { display: none; }
 }
@@ -160,7 +169,7 @@ button, input, select, textarea { max-width: 100%; }
 }
 @media (max-height: 500px) {
   .topbar { position: relative; }
-  .avatar-panel { position: static; }
+  .avatar-panel { position: static; max-height: none; overflow: visible; padding-right: 0; }
   .viewer-expanded .viewer-viewport { min-height: 0; }
   .image-lightbox .image-viewer-stage,
   .image-lightbox-body.has-details .image-viewer-stage { height: 50dvh; }

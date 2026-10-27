@@ -38,14 +38,15 @@ async function draw(page, gender = 'girl') {
   await page.locator(`[data-action="drawGender"][data-id="${gender}"]`).click();
   await page.locator('.draw-btn').click();
   await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/);
-  await expect(page.locator('.draw-btn')).toBeEnabled();
+  await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/);
+  await expect(page.locator('.draw-btn')).toBeDisabled();
 }
 
 test('five-page navigation, carousel, controlled search and hash history', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.hero')).toHaveAttribute('data-slide', '0');
   await expectImagesLoaded(page);
-  const search = page.getByRole('searchbox', { name: '搜索苗绣内容' });
+  const search = page.getByRole('combobox', { name: '搜索苗绣内容' });
   await search.fill('苗绣');
   await page.getByRole('button', { name: '下一张图片', exact: true }).click();
   await expect(page.locator('.hero')).toHaveAttribute('data-slide', '1');
@@ -53,6 +54,7 @@ test('five-page navigation, carousel, controlled search and hash history', async
   await page.getByRole('button', { name: '查看第 4 张图片', exact: true }).click();
   await expect(page.locator('.hero-current')).toHaveText('04');
   await search.press('Enter');
+  await page.getByRole('option', { name: '苗绣探源 苗绣探源 · 故事与文化' }).click();
   await expect(page).toHaveURL(/#history$/);
   await expect(page.locator('.story-card')).toHaveCount(3);
   await expect(page.locator('.stitch-item')).toHaveCount(6);
@@ -201,7 +203,7 @@ test('long gallery and accessible image zoom, drag, details and download', async
   await expect(page.locator('.image-viewer-details')).toBeVisible();
 });
 
-test('puzzle, repeat draws, separate gender collections, dressing and PNG export', async ({ page }) => {
+test('puzzle, one draw per round, separate gender collections, dressing and PNG export', async ({ page }) => {
   await page.addInitScript(() => { Math.random = () => 0; });
   await page.goto('/#experience');
   await expect(page.locator('.decode-counter')).toHaveText('寻找 1 处');
@@ -212,9 +214,12 @@ test('puzzle, repeat draws, separate gender collections, dressing and PNG export
   await expect(page.locator('[data-action="drawGender"]').first()).toBeFocused();
   await draw(page);
   await expect(page.locator('.owned-card')).toHaveCount(1);
-  await page.locator('.draw-btn').click();
-  await expect(page.locator('.owned-card')).toHaveCount(2);
-  await expect(page.locator('.draw-btn')).toBeEnabled();
+  await expect(page.locator('[data-action="drawGender"]:enabled')).toHaveCount(0);
+  await page.locator('.wear-full').first().click();
+  await page.locator('[data-action="finishLoop"]').click();
+  await expect(page.locator('.level-label')).toContainText('第 2 轮');
+  await discover(page, 1);
+  await page.getByRole('button', { name: '进入对应苗绣衣橱 →', exact: true }).click();
   await draw(page, 'boy');
   await expect(page.locator('.owned-card')).toHaveCount(1);
   await page.locator('.wear-full').first().click();
@@ -238,10 +243,10 @@ test('puzzle, repeat draws, separate gender collections, dressing and PNG export
   expect(png.readUInt32BE(16)).toBe(900);
   expect(png.readUInt32BE(20)).toBe(1400);
   await page.locator('[data-action="finishLoop"]').click();
-  await expect(page.locator('.level-label')).toContainText('第 2 轮');
-  await expect(page.locator('.target-brief strong')).toContainText('牡丹花纹');
+  await expect(page.locator('.level-label')).toContainText('第 3 轮');
+  await expect(page.locator('.target-brief strong')).toContainText('八角星纹');
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')));
-  expect(saved.owned).toHaveLength(3);
+  expect(saved.owned).toHaveLength(2);
   expect(saved.equipped.boy).toBeTruthy();
   await page.reload();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
@@ -290,7 +295,7 @@ test('decorative theme keeps scrolled image dialogs in the viewport', async ({ p
 test('repeating the same theme search still selects its unlocked wardrobe', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('miao-wardrobe-v4', JSON.stringify({ unlocked: ['star', 'peony'], owned: [], gender: 'girl', equipped: { girl: null, boy: null } })));
   await page.goto('/#experience');
-  const search = page.getByRole('searchbox', { name: '搜索苗绣内容' });
+  const search = page.getByRole('combobox', { name: '搜索苗绣内容' });
   await search.fill('八角星纹');
   await search.press('Enter');
   await expect(page.locator('.motif-tab.selected strong')).toHaveText('八角星纹');

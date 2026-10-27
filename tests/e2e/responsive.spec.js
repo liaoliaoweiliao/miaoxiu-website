@@ -78,7 +78,7 @@ test('compact search, menu and native browser zoom shortcuts remain usable', asy
   await page.goto('/');
   await page.getByRole('button', { name: '展开导航' }).click();
   await page.getByRole('button', { name: '搜索', exact: true }).click();
-  const search = page.getByRole('searchbox', { name: '搜索苗绣内容' });
+  const search = page.getByRole('combobox', { name: '搜索苗绣内容' });
   await expect(search).toBeFocused();
   await expect(page.locator('#primary-navigation')).not.toHaveClass(/open/);
   await search.fill('八角星纹');
