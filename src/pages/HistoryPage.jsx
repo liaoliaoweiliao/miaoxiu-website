@@ -56,7 +56,7 @@ export default function HistoryPage({ onNavigate }) {
     </section>
     <section className="history-stitches container"><Heading title="六大针法">一针一线，传承千年的匠心</Heading><StitchExplorer state={state} dispatch={dispatch} /></section>
     <section className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} />
-      <div className="history-experience-entry"><button type="button" className="history-experience-button" onClick={() => onNavigate('experience')}><span className="history-experience-copy"><span>识纹配色余兴未尽，</span><strong>继续互动体验</strong></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></button></div>
+      <div className="history-experience-entry"><button type="button" className="history-experience-button" onClick={() => onNavigate('experience')}><span className="history-experience-copy"><span>探源之后，</span><strong>开启互动体验</strong></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></button></div>
     </section>
     {story !== null && <StoryBook key={story} item={stories[story]} onClose={() => setStory(null)} />}
   </main>;
