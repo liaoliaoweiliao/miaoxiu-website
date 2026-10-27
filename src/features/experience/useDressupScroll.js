@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 
-export default function useDressupScroll(avatarRef, collectionRef) {
+export default function useDressupScroll(avatarRef, collectionRef, round) {
   useEffect(() => {
+    // Each round starts with the portrait; its completion action stays below it.
+    if (avatarRef.current) avatarRef.current.scrollTop = 0;
     let previousY = window.scrollY;
     let descending = false;
     let frame = 0;
@@ -30,5 +32,5 @@ export default function useDressupScroll(avatarRef, collectionRef) {
       window.removeEventListener('scroll', scroll);
       window.cancelAnimationFrame(frame);
     };
-  }, [avatarRef, collectionRef]);
+  }, [avatarRef, collectionRef, round]);
 }

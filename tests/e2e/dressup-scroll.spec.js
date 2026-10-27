@@ -62,6 +62,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600
     }
     await finish.click();
     await expect(page.locator('.level-label')).toContainText('第 2 轮');
+    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBe(0);
   });
 
   test(`scrolling over the portrait reaches finish without traversing the collection at ${viewport.width}px`, async ({ page }) => {
@@ -89,6 +90,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600
     expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
     await finish.click();
     await expect(page.locator('.level-label')).toContainText('第 2 轮');
+    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBe(0);
     expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).owned.length)).toBe(36);
   });
 }

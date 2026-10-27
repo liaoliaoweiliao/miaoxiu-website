@@ -45,7 +45,7 @@ export default function ExperiencePage({ state = {}, onAction }) {
   const avatarRef = useRef(null);
   const collectionRef = useRef(null);
   const [destination, setDestination] = useState(null);
-  useDressupScroll(avatarRef, collectionRef);
+  useDressupScroll(avatarRef, collectionRef, game.round);
 
   useEffect(() => () => saveRef.current?.abort(), []);
   useEffect(() => {
