@@ -49,7 +49,7 @@ function sample(points, time) {
 }
 
 function initialJourney() {
-  return { stage: 0, number: 1, busy: false, hidden: false, flyingLeft: false, perched: false, x: 585, y: 535, pan: 0, artWidth: 2172, maxPan: 1, worldWidth: 1000, hint: '点击小鸟 · 唤醒绣纹', message: '绣片上的小鸟即将启程：先飞向指尖，再沿着绣布走进今天。' };
+  return { stage: 0, number: 1, busy: false, hidden: false, flyingLeft: false, perched: false, x: 585, y: 535, pan: 0, artWidth: 2172, maxPan: 1, worldWidth: 1000, hint: '点击小鸟 · 唤醒绣纹', message: '从绣娘指尖出发，沿着一根绣线，看看苗绣如何走进今天。' };
 }
 
 export default function HeritageJourney() {
@@ -134,12 +134,12 @@ export default function HeritageJourney() {
       paint();
       if (!(await animate(2600, (time) => { const point = sample(paths[0], time); Object.assign(model, point, { pan: clamp(point.x - model.worldWidth * .52, 0, model.maxPan) }); paint(); }))) return;
       Object.assign(model, { x: 249, y: 367, stage: 1, number: 2, message: '小鸟停在指尖的针线处，轻轻扇动翅膀。' });
-      ready('再次点击小鸟 · 飞往本子鸟纹');
+      ready('再次点击小鸟 · 让绣纹走进日常');
     } else if (model.stage === 1) {
-      Object.assign(model, { flyingLeft: false, number: 2, message: '小鸟带着绣纹，沿着长卷飞向当代设计。' });
+      Object.assign(model, { flyingLeft: false, number: 2, message: '绣带向右延展，时装、文创、家居与数字艺术渐渐浮现。' });
       paint();
       if (!(await animate(8600, (time) => { const point = sample(paths[1], time); Object.assign(model, point, { pan: clamp(point.x - model.worldWidth * 0.52, 0, model.maxPan) }); paint(); }))) return;
-      Object.assign(model, { x: 2079, y: 421, pan: model.maxPan, stage: 2, number: 3, message: '小鸟停在本子封面的小鸟纹样上。' });
+      Object.assign(model, { x: 2079, y: 421, pan: model.maxPan, stage: 2, number: 3, message: '绣纹落在衣摆、器物与居所，也在数字世界继续生长。' });
       ready('第三次点击小鸟 · 飞向右上方');
     } else {
       Object.assign(model, { flyingLeft: false, number: 3, message: '绣纹继续延伸，飞向画卷以外。' });
@@ -172,16 +172,22 @@ export default function HeritageJourney() {
   }
 
   return (
-    <section className="heritage-journey" aria-label="传承与新生：绣布小鸟三次互动" data-heritage-journey="">
+    <section className="heritage-journey" aria-label="苗绣走进新日常：绣布小鸟三次互动" data-heritage-journey="">
       <div ref={viewportRef} className="heritage-viewport" tabIndex={0} aria-label="轻触绣布上的小鸟体验三段故事，键盘可使用回车或空格继续" onKeyDown={(event) => { if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowLeft'].includes(event.key)) { event.preventDefault(); advance(); } }} onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={() => { touchRef.current = null; }}>
-        <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px` }}>
-          <img className="heritage-panorama" src={assetUrl('home/heritage-long-panorama-wide.webp')} alt="连续的苗绣长卷：绣娘、绵延的绣布与右侧现代设计作品" loading="lazy" draggable={false} />
+        <div className="heritage-art" aria-hidden="false" style={{ '--heritage-art-width': `${view.artWidth}px`, '--heritage-shift': `${view.pan * view.artWidth / 2172}px`, '--heritage-modern-reveal': clamp((view.x - 900) / 1100, 0, 1) }}>
+          <img className="heritage-panorama" src={assetUrl('home/heritage-everyday-silhouettes.png')} alt="苗绣长卷：绣娘指尖的绣带向右延展，花鸟绣纹融入半透明的时装、文创摆件、家居面料与数字艺术界面" loading="lazy" draggable={false} />
+          <div className="heritage-modern-veil" aria-hidden="true" />
           <button className={`heritage-bird ${view.busy ? 'is-flying' : ''} ${view.hidden ? 'is-hidden' : ''} ${view.flyingLeft ? 'is-flying-left' : ''} ${view.perched ? 'is-perched' : ''} ${view.stage === 1 ? 'is-at-fingertip' : ''}`} type="button" data-heritage-bird="" aria-label={view.hint} disabled={view.busy} onClick={advance} style={{ left: `${view.x / 2172 * 100}%`, top: `${view.y / 724 * 100}%`, '--heritage-art-width': `${view.artWidth}px`, '--bird-screen-x': `${(view.x - view.pan) * view.artWidth / 2172}px`, '--journey-width': `${view.worldWidth * view.artWidth / 2172}px` }}>
             <img className="heritage-bird-img" src={assetUrl('home/bird-flap-clean.png')} alt="" aria-hidden="true" /><span className="heritage-bird-hint">{view.hint}</span>
           </button>
         </div>
         <div className="heritage-ink-top" aria-hidden="true" /><div className="heritage-shimmer" aria-hidden="true" /><div className="heritage-floor" aria-hidden="true" />
-        <div className="heritage-topline"><span className="heritage-ornament" aria-hidden="true">✧ ───── ❖ ───── ✧</span><h2>传承与新生</h2><span className="heritage-subtitle">绣纹有灵 · 从指尖飞向未来</span></div>
+        <div className="heritage-topline">
+          <span className="heritage-ornament" aria-hidden="true">✧ ───── ❖ ───── ✧</span>
+          <h2>苗绣走进新日常</h2>
+          <span className="heritage-subtitle">让指尖的传承，成为今天的日常</span>
+          <p className="heritage-domains"><span>时装</span><span>文创</span><span>家居</span><span>数字艺术</span></p>
+        </div>
         <div className="heritage-bottom">
           <p className="heritage-stage-index" aria-hidden="true"><span data-heritage-number="">{String(view.number).padStart(2, '0')}</span><span className="heritage-stage-rule" />03</p>
           <p className="heritage-whisper" data-heritage-message="" aria-live="polite">{view.message}</p>

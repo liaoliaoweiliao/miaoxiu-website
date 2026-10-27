@@ -12,9 +12,11 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-10-27 | maintenance | completed | [统一提交13个未提交文件](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-27-%E7%BB%9F%E4%B8%80%E6%8F%90%E4%BA%A413%E4%B8%AA%E6%9C%AA%E6%8F%90%E4%BA%A4%E6%96%87%E4%BB%B6.md) |
 | 2026-10-27 | feature | completed | [蝴蝶丝线粒子与本地交互](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-27-%E8%9D%B4%E8%9D%B6%E4%B8%9D%E7%BA%BF%E7%B2%92%E5%AD%90%E4%B8%8E%E6%9C%AC%E5%9C%B0%E4%BA%A4%E4%BA%92.md) |
 | 2026-10-27 | feature | completed | [撤销蝴蝶丝线与媒体交互](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-27-%E6%92%A4%E9%94%80%E8%9D%B4%E8%9D%B6%E4%B8%9D%E7%BA%BF%E4%B8%8E%E5%AA%92%E4%BD%93%E4%BA%A4%E4%BA%92.md) |
 | 2026-10-26 | feature | completed | [首页传承与新生三段互动](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E9%A6%96%E9%A1%B5%E4%BC%A0%E6%89%BF%E4%B8%8E%E6%96%B0%E7%94%9F%E4%B8%89%E6%AE%B5%E4%BA%92%E5%8A%A8.md) |
+| 2026-10-26 | feature | blocked | [撤销首页第二板块跳转](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E6%92%A4%E9%94%80%E9%A6%96%E9%A1%B5%E7%AC%AC%E4%BA%8C%E6%9D%BF%E5%9D%97%E8%B7%B3%E8%BD%AC.md) |
 | 2026-10-26 | ui | completed | [首页数字绣境粒子绣衣](UI%E4%BF%AE%E6%94%B9/2026-10-26-%E9%A6%96%E9%A1%B5%E6%95%B0%E5%AD%97%E7%BB%A3%E5%A2%83%E7%B2%92%E5%AD%90%E7%BB%A3%E8%A1%A3.md) |
 | 2026-10-26 | ui | completed | [移除首页绣线长卷](UI%E4%BF%AE%E6%94%B9/2026-10-26-%E7%A7%BB%E9%99%A4%E9%A6%96%E9%A1%B5%E7%BB%A3%E7%BA%BF%E9%95%BF%E5%8D%B7.md) |
 | 2026-10-26 | ui | completed | [撤销传承与新生三段互动](UI%E4%BF%AE%E6%94%B9/2026-10-26-%E6%92%A4%E9%94%80%E4%BC%A0%E6%89%BF%E4%B8%8E%E6%96%B0%E7%94%9F%E4%B8%89%E6%AE%B5%E4%BA%92%E5%8A%A8.md) |
