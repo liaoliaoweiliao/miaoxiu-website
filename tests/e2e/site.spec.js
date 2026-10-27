@@ -140,15 +140,18 @@ test('mobile branch atlas supports point selection and touch controls without pa
   await expectImagesLoaded(page);
 });
 
-test('home replaces the bird journey with selectable particle motifs', async ({ page }) => {
+test('home opens particle interaction through the woven butterfly without the removed guide controls', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('[data-heritage-bird],.heritage-panorama')).toHaveCount(0);
+  await expect(page.locator('[data-heritage-bird],.heritage-panorama,.particle-guide,.particle-regroup,.particle-motifs,.particle-playback')).toHaveCount(0);
   const section=page.locator('.particle-heritage');
-  await section.getByRole('button', {name:'绣包新生',exact:true}).click();
+  await expect(section).toHaveAttribute('data-phase','weaving');
+  await expect(page.locator('.particle-sensor-panel')).toHaveCount(0);
+  await page.getByRole('button',{name:'点击布上的粒子蝴蝶，开启互动',exact:true}).click();
+  await expect(section).toHaveAttribute('data-phase','interactive');
+  await page.evaluate(()=>{Math.random=()=>.9;});
+  await page.locator('.particle-main-canvas').press('Enter');
   await expect(section).toHaveAttribute('data-motif','1');
-  await expect(section.getByRole('heading', {level:3})).toHaveText('让绣纹，走进今天');
-  await section.getByRole('button', {name:'蝴蝶纹',exact:true}).click();
-  await expect(section).toHaveAttribute('data-motif','0');
+  await expect(page.getByRole('button',{name:'开启摄像头',exact:true})).toBeVisible();
   await expectImagesLoaded(page);
 });
 

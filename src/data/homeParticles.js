@@ -1,12 +1,9 @@
+const modernImage = 'home/silk/applications.png';
 export const particleMotifs = [
-  {
-    name: '蝴蝶纹', image: 'particles/miao-butterfly-particles-fine.png', chapter: '01 / 纹样之源',
-    title: '一只蝴蝶，万千绣意',
-    description: '从对称的双翼到回旋的曲线，光点沿着纹样舒展。转动视角，看平面的绣纹化作有深度的星尘。',
-  },
-  {
-    name: '绣包新生', image: 'particles/miao-tote-particles-transparent.png', chapter: '02 / 走进日常',
-    title: '让绣纹，走进今天',
-    description: '花鸟与旋纹在光点间重新汇聚，落在一只现代绣包上。从纹样到日常物件，让传统的想象继续生长。',
-  },
+  { key:'butterfly',name:'蝴蝶纹',image:'home/silk/butterfly.png',modern:{name:'绣纹手袋',image:modernImage,crop:[0,0,540,640]} },
+  { key:'bird',name:'鸟纹',image:'home/silk/bird.png',modern:{name:'刺绣运动鞋',image:modernImage,crop:[545,355,425,330],mask:[[.13,0],[.4,.1],[.65,.38],[.9,.6],[1,.76],[1,.92],[.72,1],[.33,.94],[.04,.69],[0,.38]]} },
+  { key:'dragon',name:'龙纹',image:'home/silk/dragon.png',modern:{name:'龙纹手拿包',image:modernImage,crop:[620,740,634,470]} },
+  { key:'spiral',name:'旋纹',image:'home/silk/spiral.png',modern:{name:'绣纹丝巾',image:modernImage,crop:[0,635,615,619]} },
+  { key:'geometric',name:'几何纹',image:'home/silk/geometric.png',modern:{name:'纹样手机壳',image:modernImage,crop:[970,80,284,540]} },
 ];
+export const silkDensities = [200000,500000,1000000];

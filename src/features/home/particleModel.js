@@ -25,6 +25,22 @@ export function sampleMotif(pixels, width, height, count, seed = 37) {
   return { positions, colors };
 }
 
+export function sampleSilk(pixels,width,height,count,seed=37) {
+  const result=sampleMotif(pixels,width,height,count,seed),random=randomSequence(seed+13);
+  const fibers=new Float32Array(count*3);
+  const light=(x,y)=>{const i=(clamp(y,0,height-1)*width+clamp(x,0,width-1))*4;return pixels[i]+pixels[i+1]+pixels[i+2];};
+  for(let i=0;i<count;i++) {
+    const j=i*3,x=Math.round((result.positions[j]/2.7+.5)*width),y=Math.round((.5-result.positions[j+1]/2.7)*height);
+    const dx=light(x+1,y)-light(x-1,y),dy=light(x,y+1)-light(x,y-1);
+    fibers[j]=Math.atan2(dy,dx)+Math.PI/2+(random()-.5)*.25;
+    fibers[j+1]=random();fibers[j+2]=random()*Math.PI*2;
+    result.positions[j]+=(random()-.5)*2.7/width;
+    result.positions[j+1]+=(random()-.5)*2.7/height;
+    result.positions[j+2]+=Math.sin(x*.09+y*.13)*.08;
+  }
+  return {...result,fibers};
+}
+
 export function motionSignal(current, previous, width, height) {
   if (!previous || previous.length !== current.length) return { energy: 0, x: 0, y: 0 };
   let total = 0, xSum = 0, ySum = 0;

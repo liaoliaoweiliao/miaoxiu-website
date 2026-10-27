@@ -59,14 +59,16 @@ test('resizing keeps every selected map pin and particle controls reachable', as
       expect(await page.locator('.thread-map-scroll').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
     }
   }
+  await page.getByRole('button',{name:'点击布上的粒子蝴蝶，开启互动',exact:true}).click();
+  await expect(page.locator('.particle-heritage')).toHaveAttribute('data-phase','interactive');
   const experience=page.locator('.particle-experience');
   for (const width of [390,640,320]) {
     await page.setViewportSize({width,height:700});
-    for (const name of ['蝴蝶纹','绣包新生','开启摄像头','开启麦克风']) {
+    for (const name of ['开启摄像头','开启麦克风']) {
       await expectInside(experience.getByRole('button',{name,exact:true}),experience);
     }
-    await experience.getByRole('button',{name:'绣包新生',exact:true}).click();
-    await expect(page.locator('.particle-heritage')).toHaveAttribute('data-motif','1');
+    const layout=await experience.evaluate(el=>({stage:el.querySelector('.particle-stage').getBoundingClientRect().bottom,panel:el.querySelector('.particle-sensor-panel').getBoundingClientRect().top}));
+    expect(layout.panel).toBeGreaterThanOrEqual(layout.stage-1);
     await expectInside(page.locator('.particle-stage'),experience);
   }
 });
