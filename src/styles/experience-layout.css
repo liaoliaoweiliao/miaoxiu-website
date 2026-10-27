@@ -1,0 +1,131 @@
+/* Give the three activities the same frame rhythm, without fixing their height. */
+.experience-page {
+  --activity-height: clamp(540px, calc(100svh - var(--header-height) - 48px), 900px);
+  --activity-padding: clamp(28px, 3vw, 42px);
+  --activity-image-height: clamp(220px, calc(100svh - var(--header-height) - 300px), 530px);
+}
+.experience-page :is(.pattern-image-frame, .wardrobe-frame, .dressup-frame) {
+  min-height: var(--activity-height);
+  height: auto;
+  padding: var(--activity-padding) clamp(24px, 3vw, 44px) !important;
+  overflow: visible;
+}
+.experience-page .decode-section .pattern-image-frame { min-height: var(--activity-height); }
+.experience-page .decode-section .decode-inner { width: 100%; }
+.experience-page .decode-inner,
+.experience-page .wardrobe-layout {
+  width: 100%;
+  grid-template-columns: clamp(190px, 18vw, 240px) minmax(0, 1fr);
+  gap: clamp(20px, 2.5vw, 36px);
+  align-items: start;
+}
+.experience-page .side-heading { padding-top: 6px; }
+.experience-page .title-with-seal { margin: 0 0 12px; }
+.experience-page .side-heading .title-with-seal :is(h1, h2) {
+  font-size: clamp(40px, 3.8vw, 54px);
+  line-height: 1.35;
+  margin: 8px 0 18px;
+}
+.experience-page .side-heading p { margin-bottom: 14px; }
+.experience-page .decode-viewport {
+  width: min(100%, calc(var(--activity-image-height) * 1.5));
+  max-height: none;
+  margin-inline: auto;
+  overflow: visible;
+}
+.experience-page .decode-board { aspect-ratio: auto; }
+.experience-page .decode-board img { height: auto; object-fit: contain; }
+.experience-page .decode-toolbar { margin-bottom: 10px; }
+.experience-page .target-brief { margin-bottom: 10px; }
+.experience-page .decode-image-preview { max-width: calc(100% - 24px); }
+
+/* Reserve identical space for the card back, procession and full outfit. */
+.experience-page .motif-tabs { margin-bottom: 12px; }
+.experience-page .motif-tab { padding: 4px; gap: 4px; }
+.experience-page .motif-tab > span {
+  width: 44px; height: 44px; margin: 0 auto; font-size: 30px;
+}
+.experience-page .motif-tab strong { margin: 0; line-height: 1.4; }
+.experience-page .motif-tab small { margin-top: 0; line-height: 1.4; }
+.experience-page .motif-tab .wardrobe-peony-icon { width: 34px; height: 34px; }
+.experience-page .wardrobe-layout .gender-prompt { margin-top: 18px; padding-top: 14px; }
+.experience-page .wardrobe-layout .character-choice > button { min-height: 100px; }
+.experience-page .wardrobe-layout .choice-portrait { height: 82px; }
+.experience-page .wardrobe-draw {
+  --outfit-card-height: clamp(180px, calc(100svh - 350px), 360px);
+  width: 100%;
+}
+.experience-page .wardrobe-draw .costume-draw-stage { padding-top: 4px; gap: 8px; }
+.experience-page .wardrobe-draw .draw-reveal-label {
+  min-height: 37px; padding-bottom: 8px; line-height: 1.5;
+}
+.experience-page .wardrobe-draw > .draw-btn {
+  display: block; margin: 8px auto 0; padding: 10px 12px; line-height: 1.4;
+}
+.experience-page .wardrobe-draw > .draw-note { min-height: 2lh; margin-top: 6px; }
+.experience-page .wardrobe-draw > .draw-next-step { margin: 8px auto 0; padding: 9px 14px; }
+.experience-page .pool-locked { min-height: 300px; }
+
+/* Fit the whole figure at 100%; retain scrolling if controls need more space. */
+.experience-page .dressup-heading { padding: 0 0 16px; }
+.experience-page .dressup-heading h2 { margin: 4px 0 6px; line-height: 1.35; font-size: clamp(32px, 3vw, 40px); }
+.experience-page .dressup-heading .gender-switch { margin: 0; flex-wrap: wrap; }
+.experience-page .atelier-grid { padding-top: 18px; align-items: start; }
+.experience-page .viewer-viewport { height: clamp(200px, calc(100svh - 500px), 300px); }
+.experience-page .viewer-header { padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
+.experience-page .viewer-caption { padding: 6px 10px 2px; line-height: 1.4; }
+.experience-page .viewer-tools { padding: 6px 10px 4px; }
+.experience-page .viewer-hint { margin: 5px 8px 8px; line-height: 1.5; }
+.experience-page .outfit-summary { margin: 8px 0; padding: 6px; gap: 3px; line-height: 1.4; }
+.experience-page .avatar-actions button { padding: 8px 5px; }
+.experience-page .save-status { margin: 5px 0; line-height: 1.5; }
+.experience-page .save-status:empty { margin: 0; min-height: 0; }
+.experience-page .loop-next-btn { margin-top: 10px; padding: 10px; line-height: 1.6; white-space: normal; }
+.experience-page .collection-empty { min-height: 250px; }
+.experience-page .owned-card .inspect-card img { height: clamp(140px, 13vw, 175px); }
+.experience-page .collection-panel { min-width: 0; }
+.experience-page .motif-culture { padding: 14px 16px; margin-top: 18px; }
+.experience-page .motif-culture p { line-height: 1.8; margin-bottom: 10px; }
+.experience-page :is(.draw-note, .prize-footer, .outfit-summary, .dressup-instruction, .motif-culture) { overflow-wrap: anywhere; }
+
+@media (max-width: 900px) {
+  .experience-page { --activity-height: 0px; --activity-padding: 32px; }
+  .experience-page .decode-inner,
+  .experience-page .wardrobe-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .experience-page .decode-inner > .side-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin: 0; }
+  .experience-page .side-heading .title-with-seal br { display: none; }
+  .experience-page .side-heading .title-with-seal :is(h1, h2) { margin: 4px 0 10px; font-size: 36px; }
+  .experience-page .wardrobe-layout > .side-heading > .gender-prompt { margin: 0; padding-top: 0; }
+  .experience-page .viewer-viewport { height: clamp(260px, 45vw, 360px); }
+}
+@media (max-width: 760px) {
+  .experience-page { --activity-padding: 28px; }
+  .experience-page :is(.pattern-image-frame, .wardrobe-frame, .dressup-frame) { padding-inline: 24px !important; }
+  .experience-page .decode-inner > .side-heading { display: block; }
+  .experience-page .side-heading p { font-size: 14.4px; line-height: 1.7; margin-bottom: 10px; }
+  .experience-page .side-heading p br { display: none; }
+  .experience-page .section-seal { width: 36px; height: 36px; flex-basis: 36px; }
+  .experience-page .target-brief { gap: 6px; }
+  .experience-page .target-brief small { margin-left: 0; }
+  .experience-page .wardrobe-layout > .side-heading > .gender-prompt { margin-top: 12px; padding: 12px 0 0; }
+  .experience-page .wardrobe-layout .character-choice > button { min-height: 0; }
+  .experience-page .motif-tab > span { width: 36px; height: 36px; font-size: 26px; }
+  .experience-page .motif-tab .wardrobe-peony-icon { width: 28px; height: 28px; }
+  .experience-page .wardrobe-draw .draw-reveal-label { min-height: 42px; font-size: 16px; letter-spacing: 1px; }
+  .experience-page .wardrobe-draw > .draw-note { font-size: 12px; }
+  .experience-page .wardrobe-draw > .draw-next-step { font-size: 14px; }
+  .experience-page .dressup-heading { display: flex; flex-wrap: wrap; gap: 12px; }
+  .experience-page .dressup-heading .gender-switch { width: 100%; }
+  .experience-page .dressup-heading h2 { font-size: 32px; }
+  .experience-page .viewer-viewport { height: clamp(260px, 70vw, 360px); }
+  .experience-page .avatar-panel { max-width: 430px; }
+  .experience-page .viewer-tools { gap: 5px; }
+}
+@media (max-width: 380px) {
+  .experience-page :is(.pattern-image-frame, .wardrobe-frame, .dressup-frame) { padding-inline: 20px !important; }
+  .experience-page .side-heading .title-with-seal :is(h1, h2) { font-size: 30px; }
+  .experience-page .title-with-seal { gap: 8px; }
+}
+@media (max-height: 500px) and (min-width: 901px) {
+  .experience-page { --activity-height: 0px; }
+}

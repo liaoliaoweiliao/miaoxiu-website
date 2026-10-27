@@ -33,6 +33,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600
     await prepareDressup(page);
     const panel = page.locator('.avatar-panel');
     const collection = page.locator('.collection-panel');
+    const needsScroll = await panel.evaluate((element) => element.scrollHeight > element.clientHeight + 1);
     expect(await panel.evaluate((element) => element.scrollTop)).toBe(0);
     const bounds = await collection.boundingBox();
     await page.mouse.move(bounds.x + bounds.width / 2, viewport.height / 2);
@@ -45,17 +46,20 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600
     }
     const end = await collection.boundingBox();
     expect(end.y + end.height).toBeLessThanOrEqual(viewport.height);
-    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    if (needsScroll) await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    else expect(await panel.evaluate((element) => element.scrollTop)).toBe(0);
     const finish = page.locator('[data-action="finishLoop"]');
     const box = await finish.boundingBox();
     expect(box.y).toBeGreaterThanOrEqual(75);
     expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
     // Reaching the right end must not lock later manual scrolling in the left pane.
-    const before = await panel.evaluate((element) => element.scrollTop);
-    const panelBox = await panel.boundingBox();
-    await page.mouse.move(panelBox.x + panelBox.width / 2, Math.max(100, panelBox.y + 30));
-    await page.mouse.wheel(0, -120);
-    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeLessThan(before);
+    if (needsScroll) {
+      const before = await panel.evaluate((element) => element.scrollTop);
+      const panelBox = await panel.boundingBox();
+      await page.mouse.move(panelBox.x + panelBox.width / 2, Math.max(100, panelBox.y + 30));
+      await page.mouse.wheel(0, -120);
+      await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeLessThan(before);
+    }
     await finish.click();
     await expect(page.locator('.level-label')).toContainText('第 2 轮');
   });
@@ -64,15 +68,21 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1024, height: 600
     await page.setViewportSize(viewport);
     await prepareDressup(page);
     const panel = page.locator('.avatar-panel');
+    const needsScroll = await panel.evaluate((element) => element.scrollHeight > element.clientHeight + 1);
     const portrait = await page.locator('.viewer-viewport').boundingBox();
     const collection = await page.locator('.collection-panel').boundingBox();
     expect(collection.y + collection.height).toBeGreaterThan(viewport.height * 2);
     const scrollY = await page.evaluate(() => window.scrollY);
     await page.mouse.move(portrait.x + portrait.width / 2, portrait.y + 80);
     await page.mouse.wheel(0, 1400);
-    await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    if (needsScroll) {
+      await expect.poll(() => panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+      expect(await page.evaluate(() => window.scrollY)).toBe(scrollY);
+    } else {
+      expect(await panel.evaluate((element) => element.scrollTop)).toBe(0);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(scrollY);
+    }
     await expect(page.locator('.viewer-scale')).toHaveText('100%');
-    expect(await page.evaluate(() => window.scrollY)).toBe(scrollY);
     const finish = page.locator('[data-action="finishLoop"]');
     const box = await finish.boundingBox();
     expect(box.y).toBeGreaterThanOrEqual(0);
