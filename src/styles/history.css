@@ -434,15 +434,6 @@ body.story-reader-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  .history-page *,.story-animation-overlay *,.story-reader *{animation:none!important;transition:none!important}
 }
-.history-page .history-experience-entry{display:flex;justify-content:center;margin-top:28px}
-.history-page .history-experience-button{display:inline-flex;align-items:center;justify-content:center;gap:22px;width:min(560px,100%);min-height:64px;padding:14px 30px;border:1px solid #ccaf7b;border-radius:999px;background:linear-gradient(135deg,#216b90,#12466b);color:#f8dfb4;font:inherit;line-height:1.5;box-shadow:inset 0 1px 0 #e8d4a51f,0 5px 18px #031e3540;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
-.history-page .history-experience-copy{display:flex;align-items:baseline;gap:6px;text-align:center}
-.history-page .history-experience-copy>span{color:#e1d7bf;font-size:15px;letter-spacing:1px}
-.history-page .history-experience-copy strong{font-size:18px;letter-spacing:2px;font-weight:600}
-.history-page .history-experience-button svg{flex-shrink:0;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.history-page .history-experience-button:hover{border-color:#f0d298;background:linear-gradient(135deg,#287ca1,#18577d);box-shadow:inset 0 1px 0 #e8d4a52b,0 6px 20px #031e3559}
-.history-page .history-experience-button:focus-visible{outline:2px solid #ffe3a7;outline-offset:4px}
-@media(max-width:640px){.history-page .history-experience-entry{margin-top:22px}.history-page .history-experience-button{gap:14px;min-height:76px;padding:13px 22px}.history-page .history-experience-copy{flex-direction:column;align-items:center;gap:3px}.history-page .history-experience-copy>span{font-size:13px}.history-page .history-experience-copy strong{font-size:16px}}
 .motif-arrow-btn {
  display:grid; place-items:center; padding:0; line-height:1;
 }
