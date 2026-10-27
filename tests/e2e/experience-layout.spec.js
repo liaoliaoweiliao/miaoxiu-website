@@ -31,7 +31,11 @@ for (const viewport of viewports) {
     const initial = await frames.evaluateAll((elements) => elements.map((element) => ({ width: element.clientWidth, height: element.clientHeight })));
     expect(initial).toHaveLength(3);
     expect(Math.max(...initial.map(({ width }) => width)) - Math.min(...initial.map(({ width }) => width))).toBeLessThanOrEqual(1);
-    if (viewport.width > 900) expect(Math.max(...initial.map(({ height }) => height)) / Math.min(...initial.map(({ height }) => height))).toBeLessThan(1.3);
+    // The enlarged portrait may make the third frame taller; the first two keep their rhythm.
+    if (viewport.width > 900) {
+      const firstTwo = initial.slice(0, 2).map(({ height }) => height);
+      expect(Math.max(...firstTwo) / Math.min(...firstTwo)).toBeLessThan(1.3);
+    }
 
     const board = page.locator('.decode-board');
     const photo = board.locator('img');
@@ -54,6 +58,8 @@ for (const viewport of viewports) {
     await page.locator('.wear-full').first().click();
     await page.locator('.whole-avatar').evaluate((image) => image.decode());
     await expect(page.locator('.viewer-scale')).toHaveText('100%');
+    const portraitView = await page.locator('.viewer-viewport').boundingBox();
+    expect(portraitView.height / portraitView.width).toBeGreaterThan(.75);
     await expectInside(page.locator('.whole-avatar'), page.locator('.viewer-viewport'));
     await expectComplete(page.locator('.look-viewer'));
     await expect(page.locator('[data-action="finishLoop"]')).toBeEnabled();

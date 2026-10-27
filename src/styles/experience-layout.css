@@ -71,22 +71,27 @@
 .experience-page .dressup-heading h2 { margin: 4px 0 6px; line-height: 1.35; font-size: clamp(32px, 3vw, 40px); }
 .experience-page .dressup-heading .gender-switch { margin: 0; flex-wrap: wrap; }
 .experience-page .atelier-grid { padding-top: 18px; align-items: start; }
-.experience-page .viewer-viewport { height: clamp(200px, calc(100svh - 500px), 300px); }
+.experience-page .viewer-viewport { height: clamp(320px, calc(100svh - 320px), 480px); }
 .experience-page .viewer-header { padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
 .experience-page .viewer-caption { padding: 6px 10px 2px; line-height: 1.4; }
 .experience-page .viewer-tools { padding: 6px 10px 4px; }
 .experience-page .viewer-hint { margin: 5px 8px 8px; line-height: 1.5; }
 .experience-page .outfit-summary { margin: 8px 0; padding: 6px; gap: 3px; line-height: 1.4; }
-.experience-page .avatar-actions button { padding: 8px 5px; }
+.experience-page .avatar-actions button { padding: 7px 6px; min-height: 32px; font-size: 13px; line-height: 1.5; }
+.experience-page .avatar-panel .viewer-tools button { min-height: 30px; padding: 5px 8px; font-size: 12px; }
 .experience-page .save-status { margin: 5px 0; line-height: 1.5; }
 .experience-page .save-status:empty { margin: 0; min-height: 0; }
-.experience-page .loop-next-btn { margin-top: 10px; padding: 10px; line-height: 1.6; white-space: normal; }
+.experience-page .loop-next-btn { margin-top: 8px; padding: 8px 12px; font-size: 14px; line-height: 1.5; white-space: normal; }
 .experience-page .collection-empty { min-height: 250px; }
 .experience-page .owned-card .inspect-card img { height: clamp(140px, 13vw, 175px); }
 .experience-page .collection-panel { min-width: 0; }
 .experience-page .motif-culture { padding: 14px 16px; margin-top: 18px; }
 .experience-page .motif-culture p { line-height: 1.8; margin-bottom: 10px; }
 .experience-page :is(.draw-note, .prize-footer, .outfit-summary, .dressup-instruction, .motif-culture) { overflow-wrap: anywhere; }
+
+@media (min-width: 901px) {
+  .experience-page .atelier-grid { grid-template-columns: minmax(300px, 1fr) minmax(0, 1.2fr); }
+}
 
 @media (max-width: 900px) {
   .experience-page { --activity-height: 0px; --activity-padding: 32px; }
@@ -96,7 +101,7 @@
   .experience-page .side-heading .title-with-seal br { display: none; }
   .experience-page .side-heading .title-with-seal :is(h1, h2) { margin: 4px 0 10px; font-size: 36px; }
   .experience-page .wardrobe-layout > .side-heading > .gender-prompt { margin: 0; padding-top: 0; }
-  .experience-page .viewer-viewport { height: clamp(260px, 45vw, 360px); }
+  .experience-page .viewer-viewport { height: clamp(320px, 58vw, 440px); }
 }
 @media (max-width: 760px) {
   .experience-page { --activity-padding: 28px; }
@@ -117,9 +122,12 @@
   .experience-page .dressup-heading { display: flex; flex-wrap: wrap; gap: 12px; }
   .experience-page .dressup-heading .gender-switch { width: 100%; }
   .experience-page .dressup-heading h2 { font-size: 32px; }
-  .experience-page .viewer-viewport { height: clamp(260px, 70vw, 360px); }
-  .experience-page .avatar-panel { max-width: 430px; }
+  .experience-page .viewer-viewport { height: clamp(300px, 90vw, 400px); }
+  .experience-page .avatar-panel { max-width: 480px; }
   .experience-page .viewer-tools { gap: 5px; }
+  .experience-page .avatar-panel .viewer-tools button,
+  .experience-page .avatar-actions button,
+  .experience-page .loop-next-btn { min-height: 36px; }
 }
 @media (max-width: 380px) {
   .experience-page :is(.pattern-image-frame, .wardrobe-frame, .dressup-frame) { padding-inline: 20px !important; }
