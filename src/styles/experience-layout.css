@@ -91,6 +91,7 @@
 .experience-page :is(.draw-note, .prize-footer, .outfit-summary, .dressup-instruction, .motif-culture) { overflow-wrap: anywhere; }
 
 @media (min-width: 901px) {
+  .experience-page :is(.decode-counter, .target-brief small) { margin-right: 16px; }
   .experience-page .atelier-grid { grid-template-columns: minmax(300px, 1fr) minmax(0, 1.2fr); }
 }
 
