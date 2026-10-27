@@ -150,6 +150,46 @@ test('archive color masks follow selected order, enforce three colors and reset 
   await expect(page.locator('.palette-empty')).toHaveText('先选一种颜色上色，可继续添加到三种颜色');
 });
 
+test('circular swatches use complete thread textures without baked-in gaps', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#history');
+  const previews = page.locator('.color-swatch span img');
+  // A complete circular frame cannot repair transparency or a dark crescent
+  // already baked into the old thumbnail. Check the texture itself as well.
+  const textures = await previews.evaluateAll(async (images) => Promise.all(images.map(async (image) => {
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 40;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0, 40, 40);
+    const pixels = context.getImageData(0, 0, 40, 40).data;
+    const top = [...context.getImageData(20, 3, 1, 1).data];
+    return { opaque: pixels.every((value, index) => index % 4 !== 3 || value === 255), top };
+  })));
+  expect(textures).toHaveLength(6);
+  expect(textures.every((texture) => texture.opaque)).toBe(true);
+  // The ivory thread must extend into the upper part of the disc, where the
+  // previous source contained an off-centre navy crescent.
+  expect(Math.min(...textures[4].top.slice(0, 3))).toBeGreaterThan(140);
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.getByRole('button', { name: '清空选择', exact: true }).click();
+    for (const name of ['米白', '靛蓝', '翠绿']) {
+      await page.getByRole('button', { name: `选择${name}`, exact: true }).click();
+    }
+    await expect(page.locator('.color-swatch.is-active')).toHaveCount(3);
+    await expect(page.getByRole('button', { name: '选择米白', exact: true })).toContainText('第 1 色');
+    await expect(page.getByRole('button', { name: '选择靛蓝', exact: true })).toContainText('第 2 色');
+    const frames = await previews.evaluateAll((images) => images.map((image) => {
+      const box = image.getBoundingClientRect();
+      const style = getComputedStyle(image);
+      return { width: box.width, height: box.height, fit: style.objectFit, radius: style.borderRadius };
+    }));
+    expect(frames.every((frame) => frame.width === frame.height && frame.fit === 'cover' && frame.radius === '50%')).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+});
+
 test('six color meanings provide detailed descriptions while the empty palette keeps its hint', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/#history');
