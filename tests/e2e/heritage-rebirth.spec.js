@@ -43,17 +43,17 @@ test('digital embroidery renders, rotates, disperses and resets without the remo
   await expect(section.locator('output')).toHaveText('100%');
   const dispersed = await canvas.screenshot();
   expect(before.equals(dispersed)).toBe(false);
-  await section.getByRole('button', { name: '青碧', exact: true }).click();
-  await expect(section.getByRole('button', { name: '青碧', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await section.getByRole('button', { name: '暂停绣衣动态' }).click();
-  await expect(section.getByRole('button', { name: '继续绣衣动态' })).toHaveAttribute('aria-pressed', 'true');
+  await section.getByRole('button', { name: '朱金流彩', exact: true }).click();
+  await expect(section.getByRole('button', { name: '朱金流彩', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await section.getByRole('button', { name: '暂停蝶纹动态' }).click();
+  await expect(section.getByRole('button', { name: '继续蝶纹动态' })).toHaveAttribute('aria-pressed', 'true');
   const slider = section.getByRole('slider', { name: '聚散程度' });
   await slider.focus();
   await slider.press('Home');
   await expect(section.locator('output')).toHaveText('0%');
   await section.getByRole('button', { name: '重置', exact: true }).click();
   await expect(canvas).toHaveAttribute('data-rotation', '0.00');
-  await expect(section.getByRole('button', { name: '紫霓', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(section.getByRole('button', { name: '五色原绣', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(section.locator('output')).toHaveText('0%');
   expect(errors).toEqual([]);
 });
@@ -89,9 +89,9 @@ test('devices without WebGL show a readable static garment', async ({ page }) =>
   await page.goto('/');
   const section = page.locator('[data-heritage-rebirth]');
   await expect(section.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', 'unavailable');
-  await expect(section.getByRole('img', { name: '紫青色花纹交织的数字绣衣静态图' })).toBeVisible();
+  await expect(section.getByRole('img', { name: '红靛金银紫五色丝线蝴蝶纹静态图' })).toBeVisible();
   await expect(section.getByRole('slider')).toBeDisabled();
-  await expect(section.locator('.rebirth-gesture')).toHaveText('当前设备展示静态绣衣');
+  await expect(section.locator('.rebirth-gesture')).toHaveText('当前设备展示静态蝶纹');
 });
 
 test('a lost graphics context falls back and restores without a broken control', async ({ page }) => {
@@ -120,11 +120,11 @@ test('motion can be paused, resumed and disabled with the system preference', as
   const canvas = section.locator('canvas');
   await canvas.scrollIntoViewIfNeeded();
   await expect(section.locator('[data-rebirth-state]')).toHaveAttribute('data-rebirth-state', 'ready');
-  await section.getByRole('button', { name: '暂停绣衣动态' }).click();
+  await section.getByRole('button', { name: '暂停蝶纹动态' }).click();
   const paused = await canvas.screenshot();
   await page.waitForTimeout(200);
   expect(await changedPixels(page, paused, await canvas.screenshot())).toBeLessThan(10);
-  await section.getByRole('button', { name: '继续绣衣动态' }).click();
+  await section.getByRole('button', { name: '继续蝶纹动态' }).click();
   await page.waitForTimeout(200);
   expect(await changedPixels(page, paused, await canvas.screenshot())).toBeGreaterThan(100);
   await page.emulateMedia({ reducedMotion: 'reduce' });
