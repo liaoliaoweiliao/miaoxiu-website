@@ -6,7 +6,7 @@ attribute vec3 aFrom,aTo,aColorFrom,aColorTo,aFiber,aFiberTo;
 attribute float aId;attribute vec2 aRibbon;
 uniform float uMorph,uScatter,uTime,uAspect,uDpr,uSize,uSeed,uCount,uDensity,uExposure,uSourceForm,uTargetForm,uProgress,uLinePass,uThreadWidth;
 uniform vec2 uRotation,uPointer,uViewport;
-varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross;
+varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross,vAlong;
 float hash(float n){return fract(sin(n*127.1+uSeed)*43758.5453);}
 vec3 pulled(float along){
   float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265);
@@ -57,24 +57,31 @@ void main(){
   if(color.g>color.r*1.45&&color.b>color.r*1.5&&color.g>.25)color=mix(color,vec3(.55,.22,.8),.72);
   color=mix(color,vec3(.56,.25,.84),uScatter*.28*mod(id,2.0));
   vColor=color*1.08;vAngle=fiber.x+sin(uTime*.45+fiber.z)*.11;
-  vPhase=fiber.z;vOpacity=(.7+.3*sin(uTime*.6+id))*.7*uDensity*uExposure;vAcross=aRibbon.y;
+  vPhase=fiber.z;vOpacity=(.7+.3*sin(uTime*.6+id))*.7*uDensity*uExposure;vAcross=aRibbon.y;vAlong=along;
   if(uLinePass<.5&&bead>.42&&bead<.58)vOpacity*=1.0-envelope*.8;
   if(uLinePass>.5){
     float family=mod(floor(mod(id,96.0)),5.0);
-    vec3 silkColor=family<1.0?vec3(1.0,.22,.3):family<2.0?vec3(1.0,.76,.38):family<3.0?vec3(.9,.94,1.0):family<4.0?vec3(.76,.42,1.0):vec3(.3,.5,1.0);
-    vColor=mix(vColor,silkColor,uLinePass>1.5?.72:.42);
+    vec3 silkColor=family<1.0?vec3(.8,.14,.2):family<2.0?vec3(.95,.7,.32):family<3.0?vec3(.84,.87,.91):family<4.0?vec3(.53,.29,.66):vec3(.18,.32,.62);
+    vColor=mix(vColor,silkColor,.4);
     float strength=pow(max(0.0,envelope),.7);
-    vOpacity=strength*.11*max(.45,uExposure)*(.65+.35*sin(along*70.0+fiber.z));
-    if(uLinePass>1.5)vOpacity=strength*(uLinePass>2.5?.16:.78)*max(.65,uExposure)*(.8+.2*cos(along*180.0+fiber.z));
+    vOpacity=strength*.075*max(.45,uExposure)*(.85+.15*sin(along*70.0+fiber.z));
+    if(uLinePass>1.5)vOpacity=strength*(uLinePass>2.5?.035:.84)*max(.7,uExposure)*(.95+.05*cos(along*90.0+fiber.z));
   }
 }`;
 const fragment=`precision mediump float;
-varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross;
+varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross,vAlong;
 uniform highp float uLinePass;
 void main(){
   if(uLinePass>.5){
-    float edge=uLinePass>1.5?1.0-smoothstep(.15,1.0,abs(vAcross)):1.0;
-    gl_FragColor=vec4(vColor,vOpacity*edge);return;
+    if(uLinePass<1.5){gl_FragColor=vec4(vColor,vOpacity);return;}
+    if(uLinePass>2.5){gl_FragColor=vec4(vColor,vOpacity*exp(-vAcross*vAcross*5.0));return;}
+    // Close parallel filaments and a narrow satin highlight give a smooth embroidery silk.
+    float profile=sqrt(max(0.0,1.0-vAcross*vAcross));
+    float filaments=.9+.1*cos(vAcross*18.0+sin(vAlong*800.0+vPhase)*.28);
+    float sheen=pow(max(0.0,1.0-abs(vAcross+.24)),9.0);
+    vec3 silk=vColor*(.76+.24*profile)*filaments+vec3(.17,.15,.12)*sheen;
+    float edge=1.0-smoothstep(.65,1.0,abs(vAcross));
+    gl_FragColor=vec4(silk,vOpacity*edge);return;
   }
   vec2 uv=gl_PointCoord-vec2(.5);float c=cos(vAngle),s=sin(vAngle);
   vec2 thread=vec2(uv.x*c+uv.y*s,-uv.x*s+uv.y*c);
@@ -183,8 +190,8 @@ export async function createParticleRenderer(canvas,sources,onLost,{count=200000
       if(progress>.005&&progress<.995){
         gl.uniform1f(uniform.LinePass,1);bind(lineBuffers);gl.drawArrays(gl.LINES,0,lineCount);
         gl.uniform2f(uniform.Viewport,canvas.width,canvas.height);bind(ribbonBuffers);
-        const threadWidth=width<700?3.2:4.2;
-        gl.uniform1f(uniform.LinePass,3);gl.uniform1f(uniform.ThreadWidth,threadWidth*3.5);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
+        const threadWidth=width<700?2.1:2.5;
+        gl.uniform1f(uniform.LinePass,3);gl.uniform1f(uniform.ThreadWidth,threadWidth*1.6);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
         gl.uniform1f(uniform.LinePass,2);gl.uniform1f(uniform.ThreadWidth,threadWidth);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
       }
       canvas.dataset.boldStrands=String(boldStrands);canvas.dataset.connecting=previous?'true':'false';canvas.dataset.pull=progress.toFixed(3);canvas.dataset.strands=String(strands);

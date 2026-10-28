@@ -87,8 +87,9 @@ export default function WeavingIntro({ reduced, onFlying, onComplete }) {
       }
       context.globalAlpha=1;
       const positions=butterfly.positions,colors=butterfly.colors;
+      const flight=state.flying&&!reducedRef.current?{seconds:state.flightTime/1000,progress:state.progress}:null;
       for(let i=0;i<positions.length;i+=3) {
-        const {x,y}=butterflyPoint(positions[i],positions[i+1],pose.butterfly,reducedRef.current?0:time);
+        const {x,y}=butterflyPoint(positions[i],positions[i+1],pose.butterfly,reducedRef.current?0:time,flight);
         const light=Math.max(colors[i],colors[i+1],colors[i+2]);
         const r=colors[i],g=colors[i+1],b=colors[i+2];
         context.fillStyle=r>g*1.3&&r>b*1.3?'#dd4056':Math.min(r,g,b)>.55?'#e8edf3':r>.5&&g>.3&&b<g*.85?'#e3bd71':g>r*1.45&&g>.25?'#9470d4':'#3d5bc2';context.globalAlpha=.65+light*.3;

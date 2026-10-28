@@ -64,7 +64,14 @@ export function introFrame(width,height,progress,time=0) {
   };
 }
 
-export function butterflyPoint(x,y,pose,time=0) {
+export function butterflyPoint(x,y,pose,time=0,flight=null) {
   const scale=pose.scale*(1-Math.sin(time*2)**2*.008);
+  if(flight){
+    // Wings hinge beside the body; the body's path and the resting proportions stay fixed.
+    const angle=Math.sin(flight.seconds*Math.PI*2*2.2)*.42*Math.sin(Math.PI*clamp(flight.progress));
+    const wing=Math.max(0,Math.abs(x)-.08);
+    x-=Math.sign(x)*wing*(1-Math.cos(angle));
+    y+=wing*Math.sin(angle)*.1;
+  }
   return {x:pose.x+x*scale,y:pose.y-y*scale};
 }

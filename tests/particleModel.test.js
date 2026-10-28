@@ -85,3 +85,17 @@ test('enlarged figure, cloth and perched or flying butterfly preserve their prop
     }
   }
 });
+
+test('a flying butterfly gently hinges its wings while its body and arrival remain fixed',()=>{
+  const pose={x:300,y:220,scale:100},seconds=1/(2.2*4);
+  const base=butterflyPoint(1,.4,pose),right=butterflyPoint(1,.4,pose,0,{seconds,progress:.5});
+  const left=butterflyPoint(-1,.4,pose,0,{seconds,progress:.5});
+  assert.ok(right.x<base.x&&right.x>pose.x+(base.x-pose.x)*.9);
+  assert.ok(right.y<base.y&&base.y-right.y<5);
+  assert.ok(Math.abs(left.x+right.x-2*pose.x)<1e-6);
+  for(const progress of [0,.2,.5,.8,1]){
+    const flight={seconds,progress};
+    assert.deepEqual(butterflyPoint(0,.3,pose,0,flight),butterflyPoint(0,.3,pose));
+    if(progress===0||progress===1)assert.deepEqual(butterflyPoint(1,.4,pose,0,flight),base);
+  }
+});
