@@ -13,14 +13,21 @@ export default function ParticleHeritage() {
   const [phase,setPhase]=useState('weaving'),[entered,setEntered]=useState(false);
   const [ready,setReady]=useState(false), [fallback,setFallback]=useState(''), [count,setCount]=useState(0),[renderKey,setRenderKey]=useState('');
   const [reduced,setReduced]=useState(false), [started,setStarted]=useState(false), [revision,setRevision]=useState(0);
-  const dragging=useRef(null);
+  const dragging=useRef(null),renderedSource=useRef(null);
   function select(index, burst = true) {
+    input.current.from=input.current.visualMorph??input.current.target;
     input.current.target=index;
     if (burst) { input.current.burst=1; input.current.seed=Math.random()*100; }
     setMotif(index); setRevision(value=>value+1);
   }
   function regroup() { select(Math.random()<.5 ? 0 : 1); }
-  const sensors=useParticleSensors(input,regroup);
+  function handGesture(pose) {
+    if(pose==='fist') {
+      if(input.current.target===1)setPair(value=>(value+1)%particleMotifs.length);
+      select(0);
+    } else if(pose==='open')select(1);
+  }
+  const sensors=useParticleSensors(input,regroup,handGesture);
 
   useEffect(() => {
     const query=matchMedia('(prefers-reduced-motion: reduce)');
@@ -38,7 +45,9 @@ export default function ParticleHeritage() {
     let morph=input.current.target, scatter=0, rotation={x:0,y:0}, renderedRevision=-1,announced=false,lastWidth=0,lastHeight=0;
     const controller=new AbortController();
     const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;}); observer.observe(stageRef.current);
-    createParticleRenderer(canvasRef.current,[particleMotifs[pair],particleMotifs[pair].modern],()=>{if(!disposed){setReady(false);setFallback('三维画面已暂停，当前显示原图；重新进入首页可重试。');}},{count:density,signal:controller.signal})
+    const sources=[particleMotifs[pair],particleMotifs[pair].modern];
+    const previousSource=sources.includes(renderedSource.current)?null:renderedSource.current;
+    createParticleRenderer(canvasRef.current,sources,()=>{if(!disposed){setReady(false);setFallback('三维画面已暂停，当前显示原图；重新进入首页可重试。');}},{count:density,signal:controller.signal,previousSource,initialTarget:input.current.target})
       .then(instance=>{
         if(disposed){instance.dispose();return;} renderer=instance;setCount(instance.count);
         function tick(now) {
@@ -55,14 +64,16 @@ export default function ParticleHeritage() {
 
           const smoothing=1-Math.exp(-dt*3);
           morph=state.reduced||state.paused?state.target:morph+(state.target-morph)*smoothing;
-          state.burst=Math.max(0,state.burst-dt*.48);
+          state.burst=Math.max(0,state.burst-dt*.28);
           const desired=state.reduced||state.paused?0:Math.max(Math.sin(state.burst*Math.PI)*.88,state.audio*.7,state.motion*.7);
           scatter=state.reduced||state.paused?0:scatter+(desired-scatter)*(1-Math.exp(-dt*5));
           const rx=state.drag.x+state.body.x*state.motion*.8+(state.reduced?0:Math.sin(elapsed*.18)*.14);
           const ry=state.drag.y+state.body.y*state.motion*.5;
           if(state.paused||state.reduced)rotation={x:rx,y:ry};
           else {rotation.x+=(rx-rotation.x)*smoothing;rotation.y+=(ry-rotation.y)*smoothing;}
-          renderer.draw({morph,scatter,time:state.reduced?0:elapsed,rotation,pointer:state.pointer,seed:state.seed});
+          state.visualMorph=morph;
+          renderer.draw({morph,from:state.from??state.target,target:state.target,progress:state.reduced?1:1-state.burst,scatter,time:state.reduced?0:elapsed,rotation,pointer:state.pointer,seed:state.seed});
+          renderedSource.current=sources[state.target];
           renderedRevision=state.revision;
           if(!announced){announced=true;setRenderKey(`${pair}-${density}`);setReady(true);setPhase('interactive');}
         }
@@ -103,7 +114,7 @@ export default function ParticleHeritage() {
         <span className="particle-stage-tag">MIAO / LIVING PATTERNS</span>
         {phase==='interactive'&&<span className="particle-stage-hint">拖动旋转 · 点击切换应用 · 回车随机缠绕</span>}
         {phase!=='interactive'&&<WeavingIntro reduced={reduced} onFlying={()=>setPhase('flying')} onComplete={()=>setEntered(true)} />}
-        <div className={`particle-camera ${sensors.camera==='on'?'is-on':''}`}><video ref={sensors.videoRef} muted playsInline aria-label="本地摄像头体感预览" /><span>体感已开启</span></div>
+        <div className={`particle-camera ${sensors.camera==='on'?'is-on':''}`}><video ref={sensors.videoRef} muted playsInline aria-label="本地摄像头体感预览" /><span>{sensors.gesture}</span></div>
         {fallback&&<p className="particle-fallback" role="status">{fallback}</p>}
       </div>
       {phase==='interactive'&&<div className="particle-sensor-panel">
@@ -113,10 +124,10 @@ export default function ParticleHeritage() {
           <label>丝线密度<select aria-label="选择丝线粒子数量" value={density} onChange={event=>setDensity(Number(event.target.value))}>{silkDensities.map(number=><option key={number} value={number}>{number/10000} 万</option>)}</select></label>
           <span className="silk-count" aria-live="polite">{current.name} · {isReady?`${count/10000} 万丝线粒子`:'正在汇聚'}</span>
         </div>
-        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>挥手或移动身体改变流向；声音越强，星尘越舒展。明显的动作或声音会唤起一次随机重组。</p></div>
+        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>握拳收拢为传统纹样，张手拉出丝线，织成对应的现代应用；再次握拳进入下一组纹样。保持手势半秒即可，手掌移动可转动画面。声音越强，丝线越舒展。</p></div>
           <div className="particle-sensor-buttons">{[['camera','摄像头'],['microphone','麦克风']].map(([key,label])=><button key={key} type="button" aria-pressed={sensors[key]==='on'} onClick={()=>sensors.toggle(key)}>{sensors[key]==='pending'?`取消${label}请求`:sensors[key]==='on'?`关闭${label}`:`开启${label}`}<i aria-hidden="true" style={{'--level':sensors.levels[key]}} /></button>)}</div>
           <p className="particle-privacy">仅在开启后使用设备，画面与声音只在本机处理，不录制、不上传。离开首页或切换标签页自动关闭。</p>
-          <p className="particle-device-status" role="status">{sensors.notice||[sensors.camera==='on'?'体感已开启':'',sensors.microphone==='on'?'声音已开启':''].filter(Boolean).join(' · ')||'无需开启设备，也可拖动或点击体验。'}</p>
+          <p className="particle-device-status" role="status">{sensors.notice||[sensors.camera==='on'?sensors.gesture:'',sensors.microphone==='on'?'声音已开启':''].filter(Boolean).join(' · ')||'无需开启设备，也可拖动或点击体验。'}</p>
         </div>
         {reduced&&<p className="particle-motion-note">已遵循减少动态效果设置，纹样切换保持静态。</p>}
       </div>}

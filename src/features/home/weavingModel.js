@@ -23,7 +23,7 @@ export function sampleWeaver(pixels,width,height,count) {
   if(!candidates.length)throw new Error('绣娘轮廓暂不可用');
   return Array.from({length:count},()=>{
     const p=candidates[Math.floor(random()*candidates.length)];
-    return {x:-1.85+p.x/width*1.67,y:1.19-p.y/height*2.04,z:(random()-.5)*.12,tone:random()<.18?1:0,seed:random()*6.28,hand:p.x/width>.47&&p.y/height>.49&&p.y/height<.8};
+    return {x:-1.85+p.x/width*1.67,y:1.19-p.y/height*2.04,z:(random()-.5)*.12,tone:random()<.18?1:0,seed:random()*6.28,u:p.x/width,v:p.y/height};
   });
 }
 
@@ -32,16 +32,31 @@ export function wovenCloth(count) {
   return Array.from({length:count},(_,i)=>{
     const u=random(),v=random(),x=-.72+u*2.65;
     const edge=i%7===0;
-    return {x,y:-.48+Math.sin(u*5)*.09-v*.45,z:(random()-.5)*.12,tone:edge?0:i%3===0?1:2,seed:u*9,edge,v:edge?(i%2?0:1):v};
+    return {x,y:-.48+Math.sin(u*5)*.09-v*.45,z:(random()-.5)*.12,tone:edge?0:i%3===0?1:2,seed:u*9,u,edge,v:edge?(i%2?0:1):v};
   });
 }
 
-export function introFrame(width,height,progress) {
-  const t=clamp(progress),compact=width<700,unit=compact?Math.min(height*.38,width*.5):Math.min(height*.46,width*.25);
-  const start={x:width/2+(compact?.062:.66)*unit,y:height*(compact?.72:.4)+.59*unit*(compact?.65:1)};
-  const end={x:width/2,y:height/2};
+// Smooth weights deform the whole reference figure, including shoulder, arm and hand.
+export function weavingPose(point,time) {
+  const beat=Math.sin(time*1.55),breathe=Math.sin(time*.77);
+  const arm=Math.exp(-((point.u-.72)**2/.11+(point.v-.61)**2/.075));
+  const upper=Math.max(0,1-point.v),lean=beat*.012;
+  return {x:point.x+(.3-point.y)*lean+breathe*.009+arm*beat*.052,
+    y:point.y+upper*breathe*.012+arm*Math.cos(time*1.55)*.036};
+}
+
+export function clothPoint(u,v,width,height,unit,time=0) {
+  const compact=width<700;
+  return {x:width*(compact?-.07:.22)+u*width*(compact?1.13:.78),
+    y:height*(compact?.73:.64)+Math.sin(u*5+time*.65)*unit*.045+v*unit*(compact?.36:.48)};
+}
+
+export function introFrame(width,height,progress,time=0) {
+  const t=clamp(progress),compact=width<700,unit=compact?Math.min(height*.38,width*.58):Math.min(height*.46,width*.27);
+  const start=clothPoint(.64,.45,width,height,unit,time),end={x:width/2,y:height/2};
   return {
-    unit,compact,sceneOpacity:1-clamp(t/.22),
-    butterfly:{x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t,scale:unit*.2+(Math.min(width,height)*.33-unit*.2)*t},
+    unit,compact,sceneOpacity:1-clamp(t/.22),womanX:1.85*unit-(compact?12:3),
+    butterfly:{x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t,
+      scale:unit*.21+(Math.min(width,height)*.33-unit*.21)*t,tilt:.48+.52*t},
   };
 }

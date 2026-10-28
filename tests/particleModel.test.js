@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sampleMotif, sampleSilk, motionSignal, soundEnergy } from '../src/features/home/particleModel.js';
-import { introFrame, sampleWeaver, wovenCloth } from '../src/features/home/weavingModel.js';
+import { introFrame, sampleWeaver, wovenCloth, clothPoint, weavingPose } from '../src/features/home/weavingModel.js';
 
 test('motif sampling excludes transparent background and retains source color deterministically', () => {
   const image=new Uint8ClampedArray([255,0,0,0, 240,200,120,255, 0,0,0,255, 0,0,0,0]);
@@ -43,7 +43,10 @@ test('butterfly flies on a straight line while the woven scene vanishes first',(
       assert.equal(point.sceneOpacity,0);
     }
     assert.equal(end.butterfly.x,w/2);assert.equal(end.butterfly.y,h/2);
-    assert.ok(w/2-(start.compact?.9:1.9)*start.unit>=0);assert.ok(w/2+(start.compact?.95:1.95)*start.unit<=w);
+    assert.ok(start.butterfly.x>0&&start.butterfly.x<w);
+    const surface=clothPoint(.64,.45,w,h,start.unit);assert.equal(start.butterfly.y,surface.y);
+    assert.equal(start.butterfly.tilt,.48);
+    assert.ok(start.womanX-1.85*start.unit<=0);
   }
 });
 
@@ -52,4 +55,13 @@ test('silk samples supply a finite direction and depth for every actual fiber',(
  const result=sampleSilk(data,16,16,2000);
  assert.equal(result.fibers.length,6000);assert.equal(result.positions.length,6000);
  assert.ok([...result.fibers,...result.positions].every(Number.isFinite));
+});
+
+
+test('whole figure moves continuously across shoulder and hand regions',()=>{
+  const shoulder={x:-.7,y:.1,u:.5,v:.5},hand={x:-.4,y:-.1,u:.8,v:.65};
+  assert.notDeepEqual(weavingPose(shoulder,0),weavingPose(shoulder,1));
+  assert.notDeepEqual(weavingPose(hand,0),weavingPose(hand,1));
+  const left=weavingPose({...hand,u:.46999},1),right=weavingPose({...hand,u:.47001},1);
+  assert.ok(Math.hypot(left.x-right.x,left.y-right.y)<.0001);
 });

@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+const hands=JSON.parse(readFileSync(new URL('../fixtures/hand-landmarks.json',import.meta.url)));
 
 test.beforeEach(async ({ page }) => {
   page.errors=[];page.on('pageerror',error=>page.errors.push(error.message));
@@ -21,7 +23,7 @@ test('particle weaver and cloth disappear before the butterfly finishes its stra
   const scene=page.locator('.weaving-canvas'),section=page.locator('.particle-heritage');
   await scene.scrollIntoViewIfNeeded();await expect(scene).toHaveAttribute('data-ready','true',{timeout:15000});
   const lit=async(leftOnly)=>scene.evaluate((canvas,left)=>{
-    const data=canvas.getContext('2d').getImageData(0,0,left?Math.floor(canvas.width*.35):canvas.width,canvas.height).data;
+    const data=canvas.getContext('2d').getImageData(0,0,left?Math.floor(canvas.width*.2):canvas.width,canvas.height).data;
     let count=0;for(let i=3;i<data.length;i+=4)if(data[i])count++;return count;
   },leftOnly);
   await expect.poll(()=>lit(true)).toBeGreaterThan(300);
@@ -52,13 +54,16 @@ test('real particle canvas renders, morphs, rotates and regroups without request
   const revision=await page.locator('.particle-heritage').getAttribute('data-revision');
   await canvas.press('Enter');
   await expect(page.locator('.particle-heritage')).not.toHaveAttribute('data-revision',revision);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBeGreaterThan(.15);
+  await expect(canvas).toHaveAttribute('data-strands','6000');
   expect(await page.evaluate(()=>window.deviceRequests)).toBe(0);
   await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('摄像头权限未开启');
   await expect(page.getByRole('button',{name:'开启摄像头',exact:true})).toBeVisible();
 });
 
-test('camera and microphone use local signals and release streams on stop, hide and navigation',async({page})=>{
+test('actual local hand model ignores blank camera motion and releases streams on stop, hide and navigation',async({page})=>{
+  test.setTimeout(60000);
   await page.addInitScript(()=>{
     window.capturedTracks=[];window.requested=[];
     navigator.mediaDevices.getUserMedia=async constraints=>{
@@ -79,9 +84,11 @@ test('camera and microphone use local signals and release streams on stop, hide 
   await page.goto('/');
   await enter(page);
   await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
-  await expect(page.getByRole('button',{name:'关闭摄像头',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'关闭摄像头',exact:true})).toHaveAttribute('aria-pressed','true',{timeout:30000});
   await expect(page.locator('.particle-camera')).toBeVisible();
-  await expect.poll(()=>page.locator('.particle-sensor-buttons i').first().evaluate(e=>Number(e.style.getPropertyValue('--level')))).toBeGreaterThan(.1);
+  await expect(page.locator('.particle-camera span')).toContainText('未检测到手',{timeout:15000});
+  await expect.poll(()=>page.locator('.particle-sensor-buttons i').first().evaluate(e=>Number(e.style.getPropertyValue('--level')))).toBe(0);
+  await expect(page.locator('.particle-heritage')).toHaveAttribute('data-form','motif');
   await page.getByRole('button',{name:'开启麦克风',exact:true}).click();
   await expect(page.getByRole('button',{name:'关闭麦克风',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect.poll(()=>page.locator('.particle-sensor-buttons i').last().evaluate(e=>Number(e.style.getPropertyValue('--level')))).toBeGreaterThan(.1);
@@ -137,4 +144,51 @@ test('five supplied motifs pair with individual applications and render up to on
     await expect.poll(async()=> (await pixels(canvas)).lit).toBeGreaterThan(3000);
   }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(await page.evaluate(()=>innerWidth));
+});
+
+
+test('stable fist and open-hand landmarks switch each motif and its paired application without repeat firing',async({page})=>{
+  await page.addInitScript(hands=>{
+    window.handPose='none';window.workerStops=0;window.handTracks=[];
+    const Original=window.Worker;
+    window.Worker=class {
+      constructor(url,options){if(!String(url).includes('handTracking.worker'))return new Original(url,options);}
+      postMessage(data){if(data.type==='init')setTimeout(()=>this.onmessage?.({data:{type:'ready'}}),30);
+        else {data.bitmap.close();setTimeout(()=>this.onmessage?.({data:{type:'landmarks',points:hands[window.handPose]||null,worldPoints:window.handPose==='open'?hands.worldOpen:window.handPose==='fist'?hands.worldFist:null}}),5);}}
+      terminate(){window.workerStops++;this.onmessage=null;}
+    };
+    navigator.mediaDevices.getUserMedia=async()=>{
+      const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;canvas.getContext('2d').fillRect(0,0,640,480);
+      const stream=canvas.captureStream(10);window.handTracks.push(...stream.getTracks());return stream;
+    };
+  },hands);
+  await page.goto('/');await enter(page);
+  await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
+  await expect(page.getByRole('button',{name:'关闭摄像头',exact:true})).toBeVisible();
+  const section=page.locator('.particle-heritage');
+  await page.evaluate(()=>window.handPose='fist');await expect(page.locator('.particle-camera span')).toContainText('握拳');
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-form','application');
+  const revision=await section.getAttribute('data-revision');await page.waitForTimeout(850);
+  await expect(section).toHaveAttribute('data-revision',revision);
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-pair','bird');await expect(section).toHaveAttribute('data-form','motif');
+  await expect(page.locator('.particle-main-canvas')).toHaveAttribute('data-ready','true',{timeout:15000});
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-form','application');
+  await expect(page.locator('.silk-count')).toContainText('刺绣运动鞋');
+  await page.getByRole('button',{name:'关闭摄像头',exact:true}).click();
+  expect(await page.evaluate(()=>window.workerStops)).toBe(1);
+  expect(await page.evaluate(()=>window.handTracks.every(t=>t.readyState==='ended'))).toBe(true);
+});
+
+test('cancelling local model initialization terminates the worker and stops already granted camera tracks',async({page})=>{
+  await page.addInitScript(()=>{
+    window.workerStops=0;
+    window.Worker=class {postMessage(){} terminate(){window.workerStops++;}};
+    navigator.mediaDevices.getUserMedia=async()=>{const c=document.createElement('canvas');c.width=c.height=10;c.getContext('2d');const s=c.captureStream(10);setInterval(()=>c.getContext('2d').fillRect(0,0,10,10),60);window.pendingTrack=s.getVideoTracks()[0];return s;};
+  });
+  await page.goto('/');await enter(page);await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
+  await expect(page.getByRole('status')).toContainText('正在加载本地手部识别');
+  await page.getByRole('button',{name:'取消摄像头请求',exact:true}).click();
+  await expect(page.getByRole('button',{name:'开启摄像头',exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>window.workerStops)).toBe(1);
+  expect(await page.evaluate(()=>window.pendingTrack.readyState)).toBe('ended');
 });
