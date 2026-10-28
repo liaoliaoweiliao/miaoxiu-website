@@ -12,7 +12,12 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-10-28 | maintenance | completed | [静涛分支合并到main](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-28-%E9%9D%99%E6%B6%9B%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6%E5%88%B0main.md) |
 | 2026-10-28 | maintenance | completed | [本地工程同步GitHub最新main](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-28-%E6%9C%AC%E5%9C%B0%E5%B7%A5%E7%A8%8B%E5%90%8C%E6%AD%A5GitHub%E6%9C%80%E6%96%B0main.md) |
+| 2026-10-28 | feature | completed | [手势门控与有序纤丝网络](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-28-%E6%89%8B%E5%8A%BF%E9%97%A8%E6%8E%A7%E4%B8%8E%E6%9C%89%E5%BA%8F%E7%BA%A4%E4%B8%9D%E7%BD%91%E7%BB%9C.md) |
+| 2026-10-28 | feature | completed | [丝线牵引过渡与握拳张手识别](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-28-%E4%B8%9D%E7%BA%BF%E7%89%B5%E5%BC%95%E8%BF%87%E6%B8%A1%E4%B8%8E%E6%8F%A1%E6%8B%B3%E5%BC%A0%E6%89%8B%E8%AF%86%E5%88%AB.md) |
+| 2026-10-28 | ui | completed | [首页等比织布与醒目丝线](UI%E4%BF%AE%E6%94%B9/2026-10-28-%E9%A6%96%E9%A1%B5%E7%AD%89%E6%AF%94%E7%BB%87%E5%B8%83%E4%B8%8E%E9%86%92%E7%9B%AE%E4%B8%9D%E7%BA%BF.md) |
+| 2026-10-28 | ui | completed | [绣线丝光与飞蝶轻振](UI%E4%BF%AE%E6%94%B9/2026-10-28-%E7%BB%A3%E7%BA%BF%E4%B8%9D%E5%85%89%E4%B8%8E%E9%A3%9E%E8%9D%B6%E8%BD%BB%E6%8C%AF.md) |
 | 2026-10-27 | maintenance | completed | [合并除雅恬外全部分支](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-27-%E5%90%88%E5%B9%B6%E9%99%A4%E9%9B%85%E6%81%AC%E5%A4%96%E5%85%A8%E9%83%A8%E5%88%86%E6%94%AF.md) |
 | 2026-10-27 | feature | completed | [粒子织布引入与百万彩色丝线](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-27-%E7%B2%92%E5%AD%90%E7%BB%87%E5%B8%83%E5%BC%95%E5%85%A5%E4%B8%8E%E7%99%BE%E4%B8%87%E5%BD%A9%E8%89%B2%E4%B8%9D%E7%BA%BF.md) |
 | 2026-10-27 | ui | completed | [放大人物观赏卡片并缩小按钮](UI%E4%BF%AE%E6%94%B9/2026-10-27-%E6%94%BE%E5%A4%A7%E4%BA%BA%E7%89%A9%E8%A7%82%E8%B5%8F%E5%8D%A1%E7%89%87%E5%B9%B6%E7%BC%A9%E5%B0%8F%E6%8C%89%E9%92%AE.md) |

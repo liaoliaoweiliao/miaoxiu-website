@@ -3,8 +3,9 @@
 .particle-heading>span{font-size:11px;letter-spacing:4px;color:#dcb980}
 .particle-heading h2{font-family:serif;font-size:clamp(30px,3.8vw,50px);font-weight:500;letter-spacing:.18em;margin:12px 0}
 .particle-heading p{font-size:14px;letter-spacing:2px;color:#d2dcde;margin:0;line-height:1.8}
-.particle-experience{width:100vw;margin-left:calc(50% - 50vw);max-width:none;display:grid;grid-template-columns:minmax(0,1fr);border:1px solid #d1ad7155;border-radius:0;background:linear-gradient(135deg,#09283cdd,#103e57e8);overflow:hidden;box-shadow:0 18px 70px #021b343d}
-.particle-stage{position:relative;min-width:0;min-height:0;height:clamp(560px,86dvh,980px);overflow:hidden;background:radial-gradient(ellipse at 48% 43%,#205c6d66,transparent 62%),radial-gradient(ellipse at 40% 110%,#c5954414,transparent 65%),#071e30}
+.particle-experience{width:100vw;margin-left:calc(50% - 50vw);max-width:none;display:grid;grid-template-columns:minmax(0,1fr);position:relative;isolation:isolate;border:0;border-radius:0;background:transparent;overflow:hidden;box-shadow:none}
+.particle-experience::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;--fade:clamp(32px,6vw,100px);background:linear-gradient(135deg,#165981,#1b5879);mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent),linear-gradient(180deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent);mask-composite:intersect}
+.particle-stage{position:relative;min-width:0;min-height:0;height:clamp(560px,86dvh,980px);overflow:hidden;background:radial-gradient(ellipse at 48% 43%,#31759544,transparent 70%)}
 .particle-stage .particle-main-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;touch-action:pan-y;cursor:grab;outline-offset:-4px}
 .particle-stage canvas.is-ready{opacity:1}.particle-stage canvas:active{cursor:grabbing}
 .particle-stage canvas:focus-visible{outline:2px solid #e9c68c}
@@ -33,13 +34,13 @@
 .weaving-intro{position:absolute;inset:0;z-index:2;overflow:hidden}
 .weaving-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
 .weaving-caption{position:absolute;left:18px;right:18px;bottom:20px;text-align:center;letter-spacing:2px;color:#d9cba8;font-size:13px;line-height:1.8;margin:0}
-.weaving-butterfly{position:absolute;left:60%;top:70%;width:100px;height:90px;transform:translate(-50%,-50%);border:1px solid #dfc58e77;border-radius:50%;background:transparent;color:#f4dca8;cursor:pointer;box-shadow:0 0 18px #e8bd7930;touch-action:manipulation}
+.weaving-butterfly{position:absolute;left:60%;top:70%;width:clamp(90px,12vw,160px);height:clamp(90px,12vw,160px);transform:translate(-50%,-50%);border:1px solid transparent;border-radius:50%;background:transparent;color:#f4dca8;cursor:pointer;box-shadow:none;touch-action:manipulation}
 .weaving-butterfly span{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:max-content;max-width:180px;white-space:nowrap;font-size:12px;letter-spacing:1px;margin-top:9px}
 .weaving-butterfly:hover{border-color:#ffe0a1;box-shadow:0 0 24px #e8bd7955}
 .weaving-butterfly:focus-visible{outline:2px solid #ffe0a1;outline-offset:5px}
 .weaving-butterfly:disabled{visibility:hidden}
 .particle-heritage:not([data-phase=interactive]) .particle-stage-tag{z-index:3}
-@media(max-width:760px){.particle-heritage{margin:40px 0}.particle-stage{min-height:0;height:clamp(500px,83dvh,760px)}.particle-heading{margin-bottom:24px}.particle-heading p{font-size:12px;letter-spacing:1px}.particle-sensor-panel{padding:23px}.particle-sensors{grid-template-columns:minmax(0,1fr);gap:0}.particle-sensors p{font-size:13px}.particle-stage-tag{top:18px;left:18px}.particle-stage-hint{bottom:15px;font-size:10px;left:10px;right:10px}.weaving-butterfly{width:76px;height:70px}.weaving-butterfly span{font-size:10px;letter-spacing:0}.weaving-caption{font-size:11px;letter-spacing:1px;bottom:17px}}
+@media(max-width:760px){.particle-heritage{margin:40px 0}.particle-stage{min-height:0;height:clamp(500px,83dvh,760px)}.particle-heading{margin-bottom:24px}.particle-heading p{font-size:12px;letter-spacing:1px}.particle-sensor-panel{padding:23px}.particle-sensors{grid-template-columns:minmax(0,1fr);gap:0}.particle-sensors p{font-size:13px}.particle-stage-tag{top:18px;left:18px}.particle-stage-hint{bottom:15px;font-size:10px;left:10px;right:10px}.weaving-butterfly{width:80px;height:80px}.weaving-butterfly span{font-size:10px;letter-spacing:0}.weaving-caption{font-size:11px;letter-spacing:1px;bottom:17px}}
 @media(max-width:360px){.particle-sensor-panel{padding:20px 16px}.particle-stage-tag{letter-spacing:1px}}
 
 .silk-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px;margin:0 auto 24px;padding-bottom:20px;border-bottom:1px solid #d1ad7133;max-width:1050px;font-size:12px;color:#d6d7cf}

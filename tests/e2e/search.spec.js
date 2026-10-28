@@ -112,7 +112,9 @@ test('story and motif results display the matching content rather than only chan
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: '阅读故事《兰娟记事》' })).toBeFocused();
   await expect(page.getByRole('button', { name: '阅读文字', exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: /开启互动体验/ }).click();
+  await expect(page.locator('.history-experience-entry')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /开启互动体验/ })).toHaveCount(0);
+  await page.locator('#primary-navigation').getByRole('button', { name: '互动体验', exact: true }).click();
   await expect(page).toHaveURL(/#experience$/);
   await expect(page.locator('.decode-board')).toBeVisible();
 });

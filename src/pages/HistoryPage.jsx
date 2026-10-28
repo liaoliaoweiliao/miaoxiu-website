@@ -42,7 +42,7 @@ function MotifArt({ item }) {
 }
 
 
-export default function HistoryPage({ state: appState = {}, onNavigate }) {
+export default function HistoryPage({ state: appState = {} }) {
   const [state, dispatch] = useReducer(historyReducer, undefined, () => ({ ...sessionHistoryState, playing: false }));
   useEffect(() => { sessionHistoryState = state; }, [state]);
   const [story, setStory] = useState(null);
@@ -92,9 +92,7 @@ export default function HistoryPage({ state: appState = {}, onNavigate }) {
       </div>
     </section>
     <section id="history-stitches" data-search-section tabIndex={-1} className="history-stitches container"><Heading title="六大针法">一针一线，传承千年的匠心</Heading><StitchExplorer state={state} dispatch={dispatch} /></section>
-    <section id="history-colors" data-search-section tabIndex={-1} className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} />
-      <div className="history-experience-entry"><button type="button" className="history-experience-button" onClick={() => onNavigate('experience')}><span className="history-experience-copy"><span>探源之后，</span><strong>开启互动体验</strong></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></button></div>
-    </section>
+    <section id="history-colors" data-search-section tabIndex={-1} className="history-colors container"><Heading title="色彩解析">一色一山河，传统色里的民族审美</Heading><ColorLab state={state} dispatch={dispatch} /></section>
     {story !== null && <StoryBook key={story} item={stories[story]} onClose={() => setStory(null)} />}
   </main>;
 }
