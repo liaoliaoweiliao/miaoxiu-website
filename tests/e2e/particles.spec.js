@@ -153,7 +153,7 @@ test('five supplied motifs pair with individual applications and render up to on
 });
 
 
-test('stable fist and open-hand landmarks switch each motif and its paired application without repeat firing',async({page})=>{
+test('open palm unfolds the network, fist freezes its pixels and reopening continues the same transition',async({page})=>{
   await page.addInitScript(hands=>{
     window.handPose='none';window.workerStops=0;window.handTracks=[];
     const Original=window.Worker;
@@ -171,15 +171,25 @@ test('stable fist and open-hand landmarks switch each motif and its paired appli
   await page.goto('/');await enter(page);
   await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
   await expect(page.getByRole('button',{name:'关闭摄像头',exact:true})).toBeVisible();
-  const section=page.locator('.particle-heritage');
-  await page.evaluate(()=>window.handPose='fist');await expect(page.locator('.particle-camera span')).toContainText('握拳');
-  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-form','application');
-  const revision=await section.getAttribute('data-revision');await page.waitForTimeout(850);
-  await expect(section).toHaveAttribute('data-revision',revision);
-  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-pair','bird');await expect(section).toHaveAttribute('data-form','motif');
-  await expect(page.locator('.particle-main-canvas')).toHaveAttribute('data-ready','true',{timeout:15000});
-  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-form','application');
-  await expect(page.locator('.silk-count')).toContainText('刺绣运动鞋');
+  const section=page.locator('.particle-heritage'),canvas=page.locator('.particle-main-canvas');
+  await canvas.scrollIntoViewIfNeeded();
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','held');
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','flowing');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull)>.1&&Number(c.dataset.pull)<.9)).toBe(true);
+  await expect(canvas).toHaveAttribute('data-layers','12');
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','held');
+  const frozen=await pixels(canvas),clock=await canvas.getAttribute('data-clock'),progress=Number(await canvas.getAttribute('data-pull'));
+  await page.mouse.move(200,300);await page.waitForTimeout(600);
+  expect(await pixels(canvas)).toEqual(frozen);
+  await expect(canvas).toHaveAttribute('data-clock',clock);
+  expect(Number(await canvas.getAttribute('data-pull'))).toBe(progress);
+  await expect(section).toHaveAttribute('data-pair','butterfly');
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','flowing');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBeGreaterThan(progress);
+  expect(Number(await canvas.getAttribute('data-pull'))).toBeLessThan(progress+.35);
+  await expect.poll(()=>pixels(canvas)).not.toEqual(frozen);
+  await page.evaluate(()=>window.handPose='none');await expect(section).toHaveAttribute('data-motion','held');
+  const lost=await pixels(canvas);await page.waitForTimeout(350);expect(await pixels(canvas)).toEqual(lost);
   await page.getByRole('button',{name:'关闭摄像头',exact:true}).click();
   expect(await page.evaluate(()=>window.workerStops)).toBe(1);
   expect(await page.evaluate(()=>window.handTracks.every(t=>t.readyState==='ended'))).toBe(true);

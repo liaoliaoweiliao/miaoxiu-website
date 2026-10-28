@@ -15,17 +15,17 @@ test('real hand landmarks classify open palm and fist regardless of mirroring or
   assert.equal(classifyHand(Array(21).fill({x:0,y:0,z:0})),'none');
   assert.equal(classifyHand(hands.open.map((p,i)=>i===3?{...p,x:NaN}:p)),'none');
 });
-test('gesture stabilization rejects flicker, emits once per held pose, and rearms after hand loss',()=>{
+test('open palm stabilizes before starting while a recognized fist stops immediately',()=>{
   let state=initialGesture(),events=[];
   const frame=(pose,time)=>{state=stabilizeGesture(state,pose,time);if(state.event)events.push(state.event);};
   frame('open',100);frame('fist',200);frame('open',300);frame('open',600);
-  assert.deepEqual(events,[]);
+  assert.deepEqual(events,['fist']);
   frame('open',750);frame('open',900);frame('open',2000);
-  assert.deepEqual(events,['open']);
+  assert.deepEqual(events,['fist','open']);
   frame('neutral',2100);frame('open',2200);frame('open',2700);
-  assert.deepEqual(events,['open']);
-  frame('fist',2800);frame('fist',3300);frame('fist',4000);
-  assert.deepEqual(events,['open','fist']);
+  assert.deepEqual(events,['fist','open']);
+  frame('fist',2800);assert.equal(state.event,'fist');frame('fist',3300);frame('fist',4000);
+  assert.deepEqual(events,['fist','open','fist']);
   frame('none',4100);frame('none',5400);frame('fist',5500);frame('fist',6000);
-  assert.deepEqual(events,['open','fist','fist']);
+  assert.deepEqual(events,['fist','open','fist','fist']);
 });

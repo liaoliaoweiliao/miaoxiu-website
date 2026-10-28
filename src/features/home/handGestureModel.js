@@ -24,8 +24,10 @@ export function stabilizeGesture(state,pose,now) {
     return {...state,event:null};
   }
   const next={...state,lastSeen:now,event:null};
+  // Stopping is immediate on a recognized fist; starting still requires a stable palm.
+  if(pose==='fist')return {...next,candidate:pose,since:now,latched:pose,event:state.latched===pose?null:pose};
   if(pose!==state.candidate)return {...next,candidate:pose,since:now};
-  if((pose==='fist'||pose==='open')&&now-state.since>=420&&pose!==state.latched) {
+  if(pose==='open'&&now-state.since>=420&&pose!==state.latched) {
     next.latched=pose;next.event=pose;
   }
   return next;

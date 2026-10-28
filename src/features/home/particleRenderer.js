@@ -7,28 +7,19 @@ attribute float aId;attribute vec2 aRibbon;
 uniform float uMorph,uScatter,uTime,uAspect,uDpr,uSize,uSeed,uCount,uDensity,uExposure,uSourceForm,uTargetForm,uProgress,uLinePass,uThreadWidth;
 uniform vec2 uRotation,uPointer,uViewport;
 varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross,vAlong;
-float hash(float n){return fract(sin(n*127.1+uSeed)*43758.5453);}
 vec3 pulled(float along){
-  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265);
+  float q=clamp(uProgress,0.0,1.0),envelope=max(sin(q*3.14159265),uScatter*.5);
   float travelAlong=mix(smoothstep(.38,1.0,q),smoothstep(0.0,.62,q),along);
-  float morph=mix(uSourceForm,uTargetForm,travelAlong);
-  vec3 fiber=mix(aFiber,aFiberTo,morph);
   vec3 source=mix(aFrom,aTo,uSourceForm),target=mix(aFrom,aTo,uTargetForm);
   vec3 p=mix(source,target,travelAlong);
-  float bundle=floor(mod(id,96.0));
-  p.x+=envelope*(along-.5)*2.4;
-  p.y+=envelope*sin(along*3.14159)*(sin(bundle*.31+along*8.0+uTime*.4)*.1+cos(bundle*.13)*.18);
-  p.z+=envelope*sin(along*9.0+bundle*.3)*.46;
-  float lane=mod(id,2.0),travel=fract(id/uCount+uTime*.045+uSeed*.001);
-  float winding=travel*31.4159+lane*3.14159;
-  float radius=.65+hash(id+3.0)*.7;
-  vec3 braid=vec3(cos(winding)*radius,(travel-.5)*3.1,sin(winding)*radius);
-  braid.x+=sin(travel*9.0+uTime*.2)*.3;
-  p=mix(p,braid,min(.18,uScatter*.2));
-  p.z+=sin(p.x*24.0+p.y*9.0+uTime*.7+fiber.z)*.027;
-  p.xy+=vec2(sin(uTime*.4+id),cos(uTime*.35+id))*.002;
-  vec2 away=p.xy-uPointer*1.4;
-  p.xy+=normalize(away+vec2(.001))*exp(-dot(away,away)*9.0)*.16;
+  // Adjacent fibers share a slow wave and keep their place in twelve depth planes.
+  float strand=floor(aId/uCount*6000.0),layer=mod(strand,12.0);
+  float band=(floor(strand/12.0)+.5)/500.0-.5;
+  float phase=uTime*.48,arch=sin(along*3.14159265);
+  float weave=mod(layer,2.0)<1.0?1.0:-1.0;
+  p.x+=envelope*(along-.5)*2.2;
+  p.y+=envelope*arch*(band*.5+sin(along*6.283185+phase+band*.4)*.12*weave);
+  p.z+=envelope*arch*((layer-5.5)/5.5*.45+cos(along*6.283185+phase)*.14);
   return p;
 }
 vec3 project(vec3 p){
@@ -39,7 +30,7 @@ vec3 project(vec3 p){
   return vec3(p.x*perspective*uSize/uAspect,p.y*perspective*uSize,p.z*.06);
 }
 void main(){
-  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265),bead=hash(id+11.0);
+  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265),bead=mod(id,20.0)/20.0;
   float along=uLinePass>.5?aRibbon.x:(bead<.42?0.0:bead>.58?1.0:(bead-.42)/.16);
   float travelAlong=mix(smoothstep(.38,1.0,q),smoothstep(0.0,.62,q),along);
   float morph=mix(uSourceForm,uTargetForm,travelAlong);
@@ -55,17 +46,17 @@ void main(){
   vec3 color=mix(aColorFrom,aColorTo,morph);
   if(color.b>color.r*1.4&&color.r<.3)color=mix(color,vec3(.13,.25,.7),.34);
   if(color.g>color.r*1.45&&color.b>color.r*1.5&&color.g>.25)color=mix(color,vec3(.55,.22,.8),.72);
-  color=mix(color,vec3(.56,.25,.84),uScatter*.28*mod(id,2.0));
-  vColor=color*1.08;vAngle=fiber.x+sin(uTime*.45+fiber.z)*.11;
-  vPhase=fiber.z;vOpacity=(.7+.3*sin(uTime*.6+id))*.7*uDensity*uExposure;vAcross=aRibbon.y;vAlong=along;
-  if(uLinePass<.5&&bead>.42&&bead<.58)vOpacity*=1.0-envelope*.8;
+  vColor=color*1.08;vAngle=fiber.x+sin(uTime*.4)*.035;
+  vPhase=fiber.z;vOpacity=(.85+.15*sin(uTime*.45))*.7*uDensity*uExposure;vAcross=aRibbon.y;vAlong=along;
+  if(uLinePass<.5)vOpacity*=1.0-envelope*.7;
   if(uLinePass>.5){
-    float family=mod(floor(mod(id,96.0)),5.0);
+    float family=mod(floor(id/uCount*6000.0),5.0);
     vec3 silkColor=family<1.0?vec3(.8,.14,.2):family<2.0?vec3(.95,.7,.32):family<3.0?vec3(.84,.87,.91):family<4.0?vec3(.53,.29,.66):vec3(.18,.32,.62);
-    vColor=mix(vColor,silkColor,.4);
+    // Each strand keeps the same dye through both directions of the cycle.
+    vColor=mix((aColorFrom+aColorTo)*.54,silkColor,.4);
     float strength=pow(max(0.0,envelope),.7);
-    vOpacity=strength*.075*max(.45,uExposure)*(.85+.15*sin(along*70.0+fiber.z));
-    if(uLinePass>1.5)vOpacity=strength*(uLinePass>2.5?.035:.84)*max(.7,uExposure)*(.95+.05*cos(along*90.0+fiber.z));
+    vOpacity=strength*.1*max(.55,uExposure)*(.85+.15*cos(along*6.283185));
+    if(uLinePass>1.5)vOpacity=strength*(uLinePass>2.5?.045:.3)*max(.7,uExposure)*(.95+.05*cos(along*90.0+fiber.z));
   }
 }`;
 const fragment=`precision mediump float;
@@ -132,7 +123,7 @@ export async function createParticleRenderer(canvas,sources,onLost,{count=200000
     function attributes(from,to){return {aFrom:from.positions,aTo:to.positions,aColorFrom:from.colors,aColorTo:to.colors,aFiber:from.fibers,aFiberTo:to.fibers};}
     const pointAttributes={...attributes(previous||motifs[0],previous?motifs[initialTarget]:motifs[1]),aId:Float32Array.from({length:count},(_,i)=>i)};
     const pointBuffers=Object.fromEntries(Object.entries(pointAttributes).map(([name,data])=>[name,buffer(data)]));
-    const strands=6000,segments=20,lineCount=strands*segments*2;
+    const strands=6000,segments=32,lineCount=strands*segments*2;
     const lineArrays=Object.fromEntries(Object.keys(pointAttributes).map(name=>[name,new Float32Array(lineCount*(name==='aId'?1:3))]));
     lineArrays.aRibbon=new Float32Array(lineCount*2);
     function fillLines(){for(let strand=0;strand<strands;strand++) {
@@ -190,11 +181,11 @@ export async function createParticleRenderer(canvas,sources,onLost,{count=200000
       if(progress>.005&&progress<.995){
         gl.uniform1f(uniform.LinePass,1);bind(lineBuffers);gl.drawArrays(gl.LINES,0,lineCount);
         gl.uniform2f(uniform.Viewport,canvas.width,canvas.height);bind(ribbonBuffers);
-        const threadWidth=width<700?2.1:2.5;
-        gl.uniform1f(uniform.LinePass,3);gl.uniform1f(uniform.ThreadWidth,threadWidth*1.6);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
+        const threadWidth=width<700?.7:.85;
+        gl.uniform1f(uniform.LinePass,3);gl.uniform1f(uniform.ThreadWidth,threadWidth*2.0);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
         gl.uniform1f(uniform.LinePass,2);gl.uniform1f(uniform.ThreadWidth,threadWidth);gl.drawArrays(gl.TRIANGLES,0,ribbonCount);
       }
-      canvas.dataset.boldStrands=String(boldStrands);canvas.dataset.connecting=previous?'true':'false';canvas.dataset.pull=progress.toFixed(3);canvas.dataset.strands=String(strands);
+      canvas.dataset.clock=time.toFixed(4);canvas.dataset.spread=scatter.toFixed(4);canvas.dataset.layers='12';canvas.dataset.boldStrands=String(boldStrands);canvas.dataset.connecting=previous?'true':'false';canvas.dataset.pull=progress.toFixed(3);canvas.dataset.strands=String(strands);
     }};
   }catch(error){dispose();throw error;}
 }

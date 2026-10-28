@@ -26,7 +26,7 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
       item.context?.close().catch(() => {});
     }
     if (kind === 'camera' && videoRef.current) videoRef.current.srcObject = null;
-    if (kind === 'camera') { if(alive.current)setGesture('请将手掌放入镜头');signal.current.motion = 0; signal.current.body = { x: 0, y: 0 }; }
+    if (kind === 'camera') { if(alive.current){setGesture('请将手掌放入镜头');if(item)gestureRef.current('off');}signal.current.motion = 0; signal.current.body = { x: 0, y: 0 }; }
     else signal.current.audio = 0;
     if (alive.current) {
       (kind === 'camera' ? setCamera : setMicrophone)('off');
@@ -69,18 +69,20 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
           item.worker.onmessage=({data})=>{
             if(resources.current.camera!==item)return;
             if(data.type==='ready') {
-              clearTimeout(item.timeout);item.rejectReady=null;item.ready=true;setNotice('');resolve();
+              clearTimeout(item.timeout);item.rejectReady=null;item.ready=true;setNotice('');gestureRef.current('waiting');resolve();
             } else if(data.type==='error') {
               if(item.rejectReady)item.rejectReady(new Error(data.message));
               else {stop('camera');setNotice('本地手部识别暂不可用，请重试或使用下方按钮。');}
             } else if(data.type==='landmarks') {
               item.busy=false;
               const now=performance.now(),pose=classifyHand(data.worldPoints||data.points);
+              const previousPose=item.gesture.latched;
               item.gesture=stabilizeGesture(item.gesture,pose,now);
-              setGesture(pose==='open'?'已识别：张手':pose==='fist'?'已识别：握拳':pose==='none'?'未检测到手，请将整只手放入镜头':'请握拳或张开手掌');
+              setGesture(pose==='open'?'已识别：张手，展开丝线':pose==='fist'?'已识别：握拳，保持当前画面':pose==='none'?'未检测到手，请将整只手放入镜头':'请握拳或张开手掌');
               if(data.points){const wrist=data.points[0];signal.current.body={x:1-wrist.x*2,y:1-wrist.y*2};signal.current.motion=pose==='open'?.45:pose==='fist'?.08:.15;}
               else {signal.current.motion=0;signal.current.body={x:0,y:0};}
               if(item.gesture.event)gestureRef.current(item.gesture.event);
+              else if(previousPose!=='none'&&item.gesture.latched==='none')gestureRef.current('none');
             }
           };
           item.worker.postMessage({type:'init',root:assetUrl('home/hand-tracking'),model:assetUrl('home/hand-tracking/hand_landmarker.task')});
