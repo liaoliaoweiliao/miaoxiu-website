@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sampleMotif, sampleSilk, motionSignal, soundEnergy } from '../src/features/home/particleModel.js';
-import { introFrame, sampleWeaver, wovenCloth, clothPoint, weavingPose } from '../src/features/home/weavingModel.js';
+import { introFrame, sampleWeaver, wovenCloth, clothPoint, weavingPose, butterflyPoint, WEAVER_CROP } from '../src/features/home/weavingModel.js';
 
 test('motif sampling excludes transparent background and retains source color deterministically', () => {
   const image=new Uint8ClampedArray([255,0,0,0, 240,200,120,255, 0,0,0,255, 0,0,0,0]);
@@ -45,7 +45,6 @@ test('butterfly flies on a straight line while the woven scene vanishes first',(
     assert.equal(end.butterfly.x,w/2);assert.equal(end.butterfly.y,h/2);
     assert.ok(start.butterfly.x>0&&start.butterfly.x<w);
     const surface=clothPoint(.64,.45,w,h,start.unit);assert.equal(start.butterfly.y,surface.y);
-    assert.equal(start.butterfly.tilt,.48);
     assert.ok(start.womanX-1.85*start.unit<=0);
   }
 });
@@ -64,4 +63,25 @@ test('whole figure moves continuously across shoulder and hand regions',()=>{
   assert.notDeepEqual(weavingPose(hand,0),weavingPose(hand,1));
   const left=weavingPose({...hand,u:.46999},1),right=weavingPose({...hand,u:.47001},1);
   assert.ok(Math.hypot(left.x-right.x,left.y-right.y)<.0001);
+  for(const point of [shoulder,hand])for(let t=0;t<8;t+=.2){
+    const start=weavingPose(point,0),next=weavingPose(point,t);
+    assert.ok(Math.hypot(next.x-start.x,next.y-start.y)<.055);
+  }
+});
+
+test('enlarged figure, cloth and perched or flying butterfly preserve their proportions',()=>{
+  const data=new Uint8ClampedArray(30*42*4).fill(230),figure=sampleWeaver(data,30,42,300);
+  const xs=figure.map(p=>p.x),ys=figure.map(p=>p.y),us=figure.map(p=>p.u),vs=figure.map(p=>p.v);
+  const xScale=(Math.max(...xs)-Math.min(...xs))/(Math.max(...us)-Math.min(...us));
+  const yScale=(Math.max(...ys)-Math.min(...ys))/(Math.max(...vs)-Math.min(...vs));
+  assert.ok(Math.abs(xScale/yScale-WEAVER_CROP.width/WEAVER_CROP.height)<1e-6);
+  for(const [w,h] of [[1920,920],[1440,780],[800,600],[390,630],[320,560]]){
+    const frame=introFrame(w,h,0),left=clothPoint(0,0,w,h,frame.unit),right=clothPoint(1,0,w,h,frame.unit),bottom=clothPoint(0,1,w,h,frame.unit);
+    assert.ok(Math.abs((right.x-left.x)/(bottom.y-left.y)-6)<1e-6);
+    for(const progress of [0,.3,.7,1])for(const time of [0,1,2]){
+      const pose=introFrame(w,h,progress).butterfly,center=butterflyPoint(0,0,pose,time);
+      const x=butterflyPoint(1,0,pose,time),y=butterflyPoint(0,1,pose,time);
+      assert.ok(Math.abs((x.x-center.x)/(center.y-y.y)-1)<1e-6);
+    }
+  }
 });

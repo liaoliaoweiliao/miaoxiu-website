@@ -13,6 +13,7 @@ sources: []
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
 | 2026-10-28 | feature | completed | [丝线牵引过渡与握拳张手识别](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-28-%E4%B8%9D%E7%BA%BF%E7%89%B5%E5%BC%95%E8%BF%87%E6%B8%A1%E4%B8%8E%E6%8F%A1%E6%8B%B3%E5%BC%A0%E6%89%8B%E8%AF%86%E5%88%AB.md) |
+| 2026-10-28 | ui | completed | [首页等比织布与醒目丝线](UI%E4%BF%AE%E6%94%B9/2026-10-28-%E9%A6%96%E9%A1%B5%E7%AD%89%E6%AF%94%E7%BB%87%E5%B8%83%E4%B8%8E%E9%86%92%E7%9B%AE%E4%B8%9D%E7%BA%BF.md) |
 | 2026-10-27 | feature | completed | [粒子织布引入与百万彩色丝线](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-27-%E7%B2%92%E5%AD%90%E7%BB%87%E5%B8%83%E5%BC%95%E5%85%A5%E4%B8%8E%E7%99%BE%E4%B8%87%E5%BD%A9%E8%89%B2%E4%B8%9D%E7%BA%BF.md) |
 | 2026-10-27 | bug | completed | [色卡绣线填满圆形](Bug%E5%A4%84%E7%90%86/2026-10-27-%E8%89%B2%E5%8D%A1%E7%BB%A3%E7%BA%BF%E5%A1%AB%E6%BB%A1%E5%9C%86%E5%BD%A2.md) |
 | 2026-10-26 | feature | completed | [首页三维纹样粒子与体感交互](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-26-%E9%A6%96%E9%A1%B5%E4%B8%89%E7%BB%B4%E7%BA%B9%E6%A0%B7%E7%B2%92%E5%AD%90%E4%B8%8E%E4%BD%93%E6%84%9F%E4%BA%A4%E4%BA%92.md) |

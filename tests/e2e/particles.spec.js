@@ -40,7 +40,11 @@ test('particle weaver and cloth disappear before the butterfly finishes its stra
 });
 
 test('real particle canvas renders, morphs, rotates and regroups without requesting devices',async({page})=>{
-  await page.addInitScript(()=>{window.deviceRequests=0;navigator.mediaDevices.getUserMedia=async()=>{window.deviceRequests++;throw new DOMException('Denied','NotAllowedError');};});
+  await page.addInitScript(()=>{
+    window.deviceRequests=0;navigator.mediaDevices.getUserMedia=async()=>{window.deviceRequests++;throw new DOMException('Denied','NotAllowedError');};
+    window.ribbonVertices=0;const draw=WebGLRenderingContext.prototype.drawArrays;
+    WebGLRenderingContext.prototype.drawArrays=function(mode,first,count){if(mode===this.TRIANGLES)window.ribbonVertices=count;return draw.call(this,mode,first,count);};
+  });
   await page.goto('/');
   await enter(page);
   const canvas=page.locator('.particle-main-canvas');await canvas.scrollIntoViewIfNeeded();
@@ -56,6 +60,8 @@ test('real particle canvas renders, morphs, rotates and regroups without request
   await expect(page.locator('.particle-heritage')).not.toHaveAttribute('data-revision',revision);
   await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBeGreaterThan(.15);
   await expect(canvas).toHaveAttribute('data-strands','6000');
+  await expect.poll(()=>page.evaluate(()=>window.ribbonVertices)).toBeGreaterThan(10000);
+  expect(await canvas.evaluate(c=>c.getContext('webgl').getError())).toBe(0);
   expect(await page.evaluate(()=>window.deviceRequests)).toBe(0);
   await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('摄像头权限未开启');

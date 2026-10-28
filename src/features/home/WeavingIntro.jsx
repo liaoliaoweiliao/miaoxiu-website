@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { assetUrl } from '../../utils/assets.js';
 import { particleMotifs } from '../../data/homeParticles.js';
 import { sampleMotif } from './particleModel.js';
-import { FLIGHT_DURATION, WEAVER_CROP, sampleWeaver, wovenCloth, introFrame, weavingPose, clothPoint } from './weavingModel.js';
+import { FLIGHT_DURATION, WEAVER_CROP, sampleWeaver, wovenCloth, introFrame, weavingPose, clothPoint, butterflyPoint } from './weavingModel.js';
 
 export default function WeavingIntro({ reduced, onFlying, onComplete }) {
   const canvasRef=useRef(null),buttonRef=useRef(null),callbacks=useRef({onFlying,onComplete});
@@ -77,7 +77,7 @@ export default function WeavingIntro({ reduced, onFlying, onComplete }) {
         dots(woman,pose.sceneOpacity,pose.unit,width,height,'woman');dots(cloth,pose.sceneOpacity,pose.unit,width,height,'cloth');
         // One continuous thread follows the same deformation as the hand; no shuttle cluster.
         context.fillStyle='#f3ddb2';context.globalAlpha=pose.sceneOpacity*.65;
-        const hand=weavingPose({x:-.42,y:-.06,u:.85,v:.62},time);
+        const hand=weavingPose({x:-1.85+.85*2.04*WEAVER_CROP.width/WEAVER_CROP.height,y:-.06,u:.85,v:.62},time);
         const startX=pose.womanX+hand.x*pose.unit,startY=height*(pose.compact?.48:.56)-hand.y*pose.unit;
         const stitch=clothPoint(.11,.18,width,height,pose.unit,time);
         for(let i=0;i<150;i++) {
@@ -87,9 +87,8 @@ export default function WeavingIntro({ reduced, onFlying, onComplete }) {
       }
       context.globalAlpha=1;
       const positions=butterfly.positions,colors=butterfly.colors;
-      const flap=reducedRef.current?1:1-Math.sin(time*(state.flying?12:2))**2*(state.flying?.18:.025);
       for(let i=0;i<positions.length;i+=3) {
-        const x=pose.butterfly.x+positions[i]*pose.butterfly.scale*flap,y=pose.butterfly.y-positions[i+1]*pose.butterfly.scale*pose.butterfly.tilt;
+        const {x,y}=butterflyPoint(positions[i],positions[i+1],pose.butterfly,reducedRef.current?0:time);
         const light=Math.max(colors[i],colors[i+1],colors[i+2]);
         const r=colors[i],g=colors[i+1],b=colors[i+2];
         context.fillStyle=r>g*1.3&&r>b*1.3?'#dd4056':Math.min(r,g,b)>.55?'#e8edf3':r>.5&&g>.3&&b<g*.85?'#e3bd71':g>r*1.45&&g>.25?'#9470d4':'#3d5bc2';context.globalAlpha=.65+light*.3;
