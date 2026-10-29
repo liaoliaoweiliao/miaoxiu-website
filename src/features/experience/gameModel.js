@@ -65,9 +65,11 @@ export function hitRegion(index, x, y) {
 }
 export const isHit = (index, x, y) => hitRegion(index, x, y) >= 0;
 
-export function createExperienceState(storage, random = Math.random) {
+export function createExperienceState(storage, random = Math.random, { restoreOutfit = false } = {}) {
   const level = randomImageIndex(random);
-  return { level, theme: levels[level].id, round: 1, found: false, region: 0, dressed: false, outfitChosen: { girl: false, boy: false }, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection: readCollection(storage) };
+  const collection = readCollection(storage);
+  const outfitChosen = { girl: restoreOutfit && Boolean(collection.equipped.girl), boy: restoreOutfit && Boolean(collection.equipped.boy) };
+  return { level, theme: levels[level].id, round: 1, found: false, region: 0, dressed: false, outfitChosen, feedback: null, cursor: null, unlock: null, drawing: false, drawGender: null, lastDraw: null, reveal: false, dealing: false, selectedCard: null, filter: 'all', notice: '找到任意一处对应纹样，即可解锁该主题衣橱。', collectionNote: '', saving: false, saveNote: '', wearRevision: 0, drawRevision: 0, collection };
 }
 
 export function experienceReducer(state, action) {

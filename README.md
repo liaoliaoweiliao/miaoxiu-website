@@ -42,9 +42,9 @@ npm run build:standalone
 
 ## Windows 桌面便携版
 
-执行 `npm run desktop:pack` 生成内置 Chromium 和全部素材的 Windows x64 单文件免安装程序：`release/Miaoxiu-1.0.0-win-x64-portable.exe`。可单独复制、断网双击运行，不需要安装 Node.js 或浏览器。`release/win-unpacked/` 是中间输出，不作为单文件便携版交付。
+执行 `npm run desktop:pack` 生成内置 Chromium 和全部素材的 Windows x64 单文件免安装程序：`release/Miaoxiu-1.0.1-win-x64-portable.exe`。可单独复制、断网双击运行，不需要安装 Node.js 或浏览器。`release/win-unpacked/` 是中间输出，不作为单文件便携版交付。
 
-桌面收藏与穿戴自动存于 `%APPDATA%\MiaoxiuDesktop\`，效果图通过 Windows“另存为”选择位置。原网页开发、生产部署和 standalone 命令保留。构建步骤、安全边界、数据备份和桌面测试见 [桌面版说明](docs/desktop.md)，实际交付与未验证范围见 [桌面验收](docs/desktop-validation.md)。
+桌面收藏与穿戴自动存于 `%APPDATA%\MiaoxiuDesktop\`，重新打开恢复上次穿戴；开始下一轮仍显示原始人物。效果图通过 Windows“另存为”选择位置。摄像头和麦克风分别经过本机权限对话框确认，手势模型与 WASM 随包离线运行。原网页开发、生产部署和 standalone 命令保留。构建步骤、安全边界、数据备份和桌面测试见 [桌面版说明](docs/desktop.md)，实际交付与未验证范围见 [桌面验收](docs/desktop-validation.md)。
 
 ## 工程目录
 

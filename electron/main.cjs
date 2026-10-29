@@ -15,8 +15,8 @@ app.commandLine.appendSwitch('disable-background-networking');
 app.commandLine.appendSwitch('disable-component-update');
 app.commandLine.appendSwitch('disable-domain-reliability');
 
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.mp4': 'video/mp4', '.webm': 'video/webm' };
-const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.wasm': 'application/wasm', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.mp4': 'video/mp4', '.webm': 'video/webm' };
+const CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
 function internal(url) {
   try { const parsed = new URL(url); return parsed.protocol === 'miao:' && parsed.host === 'app'; } catch { return false; }
 }
@@ -57,7 +57,17 @@ else {
         return new Response(await readFile(file), { headers: { 'Content-Type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Content-Security-Policy': CSP, 'X-Content-Type-Options': 'nosniff' } });
       } catch { return new Response('资源不存在', { status: 404 }); }
     });
-    session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
+    // Only the bundled main page can request camera/microphone, with an explicit
+    // native choice on every request. Screen capture and other devices stay denied.
+    session.defaultSession.setPermissionRequestHandler(async (contents, permission, callback, details) => {
+      const types = details.mediaTypes;
+      if (contents !== mainWindow?.webContents || permission !== 'media' || !details.isMainFrame || !internal(details.requestingUrl) || !types?.length || types.some(type => !['video', 'audio'].includes(type))) return callback(false);
+      const devices = types.map(type => type === 'video' ? '摄像头' : '麦克风').join('和');
+      try {
+        const { response } = await dialog.showMessageBox(mainWindow, { type: 'question', title: '苗绣设备权限', message: `允许开启${devices}吗？`, detail: '画面与声音仅在本机用于互动，不录制、不上传。关闭设备或离开首页会停止使用。', buttons: ['暂不开启', '允许开启'], defaultId: 0, cancelId: 0, noLink: true });
+        callback(response === 1 && !contents.isDestroyed() && internal(contents.getURL()));
+      } catch { callback(false); }
+    });
     session.defaultSession.setPermissionCheckHandler(() => false);
     // All app content is bundled. Remote references are opened only by the system browser.
     session.defaultSession.webRequest.onBeforeRequest((details, callback) => callback({ cancel: !internal(details.url) && !/^(data:|blob:|devtools:)/.test(details.url) }));

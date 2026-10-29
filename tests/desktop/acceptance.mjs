@@ -4,13 +4,15 @@ import { promisify } from 'node:util';
 import { readdir, mkdir, copyFile, readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import net from 'node:net';
+import { createHash } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { levels } from '../../src/features/experience/gameModel.js';
 
 if (process.platform !== 'win32') throw new Error('Packaged desktop acceptance requires Windows with an interactive desktop.');
 const exec = promisify(execFile);
 const root = process.cwd();
-const source = path.resolve(process.env.MIAOXIU_EXE || 'release/Miaoxiu-1.0.0-win-x64-portable.exe');
+const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
+const source = path.resolve(process.env.MIAOXIU_EXE || `release/Miaoxiu-${version}-win-x64-portable.exe`);
 const output = path.join(root, 'desktop-test-results');
 const isolated = path.join(process.env.TEMP, `苗绣 离线验收 ${Date.now()}`);
 const copied = path.join(isolated, '中文 与空格', '苗绣 便携版.exe');
@@ -20,6 +22,7 @@ await mkdir(output, { recursive: true });
 await copyFile(source, copied);
 const records = [];
 const errors = [];
+const consoleMessages = [];
 let browser, page, child, cdp, port;
 function record(name, detail) { records.push({ name, detail }); console.log(`PASS ${name}: ${detail}`); }
 async function start() {
@@ -27,7 +30,7 @@ async function start() {
   // Chromium cannot reach the network even during initial startup. No project cwd or developer PATH.
   const env = { ...process.env, PATH: `${process.env.SystemRoot}\\System32;${process.env.SystemRoot}`, NODE_OPTIONS: '' };
   delete env.ELECTRON_RUN_AS_NODE;
-  child = spawn(copied, [`--remote-debugging-port=${port}`, '--remote-debugging-address=127.0.0.1', `--user-data-dir=${profile}`, '--proxy-server=http://127.0.0.1:9', '--proxy-bypass-list=<-loopback>'], { cwd: path.dirname(copied), env, windowsHide: false, stdio: 'ignore' });
+  child = spawn(copied, [`--remote-debugging-port=${port}`, '--remote-debugging-address=127.0.0.1', `--user-data-dir=${profile}`, '--proxy-server=http://127.0.0.1:9', '--proxy-bypass-list=<-loopback>', '--use-fake-device-for-media-stream'], { cwd: path.dirname(copied), env, windowsHide: false, stdio: 'ignore' });
   let last;
   for (let index = 0; index < 120; index++) {
     try { browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`, { timeout: 1000 }); break; }
@@ -40,6 +43,7 @@ async function start() {
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('response', (response) => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
   page.on('request', (request) => { if (/^https?:/.test(request.url())) errors.push(`Unexpected remote resource: ${request.url()}`); });
+  page.on('console', message => { if (['warning', 'error'].includes(message.type())) consoleMessages.push(message.text()); });
   cdp = await context.newCDPSession(page);
   await cdp.send('Network.enable');
   await cdp.send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
@@ -63,6 +67,9 @@ async function images() {
 async function screenshot(name) { await page.screenshot({ path: path.join(output, `${name}.png`) }); }
 async function nativeSave(destination, cancel = false) {
   await exec('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(root, 'tests/desktop/native-save.ps1'), ...(cancel ? ['-Cancel'] : ['-Destination', destination])], { timeout: 30000 });
+}
+async function nativePermission(allow = false) {
+  await exec('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(root, 'tests/desktop/native-permission.ps1'), '-Port', String(port), ...(allow ? ['-Allow'] : [])], { timeout: 25000 });
 }
 async function windowSize(width, height, windowState = 'normal') {
   await exec('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(root, 'tests/desktop/native-window.ps1'), '-Port', String(port), ...(windowState === 'maximized' ? ['-Maximize'] : ['-Width', String(width), '-Height', String(height)])], { timeout: 15000 });
@@ -101,17 +108,46 @@ try {
   expect(failures).toEqual([]);
   record('全部本地资源', `${allAssets.length} bundled assets readable offline; every raster/SVG decodes, including Chinese and spaces`);
   await images();
-  const bird = page.locator('[data-heritage-bird]');
-  for (const expected of ['02', '03', '01']) {
-    await expect(bird).toBeEnabled({ timeout: 12000 });
-    await bird.click();
-    await expect(page.locator('[data-heritage-number]')).toHaveText(expected, { timeout: 12000 });
-  }
   await page.getByRole('group', { name: '选择地域支系' }).getByRole('button', { name: /黔东南/ }).click();
   await page.getByLabel('选择苗乡地点').selectOption('taijiang');
   await expect(page.locator('.thread-place-card')).toContainText('施洞型服饰');
   await screenshot('01-home-offline');
-  record('首页地图与互动长卷', 'Region filtering, selected place, bird 3-stage cycle');
+  record('首页地图', 'Region filtering and selected place; current weaving interaction checked below');
+  const weaving = page.locator('.weaving-canvas');
+  await weaving.scrollIntoViewIfNeeded();
+  await expect(weaving).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+  await page.getByRole('button', { name: '点击布上的粒子蝴蝶，开启互动', exact: true }).click();
+  await expect(page.locator('.particle-heritage')).toHaveAttribute('data-phase', 'interactive', { timeout: 20000 });
+  for (const density of [200000, 500000, 1000000]) {
+    await page.getByLabel('选择丝线粒子数量').selectOption(String(density));
+    await expect(page.locator('.particle-main-canvas')).toHaveAttribute('data-ready', 'true', { timeout: 20000 });
+    await expect(page.locator('.particle-main-canvas')).toHaveAttribute('data-particles', String(density));
+  }
+  await page.getByLabel('选择丝线粒子数量').selectOption('200000');
+  for (let pair = 0; pair < 5; pair++) {
+    await page.getByLabel('选择纹样与现代应用').selectOption(String(pair));
+    await expect(page.locator('.particle-main-canvas')).toHaveAttribute('data-ready', 'true', { timeout: 20000 });
+    await page.getByRole('button', { name: '查看现代应用', exact: true }).click();
+    await expect(page.locator('.particle-heritage')).toHaveAttribute('data-form', 'application');
+    await page.getByRole('button', { name: '返回传统纹样', exact: true }).click();
+  }
+  await screenshot('01-particle-offline');
+  // Chromium supplies test devices. The native permission UI and real bundled
+  // worker/model/WASM still run; no physical camera or microphone is accessed.
+  await page.getByRole('button', { name: '开启摄像头', exact: true }).click();
+  await nativePermission(false);
+  await expect(page.locator('.particle-device-status')).toContainText('权限未开启');
+  await page.getByRole('button', { name: '开启摄像头', exact: true }).click();
+  await nativePermission(true);
+  await expect(page.getByRole('button', { name: '关闭摄像头', exact: true })).toHaveAttribute('aria-pressed', 'true', { timeout: 45000 });
+  await expect(page.locator('.particle-camera span')).toContainText('未检测到手', { timeout: 15000 });
+  await screenshot('01-local-hand-model');
+  await page.getByRole('button', { name: '关闭摄像头', exact: true }).click();
+  await page.getByRole('button', { name: '开启麦克风', exact: true }).click();
+  await nativePermission(true);
+  await expect(page.getByRole('button', { name: '关闭麦克风', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: '关闭麦克风', exact: true }).click();
+  record('最新粒子与本地识别', '5 motif/application pairs; 200k/500k/1m; native deny/allow; real offline worker/model/WASM with Chromium test devices, blank input has no hand');
   await page.goto('miao://app/#history');
   await images();
   for (let index = 0; index < 3; index++) {
@@ -143,26 +179,35 @@ try {
     await page.locator('.color-motif-line').scrollIntoViewIfNeeded();
     await screenshot(`03-color-mask-${index}`);
   }
-  record('故事、六针法及配色', 'All 3 books + text paging; 6 distinct moving needle paths; all 3 motifs with 3 local CSS masks');
+  record('故事、六针法及配色', 'All 3 illustrated books open/close; 6 distinct moving needle paths; all 3 motifs with 3 local CSS masks');
   await page.goto('miao://app/#experience');
-  const text = await page.locator('.target-brief strong').textContent();
-  const level = levels.find((entry) => text.includes(entry.name));
-  const region = level.regions[0];
-  const target = region.shape === 'rect' ? { x: region.x + region.w / 2, y: region.y + region.h / 2 } : { x: region.cx, y: region.cy };
-  await page.locator('.decode-board img').evaluate((image) => image.decode());
-  const board = page.locator('.decode-board');
-  const bounds = await board.boundingBox();
-  await board.click({ position: { x: bounds.width * target.x / 100, y: bounds.height * target.y / 100 } });
-  await expect(page.getByRole('dialog')).toContainText(`你找到了${level.name}`);
-  await page.getByRole('button', { name: '进入对应苗绣衣橱 →', exact: true }).click();
   for (const gender of ['girl', 'boy']) {
+    const text = await page.locator('.target-brief strong').textContent();
+    const level = levels.find((entry) => text.includes(entry.name));
+    const region = level.regions[0];
+    const target = region.shape === 'rect' ? { x: region.x + region.w / 2, y: region.y + region.h / 2 } : { x: region.cx, y: region.cy };
+    await page.locator('.decode-board img').evaluate((image) => image.decode());
+    const board = page.locator('.decode-board');
+    const bounds = await board.boundingBox();
+    await board.click({ position: { x: bounds.width * target.x / 100, y: bounds.height * target.y / 100 } });
+    await expect(page.getByRole('dialog')).toContainText(`你找到了${level.name}`);
+    await page.getByRole('button', { name: '进入对应苗绣衣橱 →', exact: true }).click();
     await page.locator(`[data-action="drawGender"][data-id="${gender}"]`).click();
     await page.locator('.draw-btn').click();
     await expect(page.locator('.costume-draw-stage')).toHaveClass(/has-result/, { timeout: 10000 });
-    await expect(page.locator('.draw-btn')).toBeEnabled();
+    await expect(page.locator('.costume-draw-stage')).not.toHaveClass(/is-revealing/, { timeout: 5000 });
+    await expect(page.locator('.draw-btn')).toBeDisabled();
     await expect(page.locator('.owned-card')).toHaveCount(1);
     await page.locator('.wear-full').first().click();
     await expect(page.locator('.wear-full').first()).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-action="finishLoop"]')).toBeEnabled();
+    if (gender === 'girl') {
+      const previous = await page.locator('.decode-board img').getAttribute('src');
+      await page.locator('[data-action="finishLoop"]').click();
+      await expect(page.locator('.level-label')).toContainText('第 2 轮');
+      await expect(page.locator('.decode-board img')).not.toHaveAttribute('src', previous);
+      await expect(page.locator('.outfit-summary strong')).toHaveText('原始形象');
+    }
   }
   await images();
   await page.getByRole('button', { name: '全屏观赏', exact: true }).click();
@@ -213,16 +258,17 @@ try {
   await page.goto('miao://app/#experience');
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
   await expect(page.locator('.wear-full').first()).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.outfit-summary').scrollIntoViewIfNeeded();
   await images();
   await screenshot('07-restored-after-restart');
   record('关闭后重新启动', `Collections, unlocked pools, gender and both outfits restore from ${profile}`);
   expect(errors).toEqual([]);
   record('运行错误', 'No page exceptions, failed resource responses or remote content requests during checks');
   await stop();
-  await writeFile(path.join(output, 'acceptance.json'), JSON.stringify({ success: true, testedAt: new Date().toISOString(), source, copied, profile, exeBytes: (await stat(source)).size, records, errors, unverified: ['Clean Windows without developer tools', 'Windows 10 physical/VM', 'System browser external destination while offline'] }, null, 2));
+  await writeFile(path.join(output, 'acceptance.json'), JSON.stringify({ success: true, testedAt: new Date().toISOString(), version, source, copied, profile, exeBytes: (await stat(source)).size, sha256: createHash('sha256').update(await readFile(source)).digest('hex'), records, errors, consoleMessages, unverified: ['Clean Windows without developer tools', 'Windows 10 physical/VM', 'System browser external destination while offline', 'Physical camera/microphone and real hand gestures', 'Whole machine network adapter disconnected'] }, null, 2));
 } catch (error) {
   if (page && !page.isClosed()) await screenshot('failure').catch(() => {});
-  await writeFile(path.join(output, 'acceptance.json'), JSON.stringify({ success: false, copied, profile, records, errors, failure: error.stack }, null, 2));
+  await writeFile(path.join(output, 'acceptance.json'), JSON.stringify({ success: false, copied, profile, records, errors, consoleMessages, failure: error.stack }, null, 2));
   if (page && !page.isClosed()) await page.close().catch(() => {});
   if (browser) await browser.close().catch(() => {});
   console.error(error); process.exitCode = 1;

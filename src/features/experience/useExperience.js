@@ -7,7 +7,7 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 function storage() { try { return window.localStorage; } catch { return null; } }
 
 export default function useExperience(requestedTheme, requestRevision) {
-  const [state, dispatch] = useReducer(experienceReducer, undefined, () => createExperienceState(storage()));
+  const [state, dispatch] = useReducer(experienceReducer, undefined, () => createExperienceState(storage(), Math.random, { restoreOutfit: Boolean(window.miaoxiuDesktop) }));
   const foundRound = useRef(null);
   const drawRevision = useRef(0);
 

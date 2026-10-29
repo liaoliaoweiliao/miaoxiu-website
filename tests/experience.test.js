@@ -8,6 +8,26 @@ function storage(initial = {}) {
   return { getItem(key) { return items.get(key) ?? null; }, setItem(key, value) { items.set(key, value); } };
 }
 const reduce = experienceReducer;
+
+test('desktop resumes both saved outfits without bypassing the new round gate; web starts with base avatars', () => {
+  const girl = costumeSets.find(costume => costume.gender === 'girl');
+  const boy = costumeSets.find(costume => costume.gender === 'boy');
+  const saved = { unlocked: [...new Set([girl.theme, boy.theme])], owned: [girl.id, boy.id], gender: 'boy', equipped: { girl: girl.id, boy: boy.id } };
+  const profile = storage({ [COLLECTION_KEY]: JSON.stringify(saved) });
+  const desktop = createExperienceState(profile, () => 0, { restoreOutfit: true });
+  assert.deepEqual(visibleCollection(desktop).equipped, saved.equipped);
+  assert.deepEqual(visibleCollection(createExperienceState(profile, () => 0)).equipped, { girl: null, boy: null });
+  assert.equal(desktop.found, false);
+  assert.equal(desktop.dressed, false);
+  assert.strictEqual(reduce(desktop, { type: 'drawStart' }), desktop);
+  let next = draw(solve(desktop), 'boy');
+  next = reduce(next, { type: 'equip', id: boy.id });
+  next = reduce(next, { type: 'round', completed: true, random: 0 });
+  assert.equal(next.round, 2);
+  assert.deepEqual(visibleCollection(next).equipped, { girl: null, boy: null });
+  assert.equal(next.collection.equipped.boy, boy.id);
+});
+
 function start(index = 0, saved) { return createExperienceState(saved, () => (index + 0.1) / 3); }
 function solve(state) {
   const region = levels[state.level].regions[0];
