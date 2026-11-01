@@ -206,7 +206,7 @@ test('long gallery and accessible image zoom, drag, details and download', async
 test('puzzle, one draw per round, separate gender collections, dressing and PNG export', async ({ page }) => {
   await page.addInitScript(() => { Math.random = () => 0; });
   await page.goto('/#experience');
-  await expect(page.locator('.decode-counter')).toHaveText('寻找 1 处');
+  await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
   await page.locator('.decode-board').click({ position: { x: 5, y: 5 } });
   await expect(page.locator('#decode-feedback')).toContainText('还未找到');
   await discover(page);

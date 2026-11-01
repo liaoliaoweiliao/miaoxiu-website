@@ -45,7 +45,7 @@ for (const width of [1440, 390]) {
       await expect(page.locator('.decode-board')).toBeFocused();
       await expect(page.locator('.level-label')).toContainText(`第 ${index + 2} 轮`);
       await expect(page.locator('.decode-board img')).not.toHaveAttribute('src', photograph);
-      await expect(page.locator('.decode-counter')).toHaveText('寻找 1 处');
+      await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
       await expect(page.locator('[data-action="collectionFilter"][data-id="all"]')).toHaveAttribute('aria-pressed', 'true');
       await expect(page.locator('[data-action="finishLoop"]')).toHaveCount(0);
       expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
@@ -106,7 +106,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
       await expect(page.locator('.wardrobe-draw')).toBeFocused();
       for (const selector of ['.draw-card', '.draw-btn']) {
         const box = await page.locator(selector).boundingBox();
-        const header = await page.locator('header').boundingBox();
+        const header = await page.getByRole('banner').boundingBox();
         expect(box.y).toBeGreaterThanOrEqual(header.y + header.height);
         expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
       }
