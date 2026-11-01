@@ -25,7 +25,7 @@ function SealTitle({ kind, image, title, heading = 'h2' }) {
   return <div className="title-with-seal"><span className={`section-seal section-seal--${kind}`}><img src={assetUrl(`experience/seals/${image}.webp`)} alt={`${kind === 'feiyi' ? '非遗' : kind === 'wardrobe' ? '绣裳' : '苗妆'}印章`} /></span><Heading>{title}</Heading></div>;
 }
 
-export default function ExperiencePage({ state = {}, onAction }) {
+export default function ExperiencePage({ state = {}, onAction, onNavigate }) {
   const [game, dispatch] = useExperience(state.experienceTheme, state.experienceThemeRequest);
   const collection = visibleCollection(game);
   const theme = themeById(game.theme);
@@ -89,8 +89,8 @@ export default function ExperiencePage({ state = {}, onAction }) {
 
   return <main className="experience-page">
     <section className="decode-section container"><Frame className="pattern-image-frame"><div className="decode-inner">
-      <div className="side-heading"><SealTitle kind="feiyi" image="feiyi" heading="h1" title={<>寻纹<br />解密</>} /><p>一针一线，藏着纹样。<br />在画面中找到一处，<br />开启对应主题衣橱。</p></div>
-      <div className="decode-content"><DecodeGame ref={boardRef} game={game} dispatch={dispatch} onPreview={(artwork) => onAction?.('modal', 0, artwork)} onWardrobe={openWardrobe} onRound={nextRound} /></div>
+      <div className="side-heading"><SealTitle kind="feiyi" image="feiyi" heading="h1" title={<>寻纹<br />解密</>} /><div className="decode-side-label">苗绣纹样探索</div><p>一针一线，藏着纹样；<br />在画面中找到一处，<br />开启对应主题衣橱，<br />看看这枚“{levels[game.level].name}”<br />如何在苗绣中绽放光彩。</p><svg className="decode-landscape" viewBox="0 0 240 65" fill="none" stroke="currentColor" strokeWidth=".8" aria-hidden="true"><path d="m0 56 28-18 16 7 38-28 23 17 18-9 46 23 15-18 56 30M8 61l37-10 23 5 37-13 44 12 29-9 54 17M40 40V23m-18 0h36L40 12 22 23Zm-10 1v28m21-28v26M16 35h49M5 60h224M92 50l19-10 25 8m29 5 17-14 25 12"/></svg></div>
+      <div className="decode-content"><DecodeGame ref={boardRef} game={game} dispatch={dispatch} onPreview={(artwork) => onAction?.('modal', 0, artwork)} onWardrobe={openWardrobe} onRound={nextRound} onExplore={(section) => onNavigate?.('history', { searchTarget: { page: 'history', section: section === 'craft' ? 'history-stitches' : 'history-patterns', kind: 'section', revision: Date.now() } })} /></div>
     </div></Frame></section>
     <MiaoDivider />
     <section ref={wardrobeRef} className="wardrobe container" id="miao-wardrobe" tabIndex={-1} aria-label="苗绣衣橱"><Frame className="wardrobe-frame"><div className="wardrobe-layout">
