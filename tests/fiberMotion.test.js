@@ -2,34 +2,29 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialFiberMotion,selectFiberForm,controlFiberMotion,advanceFiberMotion } from '../src/features/home/fiberMotion.js';
 
-test('fist holds the exact in-between state and reopening resumes without rewinding or changing pairs',()=>{
-  const waiting=controlFiberMotion(initialFiberMotion(),'waiting');
-  assert.equal(advanceFiberMotion(waiting,10),waiting);
-  const opened=advanceFiberMotion(controlFiberMotion(waiting,'open'),.9);
-  assert.equal(opened.target,1);assert.equal(opened.progress,.25);assert.ok(opened.spread>.5);
-  const held=controlFiberMotion(opened,'fist');
-  assert.equal(advanceFiberMotion(held,10),held);
-  const resumed=controlFiberMotion(held,'open');
-  assert.equal(resumed.progress,opened.progress);assert.equal(resumed.time,opened.time);assert.equal(resumed.target,opened.target);
-  assert.deepEqual(advanceFiberMotion(resumed,.1),advanceFiberMotion(opened,.1));
+test('palm spreads, fist collects and reversing a gesture never resets geometry',()=>{
+  let state=controlFiberMotion(initialFiberMotion(),'open');
+  for(let i=0;i<60;i++)state=advanceFiberMotion(state,1/60);
+  assert.ok(state.spread>.98);assert.ok(Math.abs(state.progress-.5)<.01);
+  const closing=controlFiberMotion(state,'fist');
+  assert.equal(closing.spread,state.spread);assert.equal(closing.progress,state.progress);
+  const moving=advanceFiberMotion(closing,1/60);
+  assert.ok(moving.spread<closing.spread);assert.ok(moving.progress>closing.progress);
+  const reversing=controlFiberMotion(moving,'open');
+  assert.equal(reversing.spread,moving.spread);assert.equal(reversing.progress,moving.progress);
+  assert.ok(advanceFiberMotion(reversing,1/60).spread>moving.spread);
+  let gathered=closing;for(let i=0;i<180;i++)gathered=advanceFiberMotion(gathered,1/60);
+  assert.equal(gathered.spread,0);assert.equal(gathered.progress,1);assert.equal(gathered.running,false);
 });
 
-test('an open palm drives a repeatable ordered motif/application cycle with no random transition',()=>{
-  function run(){
-    let state=controlFiberMotion(initialFiberMotion(),'open');const targets=[state.target];
-    for(let i=0;i<300;i++){
-      const next=advanceFiberMotion(state,.1);
-      assert.ok(next.progress>=0&&next.progress<=1);assert.ok(next.spread>=0&&next.spread<=.9);
-      if(next.target!==state.target){targets.push(next.target);assert.equal(next.from,state.target);}
-      state=next;
-    }
-    return {state,targets};
-  }
-  const first=run();assert.deepEqual(first,run());
-  assert.ok(first.targets.length>=6);assert.ok(first.targets.every((v,i)=>v===1-i%2));
+test('sustained palm stays dispersed in a deterministic network rather than cycling randomly',()=>{
+  function run(){let state=controlFiberMotion(initialFiberMotion(),'open');for(let i=0;i<300;i++)state=advanceFiberMotion(state,1/60);return state;}
+  const result=run();assert.deepEqual(result,run());assert.equal(result.target,1);assert.ok(result.spread>.999);assert.ok(Math.abs(result.progress-.5)<.001);
 });
 
 test('hand loss or camera stop holds motion; manual controls and reduced motion remain available',()=>{
+  const reducedOpen=advanceFiberMotion(controlFiberMotion(initialFiberMotion(),'open'),.1,true);
+  assert.equal(reducedOpen.progress,1);assert.equal(reducedOpen.spread,0);assert.equal(reducedOpen.running,false);
   const started=advanceFiberMotion(controlFiberMotion(initialFiberMotion(),'open'),.6);
   for(const pose of ['none','off']){
     const stopped=controlFiberMotion(started,pose);

@@ -24,7 +24,7 @@ export default function ParticleHeritage() {
   function handGesture(pose) {
     input.current.fiber=controlFiberMotion(input.current.fiber,pose);
     setMotif(input.current.fiber.target);
-    setMotionMode(pose==='open'?'flowing':pose==='waiting'?'waiting':pose==='off'?'manual':'held');
+    setMotionMode(pose==='open'?'flowing':pose==='waiting'?'waiting':pose==='off'?'manual':pose==='fist'?'collecting':'held');
     setRevision(value=>value+1);
   }
   const sensors=useParticleSensors(input,()=>{if(!input.current.fiber.controlled)regroup();},handGesture);
@@ -55,16 +55,16 @@ export default function ParticleHeritage() {
           frame=requestAnimationFrame(tick);
           const dt=Math.min((now-(previous||now))/1000,.1);
           if(!visible||document.hidden)return;
-          if(now-lastDraw<30)return;lastDraw=now;previous=now;
+          if(now-lastDraw<1000/60-1)return;lastDraw=now-((now-lastDraw)%(1000/60));previous=now;
           const state=input.current;
           const width=canvasRef.current.clientWidth,height=canvasRef.current.clientHeight;
           if((!state.fiber.running||state.reduced)&&renderedRevision===state.revision&&width===lastWidth&&height===lastHeight)return;
           lastWidth=width;lastHeight=height;
-          const previousTarget=state.fiber.target;
+          const previousTarget=state.fiber.target,wasRunning=state.fiber.running;
           state.fiber=advanceFiberMotion(state.fiber,dt,state.reduced);
           const motion=state.fiber;
           if(previousTarget!==motion.target){setMotif(motion.target);setRevision(value=>value+1);}
-          if(motion.running||!state.frame){
+          if(motion.running||wasRunning||!state.frame){
             const smoothing=state.reduced?1:1-Math.exp(-dt*3);
             const rx=state.drag.x+(state.reduced?0:Math.sin(motion.time*.16)*.08),ry=state.drag.y;
             rotation={x:rotation.x+(rx-rotation.x)*smoothing,y:rotation.y+(ry-rotation.y)*smoothing};
@@ -111,7 +111,7 @@ export default function ParticleHeritage() {
           onPointerLeave={()=>{if(!dragging.current)input.current.pointer={x:5,y:5};}}
           onKeyDown={event=>{if(phase!=='interactive')return;if(/^[1-5]$/.test(event.key)){setPair(Number(event.key)-1);select(0);return;}if(event.key===' '){event.preventDefault();select(1-input.current.fiber.target);return;}if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){event.preventDefault();input.current.drag.x+=event.key==='ArrowLeft'?-.15:event.key==='ArrowRight'?.15:0;input.current.drag.y=clamp(input.current.drag.y+(event.key==='ArrowUp'?-.15:event.key==='ArrowDown'?.15:0),-.9,.9);setRevision(value=>value+1);}if(event.key==='Enter'){event.preventDefault();regroup();}}} />
         <span className="particle-stage-tag">MIAO / LIVING PATTERNS</span>
-        {phase==='interactive'&&<span className="particle-stage-hint">{motionMode==='held'?'握拳已暂停 · 张手继续':motionMode==='flowing'?'张手展开丝线 · 握拳暂停':'拖动旋转 · 点击切换应用 · 回车按序牵引'}</span>}
+        {phase==='interactive'&&<span className="particle-stage-hint">{motionMode==='held'?'画面已保留 · 张手展开':motionMode==='collecting'?'握拳聚拢丝线 · 张手散开':motionMode==='flowing'?'张手展开丝线 · 握拳聚拢':'拖动旋转 · 点击切换应用 · 回车按序牵引'}</span>}
         {phase!=='interactive'&&<WeavingIntro reduced={reduced} onFlying={()=>setPhase('flying')} onComplete={()=>setEntered(true)} />}
         <div className={`particle-camera ${sensors.camera==='on'?'is-on':''}`}><video ref={sensors.videoRef} muted playsInline aria-label="本地摄像头体感预览" /><span>{sensors.gesture}</span></div>
         {fallback&&<p className="particle-fallback" role="status">{fallback}</p>}
@@ -123,7 +123,7 @@ export default function ParticleHeritage() {
           <label>丝线密度<select aria-label="选择丝线粒子数量" value={density} onChange={event=>setDensity(Number(event.target.value))}>{silkDensities.map(number=><option key={number} value={number}>{number/10000} 万</option>)}</select></label>
           <span className="silk-count" aria-live="polite">{current.name} · {isReady?`${count/10000} 万丝线粒子`:'正在汇聚'}</span>
         </div>
-        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>张手保持约半秒，纤丝便按固定节奏展开、牵引并织成对应应用；握拳立即停在当前画面，再次张手从这里继续。未检测到手时会暂停。也可手动选择纹样或应用，拖动查看空间层次。</p></div>
+        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>张手保持约半秒，纤丝便沿有序轨迹柔和散开；握拳后丝线平滑牵引聚拢，织成对应形态。途中改变手势也会从当前位置顺滑衔接。未检测到手时会暂停。也可手动选择纹样或应用，拖动查看空间层次。</p></div>
           <div className="particle-sensor-buttons">{[['camera','摄像头'],['microphone','麦克风']].map(([key,label])=><button key={key} type="button" aria-pressed={sensors[key]==='on'} onClick={()=>sensors.toggle(key)}>{sensors[key]==='pending'?`取消${label}请求`:sensors[key]==='on'?`关闭${label}`:`开启${label}`}<i aria-hidden="true" style={{'--level':sensors.levels[key]}} /></button>)}</div>
           <p className="particle-privacy">仅在开启后使用设备，画面与声音只在本机处理，不录制、不上传。离开首页或切换标签页自动关闭。</p>
           <p className="particle-device-status" role="status">{sensors.notice||[sensors.camera==='on'?sensors.gesture:'',sensors.microphone==='on'?'声音已开启':''].filter(Boolean).join(' · ')||'无需开启设备，也可拖动或点击体验。'}</p>

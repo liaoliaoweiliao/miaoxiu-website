@@ -8,8 +8,8 @@ uniform float uMorph,uScatter,uTime,uAspect,uDpr,uSize,uSeed,uCount,uDensity,uEx
 uniform vec2 uRotation,uPointer,uViewport;
 varying vec3 vColor;varying float vAngle,vPhase,vOpacity,vAcross,vAlong;
 vec3 pulled(float along){
-  float q=clamp(uProgress,0.0,1.0),envelope=max(sin(q*3.14159265),uScatter*.5);
-  float travelAlong=mix(smoothstep(.38,1.0,q),smoothstep(0.0,.62,q),along);
+  float q=clamp(uProgress,0.0,1.0),envelope=clamp(uScatter,0.0,1.0);
+  float travelAlong=clamp(smoothstep(0.0,1.0,q)+(along-.5)*envelope*.8,0.0,1.0);
   vec3 source=mix(aFrom,aTo,uSourceForm),target=mix(aFrom,aTo,uTargetForm);
   vec3 p=mix(source,target,travelAlong);
   // Adjacent fibers share a slow wave and keep their place in twelve depth planes.
@@ -30,9 +30,9 @@ vec3 project(vec3 p){
   return vec3(p.x*perspective*uSize/uAspect,p.y*perspective*uSize,p.z*.06);
 }
 void main(){
-  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265),bead=mod(id,20.0)/20.0;
+  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=clamp(uScatter,0.0,1.0),bead=mod(id,20.0)/20.0;
   float along=uLinePass>.5?aRibbon.x:(bead<.42?0.0:bead>.58?1.0:(bead-.42)/.16);
-  float travelAlong=mix(smoothstep(.38,1.0,q),smoothstep(0.0,.62,q),along);
+  float travelAlong=clamp(smoothstep(0.0,1.0,q)+(along-.5)*envelope*.8,0.0,1.0);
   float morph=mix(uSourceForm,uTargetForm,travelAlong);
   vec3 fiber=mix(aFiber,aFiberTo,morph),p=pulled(along),clip=project(p);
   // Screen-space ribbons stay visibly thick even where WebGL only supports 1px lines.
@@ -170,7 +170,7 @@ export async function createParticleRenderer(canvas,sources,onLost,{count=200000
     const uniform=Object.fromEntries(['ThreadWidth','Viewport','Morph','SourceForm','TargetForm','Progress','LinePass','Scatter','Time','Aspect','Dpr','Size','Seed','Count','Density','Exposure','Rotation','Pointer'].map(key=>[key,gl.getUniformLocation(program,`u${key}`)]));
     gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);canvas.addEventListener('webglcontextlost',lost);
     return {count,dispose,draw({morph,from=0,target=1,progress=1,scatter,time,rotation,pointer,seed}){
-      const width=canvas.clientWidth,height=canvas.clientHeight,dpr=Math.min(devicePixelRatio||1,1.5);
+      const width=canvas.clientWidth,height=canvas.clientHeight,dpr=Math.min(devicePixelRatio||1,width<700?1:1.25);
       if(!width||!height||gl.isContextLost())return;
       if(canvas.width!==Math.round(width*dpr)||canvas.height!==Math.round(height*dpr)){canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);}
       if(previous&&(target!==initialTarget||progress>=.995))restoreCanonical();
