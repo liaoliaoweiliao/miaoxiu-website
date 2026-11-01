@@ -151,7 +151,7 @@ test('only discoveries unlock themes, removed fill content stays absent and the 
   expect(hint.y - image.y - image.height).toBeLessThanOrEqual(10);
   await page.locator('[data-action="pool"][data-id="peony"]').click();
   await expect(page.locator('.pool-locked h3')).toHaveText('牡丹花纹卡池尚未解锁');
-  await expect(page.locator('.pool-locked>span')).toHaveText('♙');
+  await expect(page.locator('.wardrobe-lock-symbol .wardrobe-peony-icon')).toBeVisible();
   await expect(page.locator('.pool-locked>small')).toHaveCount(0);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).unlocked)).toEqual([]);
   await discover(page, 0);
