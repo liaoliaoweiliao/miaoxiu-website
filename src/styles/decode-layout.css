@@ -23,7 +23,6 @@
 .decode-archive h2 { font-size: clamp(17px, 1.5vw, 23px); color: #f1ce91; line-height: 1.5; margin: -8px -4px 18px; padding: 3px 12px; border: 1px solid #c6a16c; border-radius: 30px 4px; background: var(--surface-indigo-deep); }
 .decode-archive h2 span { white-space: nowrap; }
 .decode-archive-intro { display: flow-root; }
-.decode-swatch { width: 82px; height: 82px; float: left; margin: 3px 14px 6px 0; border: 1px solid #d4a46d; border-radius: 3px; }
 .decode-archive p { font-size: 13px; line-height: 1.9; margin: 0; }
 .decode-archive-section { border-top: 1px solid #ba9b665c; margin-top: 16px; padding-top: 10px; }
 .decode-archive h3 { font-size: 18px; color: #e9c58b; margin: 0 0 10px; font-weight: 600; }

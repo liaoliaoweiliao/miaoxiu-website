@@ -1,6 +1,3 @@
 .theme-motif-image { display: block; width: 48px; height: 48px; max-width: 100%; overflow: hidden; }
-.experience-page .decode-swatch { width: 82px; height: 82px; border: 0; }
-.experience-page .wardrobe-motif-picture { width: 100%; height: auto; aspect-ratio: 1; padding: 12px; }
-.experience-page .decode-game:not(.has-discovery) { grid-template-columns: minmax(0, 1fr); }
-.experience-page .decode-game:not(.has-discovery) :is(.decode-viewport, .decode-feedback) { max-width: min(100%, calc(var(--activity-image-height) * 1.5)); margin-inline: auto; }
+.experience-page .wardrobe-motif-picture { width: min(72%, 320px); height: auto; max-height: 360px; object-fit: contain; margin: 18px auto; padding: 0; }
 .experience-page .decode-mission { grid-template-columns: minmax(0, 1fr) auto; }

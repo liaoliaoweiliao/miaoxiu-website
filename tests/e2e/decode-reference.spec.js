@@ -11,7 +11,8 @@ for (const viewport of [{ width: 1784, height: 1000 }, { width: 1366, height: 76
     for (const index of [0, 1, 2]) {
       const level = levels[index];
       await expect(page.locator('.target-brief strong')).toContainText(level.name);
-      await expect(page.locator('.decode-archive')).toHaveCount(0);
+      await expect(page.locator('.decode-archive h2')).toContainText(level.name);
+      await expect(page.locator('.decode-archive img,.decode-swatch')).toHaveCount(0);
       await expect(page.locator('.decode-task')).toHaveCount(0);
       await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
       const photo = page.locator('.decode-board img');
@@ -31,7 +32,7 @@ for (const viewport of [{ width: 1784, height: 1000 }, { width: 1366, height: 76
     await page.getByRole('button', { name: '关闭', exact: true }).click();
     await expect(page.locator('.decode-progress > strong')).toHaveText('1/1');
     await expect(page.locator('.decode-archive h2')).toContainText('水涡纹');
-    await expect(page.locator('.decode-swatch')).toHaveAttribute('viewBox', '1448 0 724 724');
+    await expect(page.locator('.decode-archive img,.decode-swatch')).toHaveCount(0);
     const board = await page.locator('.decode-viewport').boundingBox();
     const archive = await page.locator('.decode-archive').boundingBox();
     if (viewport.width > 1100) {

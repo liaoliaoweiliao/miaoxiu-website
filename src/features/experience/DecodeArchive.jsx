@@ -1,13 +1,11 @@
 import { decodeArchives } from '../../data/decodeArchives.js';
 import { CULTURE } from './gameModel.js';
-import MotifImage from './MotifImage.jsx';
 
 export default function DecodeArchive({ level }) {
   const archive = decodeArchives[level.id];
   return <aside className="decode-archive" aria-labelledby="decode-archive-title">
     <h2 id="decode-archive-title">纹样档案 <span>— {level.name}</span></h2>
     <div className="decode-archive-intro">
-      <MotifImage theme={level} className="decode-swatch" />
       <p>{CULTURE[level.id].text}</p>
     </div>
     <section className="decode-archive-section"><h3>纹样特征</h3><div className="decode-features">

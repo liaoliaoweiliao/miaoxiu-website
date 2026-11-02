@@ -17,8 +17,11 @@ for (const [index, viewport] of viewports.entries()) {
       await expect(page.locator('[data-action="drawGender"]')).toHaveCount(0);
       await expect(page.locator('.motif-tab.selected')).toHaveAttribute('data-id', theme.id);
       const image = page.locator('.wardrobe-motif-picture');
-      await expect(image).toHaveAttribute('aria-label', `${theme.name}纹样`);
-      await expect(image).toHaveAttribute('viewBox', `${{peony:0,star:724,swirl:1448}[theme.id]} 0 724 724`);
+      await expect(image).toHaveAttribute('alt', `${theme.name}纹样`);
+      await expect(image).toHaveAttribute('src', new RegExp(`/motifs/${theme.id}\\.png$`));
+      await image.evaluate(image => image.decode());
+      expect(await image.evaluate(image => Math.abs(image.clientWidth/image.clientHeight-image.naturalWidth/image.naturalHeight))).toBeLessThan(.02);
+      expect((await image.boundingBox()).width).toBeLessThanOrEqual(321);
       const picture = await page.locator('.wardrobe-puzzle-photo').boundingBox();
       const panel = await page.locator('.pool-locked').boundingBox();
       if (viewport.width > 1050 || viewport.width > 600 && viewport.width <= 900) expect(panel.x).toBeGreaterThan(picture.x + picture.width);
