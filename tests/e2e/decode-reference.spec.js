@@ -11,20 +11,13 @@ for (const viewport of [{ width: 1784, height: 1000 }, { width: 1366, height: 76
     for (const index of [0, 1, 2]) {
       const level = levels[index];
       await expect(page.locator('.target-brief strong')).toContainText(level.name);
-      await expect(page.locator('.decode-archive h2')).toContainText(level.name);
+      await expect(page.locator('.decode-archive')).toHaveCount(0);
+      await expect(page.locator('.decode-task')).toHaveCount(0);
       await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
       const photo = page.locator('.decode-board img');
       await photo.evaluate(image => image.decode());
       expect(await photo.evaluate(image => Math.abs(image.clientWidth / image.clientHeight - image.naturalWidth / image.naturalHeight))).toBeLessThan(.02);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      const board = await page.locator('.decode-viewport').boundingBox();
-      const archive = await page.locator('.decode-archive').boundingBox();
-      if (viewport.width > 1100) {
-        expect(archive.x).toBeGreaterThan(board.x + board.width);
-        expect(Math.abs(archive.y - board.y)).toBeLessThan(2);
-      } else {
-        expect(archive.y).toBeGreaterThan(board.y + board.height);
-      }
       if (index < 2) {
         await page.evaluate((sample) => { Math.random = () => sample; }, index === 0 ? 0 : .99);
         await page.locator('[data-action="randomImage"]').click();
@@ -37,6 +30,14 @@ for (const viewport of [{ width: 1784, height: 1000 }, { width: 1366, height: 76
     await page.locator('.decode-board').click({ position: { x: box.width * x / 100, y: box.height * y / 100 } });
     await page.getByRole('button', { name: '关闭', exact: true }).click();
     await expect(page.locator('.decode-progress > strong')).toHaveText('1/1');
+    await expect(page.locator('.decode-archive h2')).toContainText('水涡纹');
+    await expect(page.locator('.decode-swatch')).toHaveAttribute('viewBox', '1448 0 724 724');
+    const board = await page.locator('.decode-viewport').boundingBox();
+    const archive = await page.locator('.decode-archive').boundingBox();
+    if (viewport.width > 1100) {
+      expect(archive.x).toBeGreaterThan(board.x + board.width);
+      expect(Math.abs(archive.y - board.y)).toBeLessThan(2);
+    } else expect(archive.y).toBeGreaterThan(board.y + board.height);
     await page.getByRole('button', { name: '前往对应苗绣衣橱 →', exact: true }).click();
     await expect(page.locator('.gender-prompt')).toBeInViewport();
     await page.locator('.decode-image-preview').click();

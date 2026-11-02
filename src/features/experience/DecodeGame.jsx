@@ -30,10 +30,9 @@ const DecodeGame = forwardRef(function DecodeGame({ game, dispatch, onPreview, o
     }
   }
 
-  return <div className="decode-game">
+  return <div className={`decode-game ${game.found ? 'has-discovery' : ''}`}>
     <header className="decode-mission">
       <div className="decode-target"><span className="level-label">第 {game.round} 轮 · {level.title}</span><div className="target-brief"><span>本图寻找</span><strong><ThemeIcon theme={level} /> {level.name}</strong></div></div>
-      <div className="decode-task"><span>任务</span><p>在下方图片中，找到 <strong>{level.name}</strong>。<small>点击相应位置即可解锁对应的苗绣衣橱。</small></p></div>
       <div className="decode-progress"><span className="decode-counter">已找到</span><strong>{game.found ? '1' : '0'}<small>/1</small></strong><small>命中即可解锁</small></div>
     </header>
     <div className="decode-photo-column">
@@ -45,7 +44,7 @@ const DecodeGame = forwardRef(function DecodeGame({ game, dispatch, onPreview, o
     </div><button type="button" className="decode-image-preview" onClick={preview} aria-label={`放大欣赏${level.title}`}>⤢ 欣赏图片</button></div>
     <p id="decode-feedback" className="decode-feedback" role="status">{game.notice}</p>
     </div>
-    <DecodeArchive level={level} />
+    {game.found && <DecodeArchive level={level} />}
     <footer className="decode-bottom"><nav className="decode-explore" aria-label="延伸探索"><span>延伸探索</span><button type="button" onClick={() => onExplore('craft')}><i aria-hidden="true">◇</i><span><strong>苗绣工艺</strong><small>了解一针一线的匠心</small></span></button><button type="button" onClick={() => onExplore('motifs')}><i aria-hidden="true">❀</i><span><strong>常见纹样</strong><small>探索更多经典纹样</small></span></button><button type="button" onClick={onWardrobe} disabled={!game.found}><i aria-hidden="true">♧</i><span><strong>苗绣衣橱</strong><small>{game.found ? '欣赏以纹样为灵感的服饰' : '找到纹样后开启衣橱'}</small></span></button></nav>
     <div className="decode-actions">{game.found ? <button type="button" onClick={onWardrobe}>前往对应苗绣衣橱 →</button> : <button type="button" data-action="randomImage" onClick={() => onRound(false)} disabled={game.drawing || game.reveal}>↻ 随机抽图</button>}</div></footer>
   </div>;

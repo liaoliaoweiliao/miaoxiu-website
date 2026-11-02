@@ -1,21 +1,13 @@
 import { decodeArchives } from '../../data/decodeArchives.js';
-import { assetUrl } from '../../utils/assets.js';
 import { CULTURE } from './gameModel.js';
+import MotifImage from './MotifImage.jsx';
 
 export default function DecodeArchive({ level }) {
   const archive = decodeArchives[level.id];
-  const region = level.regions[0];
-  const crop = region.shape === 'rect'
-    ? [region.x, region.y, region.w, region.h]
-    : [region.cx - region.rx, region.cy - region.ry, region.rx * 2, region.ry * 2];
-  // All three source photographs are 3:2; keep the sample in those coordinates.
-  const viewBox = [crop[0] * 1.5, crop[1], crop[2] * 1.5, crop[3]];
   return <aside className="decode-archive" aria-labelledby="decode-archive-title">
     <h2 id="decode-archive-title">纹样档案 <span>— {level.name}</span></h2>
     <div className="decode-archive-intro">
-      <svg className="decode-swatch" viewBox={viewBox.join(' ')} role="img" aria-label={`${level.name}原图细节`}>
-        <image href={assetUrl(`experience/${level.image}`)} width="150" height="100" preserveAspectRatio="none" />
-      </svg>
+      <MotifImage theme={level} className="decode-swatch" />
       <p>{CULTURE[level.id].text}</p>
     </div>
     <section className="decode-archive-section"><h3>纹样特征</h3><div className="decode-features">

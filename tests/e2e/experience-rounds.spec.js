@@ -48,6 +48,7 @@ for (const width of [1440, 390]) {
       await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
       await expect(page.locator('[data-action="collectionFilter"][data-id="all"]')).toHaveAttribute('aria-pressed', 'true');
       await expect(page.locator('[data-action="finishLoop"]')).toHaveCount(0);
+      await expect(page.locator('.decode-archive')).toHaveCount(0);
       expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }

@@ -1,4 +1,4 @@
-import { assetUrl } from '../../utils/assets.js';
+import MotifImage from './MotifImage.jsx';
 import { CULTURE } from './gameModel.js';
 import { ThemeIcon } from './DrawStage.jsx';
 
@@ -12,9 +12,9 @@ export function WardrobeLandscape() {
 
 export default function WardrobeLocked({ theme, photo, onBack, onPreview }) {
   return <div className="wardrobe-locked-layout">
-    <button type="button" className="wardrobe-puzzle-photo" onClick={onPreview} aria-label={`欣赏本轮寻纹图片：${photo.title}`}>
-      <img src={assetUrl(`experience/${photo.image}`)} alt={`本轮寻纹图片：${photo.title}`} />
-      <span><small>本轮寻纹 · {photo.name}</small><strong>⤢ 欣赏图片</strong></span>
+    <button type="button" className="wardrobe-puzzle-photo" onClick={onPreview} aria-label={`欣赏${theme.name}纹样原图`}>
+      <MotifImage theme={theme} className="wardrobe-motif-picture" />
+      <span><small>{theme.name}纹样</small><strong>⤢ 欣赏纹样原图</strong></span>
     </button>
     <div className="pool-locked">
       <span className="wardrobe-lock-symbol" aria-hidden="true"><ThemeIcon theme={theme} /></span>
