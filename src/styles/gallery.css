@@ -228,7 +228,7 @@
   align-items: center;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: clamp(84px, 7vw, 112px);
-  padding: 12px 0;
+  padding: 16px 0;
 }
 
 .jing-work {
@@ -376,7 +376,7 @@
 }
 
 .thread-story.is-featured {
-  padding-block: 12px;
+  padding-block: 16px;
 }
 
 .thread-stitch {
@@ -621,9 +621,9 @@ body[data-page="gallery"] .footer .motto span {
 }
 
 @media (min-width: 1101px) {
-  /* Interleave the two columns instead of leaving a full empty row opposite each work. */
+  /* Keep the alternating rhythm with enough space between works in each column. */
   .thread-story + .thread-story {
-    margin-top: calc(var(--gallery-photo-size) * -.5);
+    margin-top: calc(var(--gallery-photo-size) * -.4);
   }
 
   /* Overlapping row boxes must not intercept clicks in the opposite column. */
@@ -649,7 +649,7 @@ body[data-page="gallery"] .footer .motto span {
   .thread-story.is-featured {
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
-    padding: 10px 0 10px 62px;
+    padding: 16px 0 16px 62px;
   }
 
   .thread-story.is-left .jing-work,
@@ -759,7 +759,7 @@ body[data-page="gallery"] .footer .motto span {
 
   .thread-story,
   .thread-story.is-featured {
-    padding: 10px 0 14px 34px;
+    padding: 18px 0 22px 34px;
   }
 
   .thread-story.is-left .jing-work,
