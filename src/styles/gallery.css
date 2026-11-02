@@ -213,7 +213,7 @@
   position: relative;
   z-index: 1;
   display: flex;
-  max-width: 1440px;
+  max-width: 1120px;
   flex-direction: column;
   margin: 0 auto;
   padding: 0;
@@ -226,20 +226,19 @@
   min-width: 0;
   min-height: 0;
   align-items: center;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(84px, 7vw, 112px);
-  padding: 16px 0;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 28px 0;
 }
 
 .jing-work {
   position: relative;
   display: grid;
   width: 100%;
-  max-width: 664px;
+  max-width: none;
   min-width: 0;
-  grid-template-columns: var(--gallery-photo-size) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  gap: clamp(20px, 1.7vw, 28px);
+  gap: clamp(64px, 7vw, 112px);
   padding: 0;
   border: 0;
   background: transparent;
@@ -254,13 +253,18 @@
   transition: opacity .75s ease, filter .75s ease, transform .75s ease, box-shadow .25s ease, border-color .25s ease;
 }
 
-.thread-story.is-left .jing-work {
-  justify-self: end;
+.thread-story.is-left .jing-work,
+.thread-story.is-right .jing-work {
+  justify-self: stretch;
 }
 
-.thread-story.is-right .jing-work {
+.thread-story.is-right .jing-work-photo {
   grid-column: 2;
-  justify-self: start;
+}
+
+.thread-story.is-right .jing-work-copy {
+  grid-column: 1;
+  justify-self: end;
 }
 
 .jing-work.is-visible {
@@ -284,6 +288,9 @@
   display: block;
   width: var(--gallery-photo-size);
   min-width: 0;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
   aspect-ratio: 1;
   overflow: hidden;
   border: 0;
@@ -311,7 +318,12 @@
 
 .jing-work-copy {
   display: flex;
+  width: 100%;
+  max-width: 400px;
   min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
   flex-direction: column;
   align-items: flex-start;
   padding: 16px 0;
@@ -376,7 +388,7 @@
 }
 
 .thread-story.is-featured {
-  padding-block: 16px;
+  padding-block: 28px;
 }
 
 .thread-stitch {
@@ -620,22 +632,6 @@ body[data-page="gallery"] .footer .motto span {
   color: #efbb80;
 }
 
-@media (min-width: 1101px) {
-  /* Keep the alternating rhythm with enough space between works in each column. */
-  .thread-story + .thread-story {
-    margin-top: calc(var(--gallery-photo-size) * -.4);
-  }
-
-  /* Overlapping row boxes must not intercept clicks in the opposite column. */
-  .thread-story {
-    pointer-events: none;
-  }
-
-  .thread-story .jing-work {
-    pointer-events: auto;
-  }
-}
-
 @media (max-width: 1100px) {
   .jing-gallery {
     --gallery-photo-size: clamp(236px, 30vw, 320px);
@@ -649,7 +645,7 @@ body[data-page="gallery"] .footer .motto span {
   .thread-story.is-featured {
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
-    padding: 16px 0 16px 62px;
+    padding: 20px 0 20px 62px;
   }
 
   .thread-story.is-left .jing-work,
@@ -770,7 +766,14 @@ body[data-page="gallery"] .footer .motto span {
   }
 
   .jing-work-copy {
+    max-width: none;
+    grid-column: 1;
+    grid-row: 2;
     padding: 13px 0 3px;
+  }
+
+  .thread-story.is-right .jing-work-photo {
+    grid-column: 1;
   }
 
   .jing-work-type {
