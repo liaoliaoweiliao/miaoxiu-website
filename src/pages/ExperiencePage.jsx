@@ -88,7 +88,7 @@ export default function ExperiencePage({ state = {}, onAction }) {
   }
 
   return <main className="experience-page">
-    <section className="decode-section container"><Frame className="pattern-image-frame"><div className="decode-inner">
+    <section id="miao-decode" tabIndex={-1} className="decode-section container"><Frame className="pattern-image-frame"><div className="decode-inner">
       <div className="side-heading"><SealTitle kind="feiyi" image="feiyi" heading="h1" title={<>寻纹<br />解密</>} /><p>一针一线，藏着纹样。<br />在画面中找到一处，<br />开启对应主题衣橱。</p></div>
       <div className="decode-content"><DecodeGame ref={boardRef} game={game} dispatch={dispatch} onPreview={(artwork) => onAction?.('modal', 0, artwork)} onWardrobe={openWardrobe} onRound={nextRound} /></div>
     </div></Frame></section>

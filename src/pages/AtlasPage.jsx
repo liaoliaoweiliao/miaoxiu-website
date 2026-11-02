@@ -38,6 +38,8 @@ function DistributionMap({ state, points, focus, dispatch }) {
   const from = previous ? projectPoint(previous.coordinates) : null;
   const to = focus ? projectPoint(focus.coordinates) : null;
   const focusPosition = focus ? projectPoint(focus.coordinates) : null;
+  // Move geography, heat and markers together; the selected county is the viewport center.
+  const offset = focusPosition ? { x: 410 - focusPosition.x, y: 230 - focusPosition.y } : { x: 0, y: 0 };
 
   return <div className="thread-map-panel">
     <div className="thread-map-toolbar">
@@ -53,25 +55,27 @@ function DistributionMap({ state, points, focus, dispatch }) {
             <filter id={`${prefix}-soft`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8" /></filter>
           </defs>
           <rect width="820" height="460" fill={`url(#${prefix}-weave)`} />
+          <g className="thread-map-landscape" style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}>
           <g className="thread-provinces">{PROVINCE_PATHS.map((province) => <path key={province.adcode} d={province.d} className={province.adcode === 520000 ? 'is-guizhou' : ''} />)}</g>
           <g className={`thread-heat-layer ${state.heat ? '' : 'is-hidden'}`} aria-hidden="true">
             <g filter={`url(#${prefix}-soft)`}>{cells.map((cell) => <rect key={`${cell.x}-${cell.y}`} x={cell.x - 6} y={cell.y - 6} width="13" height="13" fill={heatColors[cell.level]} opacity={Math.min(.66, .1 + cell.value * .17)} />)}</g>
             {cells.filter((cell) => cell.value >= .5).map((cell) => <path key={`stitch-${cell.x}-${cell.y}`} d={`M${cell.x - 2} ${cell.y - 2}l4 4m0-4-4 4`} stroke={heatColors[cell.level]} strokeWidth="1.1" opacity={Math.min(.8, cell.value * .27)} />)}
           </g>
           <g className="thread-province-labels">{PROVINCE_LABELS.map(([name, longitude, latitude]) => { const p = projectPoint([longitude, latitude]); return <text key={name} x={p.x} y={p.y}>{name}</text>; })}</g>
+          {from && to && state.run > 0 && state.visited.at(-1) === focus?.id && <path key={state.run} className="thread-travel-line" d={`M${from.x} ${from.y}Q${(from.x + to.x) / 2} ${Math.min(from.y, to.y) - 55} ${to.x} ${to.y}`} pathLength="1" />}
+          </g>
           <path d="M26 422h768M26 32h768" stroke="#a88b65" strokeDasharray="2 7" opacity=".32" />
           <g className="thread-compass" transform="translate(768 47)"><path d="M0 20V0m-5 7 5-7 5 7" /><text y="-10" textAnchor="middle">N</text></g>
           <g className="thread-inset-motif" transform="translate(40 300)"><path d="m32 0 32 32-32 32L0 32Zm0 12 20 20-20 20-20-20Z" /><path d="M32 20v24M20 32h24" /></g>
-          {from && to && state.run > 0 && state.visited.at(-1) === focus?.id && <path key={state.run} className="thread-travel-line" d={`M${from.x} ${from.y}Q${(from.x + to.x) / 2} ${Math.min(from.y, to.y) - 55} ${to.x} ${to.y}`} pathLength="1" />}
         </svg>
-        <div className="thread-map-nodes">{DISTRIBUTION_POINTS.map((point) => {
+        <div className="thread-map-nodes" style={{ transform: `translate(${offset.x / 820 * 100}%, ${offset.y / 460 * 100}%)` }}>{DISTRIBUTION_POINTS.map((point) => {
           const position = projectPoint(point.coordinates);
           const selected = point.id === state.selected;
           const visible = visibleIds.has(point.id);
           const visited = state.visited.includes(point.id);
           const near = !selected && focusPosition && Math.hypot(position.x - focusPosition.x, position.y - focusPosition.y) < 45;
           const label = selected || (!near && ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id));
-          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${position.y > 400 ? 'is-south' : ''} ${position.y < 105 ? 'is-north' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%`, '--point-x': position.x / 820 }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
+          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%`, '--point-x': (position.x + offset.x) / 820 }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
             {selected ? <svg className="thread-selected-pin" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 2 32 11v14L18 44 4 25V11Z" fill="#aa362d" stroke="#ffe0a6" strokeWidth="2" /><path d="m18 10 9 9-9 9-9-9Z" fill="none" stroke="#f7d5a0" strokeWidth="1.3" /><path d="m18 15 4 4-4 4-4-4Z" fill="#ffe7be" /></svg> : <span className="thread-pin-core" />}
             <span className="thread-point-label">{selected && <small>已选中</small>}{point.name}</span>
           </button>;

@@ -19,8 +19,14 @@ const features = [
     subtitle: 'THE ROOTS',
     icon: '❖',
     title: '苗绣探源',
+    page: 'history',
     description: '探寻文化根脉，解读纹样与技艺',
-    topics: ['苗族小故事', '纹样图案', '六大针法', '色彩解析'],
+    topics: [
+      { title: '苗族小故事', section: 'history-stories' },
+      { title: '纹样图案', section: 'history-patterns' },
+      { title: '六大针法', section: 'history-stitches' },
+      { title: '色彩解析', section: 'history-colors' },
+    ],
     foot: ['循纹溯源', '以绣为史'],
   },
   {
@@ -30,8 +36,13 @@ const features = [
     subtitle: 'THE CRAFT',
     icon: '✳',
     title: '互动体验',
+    page: 'experience',
     description: '游戏探索，感受苗绣魅力',
-    topics: ['寻纹解密', '苗绣衣橱', '人物换装'],
+    topics: [
+      { title: '寻纹解密', section: 'miao-decode' },
+      { title: '苗绣衣橱', section: 'miao-wardrobe' },
+      { title: '人物换装', section: 'miao-dressup' },
+    ],
     foot: ['穿针引线', '指尖生花'],
   },
   {
@@ -41,6 +52,7 @@ const features = [
     subtitle: 'THE WORKS',
     icon: '✿',
     title: '作品展览',
+    page: 'gallery',
     description: '欣赏匠心之作，感受艺术之美',
     foot: ['绣色万象', '匠心入画'],
   },
@@ -145,7 +157,13 @@ function HeroCarousel({ initialSlide = 0 }) {
   );
 }
 
-export default function HomePage({ state }) {
+export default function HomePage({ state, onNavigate }) {
+  function navigate(event, page, section) {
+    // Preserve native link behavior for new tabs and modified clicks.
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onNavigate(page, { section });
+  }
   return (
     <>
       <HeroCarousel initialSlide={state?.slide || 0} />
@@ -153,6 +171,7 @@ export default function HomePage({ state }) {
         <section className="feature-grid feature-editorial" aria-label="探索苗绣三大主题">
           {features.map((feature) => (
             <article key={feature.title} className={`feature-card ${feature.className}`}>
+              <a className="feature-card-link" href={`#${feature.page}`} aria-label={feature.title} onClick={(event) => navigate(event, feature.page)} />
               <div className={`feature-art ${feature.artClassName || ''}`.trim()} aria-hidden="true">
                 <img src={assetUrl(feature.image)} alt="" loading="lazy" />
               </div>
@@ -173,7 +192,7 @@ export default function HomePage({ state }) {
                 <div className="feature-rule" />
                 {feature.topics ? (
                   <ul className="feature-topics">
-                    {feature.topics.map((topic) => <li key={topic}>{topic}</li>)}
+                    {feature.topics.map((topic) => <li key={topic.section}><a href={`#${feature.page}/${topic.section}`} onClick={(event) => navigate(event, feature.page, topic.section)}>{topic.title}</a></li>)}
                   </ul>
                 ) : (
                   <span className="feature-gallery-copy">一针一线的色彩，<span>藏着值得细看的故事。</span></span>

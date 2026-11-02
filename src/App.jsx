@@ -18,17 +18,19 @@ function currentPage() {
   return Object.hasOwn(pages, page) ? page : 'home';
 }
 
+const currentSection = () => window.location.hash.slice(1).split('/')[1] || null;
+
 export default function App() {
   const [state, setState] = useState(() => ({
-    page: currentPage(), motif: 0, galleryFilter: 0, query: '', nav: false, modal: null, bloom: false,
+    page: currentPage(), section: currentSection(), motif: 0, galleryFilter: 0, query: '', nav: false, modal: null, bloom: false,
   }));
 
   const searchRevision = useRef(0);
 
   useEffect(() => {
-    const onHashChange = () => setState((previous) => previous.page === currentPage()
+    const onHashChange = () => setState((previous) => previous.page === currentPage() && previous.section === currentSection()
       ? { ...previous, nav: false }
-      : { ...previous, page: currentPage(), nav: false, modal: null, searchTarget: null });
+      : { ...previous, page: currentPage(), section: currentSection(), nav: false, modal: null, searchTarget: null });
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
@@ -45,13 +47,27 @@ export default function App() {
 
   const onNavigate = useCallback((page, extra = {}) => {
     if (!Object.hasOwn(pages, page)) return;
+    const { section = null, ...pageState } = extra;
     setState((previous) => ({
-      ...previous, searchTarget: null, ...extra, page, nav: false, modal: null,
+      ...previous, searchTarget: null, ...pageState, page, section, nav: false, modal: null,
+      sectionRevision: (previous.sectionRevision || 0) + 1,
       experienceThemeRequest: extra.experienceTheme ? (previous.experienceThemeRequest || 0) + 1 : previous.experienceThemeRequest,
     }));
-    if (window.location.hash !== `#${page}`) window.location.hash = page;
-    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    const hash = `#${page}${section ? `/${section}` : ''}`;
+    if (window.location.hash !== hash) window.location.hash = hash;
+    if (!section) window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   }, []);
+
+  useEffect(() => {
+    if (!state.section) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      const section = document.getElementById(state.section);
+      if (!section?.closest('main')) return;
+      section.focus({ preventScroll: true });
+      section.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [state.page, state.section, state.sectionRevision]);
 
   const closeModal = useCallback(() => setState((previous) => ({ ...previous, modal: null })), []);
 

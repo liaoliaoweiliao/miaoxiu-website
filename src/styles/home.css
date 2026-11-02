@@ -1,3 +1,10 @@
+/* Full-card links and independent topic links share the existing chapter layout. */
+.feature-card-link{position:absolute;inset:0;z-index:2;border-radius:inherit}
+.feature-card-link:focus-visible{outline:2px solid #ffe1a5;outline-offset:-8px}
+.feature-topics a{position:relative;z-index:3;display:inline-block;pointer-events:auto;color:inherit;text-decoration:none;text-underline-offset:5px;padding-block:3px}
+.feature-topics a:hover,.feature-topics a:focus-visible{color:#ffe1a5;text-decoration:underline}
+.feature-topics a:focus-visible{outline:2px solid #ffe1a5;outline-offset:3px}
+
 /* 首页第三幕：长卷与三次小鸟互动。图像、针线及文创在一张无框画卷内。 */
 .heritage-journey{position:relative;width:100vw;max-width:none;margin:clamp(22px,3vw,48px) 0 0 calc(50% - 50vw);background:transparent;color:#ead7c4;isolation:isolate;overflow:hidden}
 .heritage-viewport{--bird-size:90px;position:relative;height:min(max(610px,56vw),85vh);min-height:610px;background:transparent;overflow:hidden;outline-offset:-5px;isolation:isolate;user-select:none;-webkit-user-select:none}

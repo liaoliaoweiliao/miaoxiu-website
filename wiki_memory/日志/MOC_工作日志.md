@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-10-31
+updated: 2026-11-02
 topic: work-log-index
 sources: []
 ---
@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-11-02 | feature | completed | [首页入口跳转与地图居中](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-02-%E9%A6%96%E9%A1%B5%E5%85%A5%E5%8F%A3%E8%B7%B3%E8%BD%AC%E4%B8%8E%E5%9C%B0%E5%9B%BE%E5%B1%85%E4%B8%AD.md) |
 | 2026-10-31 | maintenance | completed | [本地main同步GitHub更新](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-31-%E6%9C%AC%E5%9C%B0main%E5%90%8C%E6%AD%A5GitHub%E6%9B%B4%E6%96%B0.md) |
 | 2026-10-29 | feature | completed | [最新网站桌面便携版交付](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-29-%E6%9C%80%E6%96%B0%E7%BD%91%E7%AB%99%E6%A1%8C%E9%9D%A2%E4%BE%BF%E6%90%BA%E7%89%88%E4%BA%A4%E4%BB%98.md) |
 | 2026-10-28 | maintenance | completed | [静涛分支合并到main](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-28-%E9%9D%99%E6%B6%9B%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6%E5%88%B0main.md) |
