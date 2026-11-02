@@ -122,3 +122,45 @@ test('map movement animates and converges on the selected place with full motion
   })).toBeLessThan(1);
   expect(await page.locator('.thread-map-nodes').evaluate((element) => getComputedStyle(element).transitionDuration)).toBe('0.6s');
 });
+
+for(const width of [390,1440]) test(`enlarged map targets resolve nearby clicks and clustered point centers at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.goto('/');
+  const map=page.locator('.thread-map-geography');
+  await map.scrollIntoViewIfNeeded();
+  const far=page.locator('[data-point="junlian"]');
+  const bounds=await far.boundingBox();
+  expect(bounds.width).toBeGreaterThanOrEqual(44);expect(bounds.height).toBeGreaterThanOrEqual(44);
+  // Click well outside the 10px diamond, inside the larger target.
+  await page.mouse.click(bounds.x+bounds.width/2,bounds.y+bounds.height/2-18);
+  await expect(page.getByLabel('选择苗乡地点')).toHaveValue('junlian');
+  for(const id of ['huayuan','songtao','fenghuang','leishan','kaili','taijiang']) {
+    // Restore the same viewport so clustered targets are tested together.
+    await page.getByLabel('选择苗乡地点').selectOption('leishan');
+    await map.scrollIntoViewIfNeeded();
+    const target=await page.locator(`[data-point="${id}"]`).boundingBox();
+    await page.mouse.click(target.x+target.width/2,target.y+target.height/2);
+    await expect(page.getByLabel('选择苗乡地点')).toHaveValue(id);
+  }
+  await page.locator('[data-point="weining"]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByLabel('选择苗乡地点')).toHaveValue('weining');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test.describe('touch map selection',()=>{
+  test.use({hasTouch:true,viewport:{width:390,height:900}});
+  test('taps near a marker and on a clustered marker select the intended place',async({page})=>{
+    await page.goto('/');
+    const map=page.locator('.thread-map-geography');
+    await map.scrollIntoViewIfNeeded();
+    const far=await page.locator('[data-point="junlian"]').boundingBox();
+    await page.touchscreen.tap(far.x+far.width/2,far.y+far.height/2-18);
+    await expect(page.getByLabel('选择苗乡地点')).toHaveValue('junlian');
+    await page.getByLabel('选择苗乡地点').selectOption('leishan');
+    await map.scrollIntoViewIfNeeded();
+    const cluster=await page.locator('[data-point="kaili"]').boundingBox();
+    await page.touchscreen.tap(cluster.x+cluster.width/2,cluster.y+cluster.height/2);
+    await expect(page.getByLabel('选择苗乡地点')).toHaveValue('kaili');
+  });
+});

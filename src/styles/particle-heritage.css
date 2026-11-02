@@ -25,6 +25,10 @@
 .particle-sensor-buttons i{position:absolute;left:0;bottom:0;height:3px;width:calc(var(--level)*100%);background:#eacb85;pointer-events:none;transition:width .1s}
 .particle-sensors .particle-privacy{grid-column:1/-1;font-size:11px;color:#acbfc4}
 .particle-device-status{grid-column:1/-1;min-height:38px;color:#e6d4ac!important}
+.particle-volume{grid-column:1/-1;display:flex;align-items:center;gap:12px;max-width:420px;width:100%;margin:8px 0;color:#f0dfbc;font-size:14px}
+.particle-volume>i{height:8px;flex:1;background:#0e3d56;border:1px solid #7595a366;border-radius:8px;overflow:hidden}
+.particle-volume b{display:block;height:100%;background:linear-gradient(90deg,#d5b576,#ffe2a0);transition:width .1s linear}
+.particle-volume strong{min-width:42px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
 .particle-camera{display:none;position:absolute;left:18px;bottom:55px;width:112px;border:1px solid #d5b77a66;border-radius:7px;overflow:hidden;background:#071e30}
 .particle-camera.is-on{display:block}.particle-camera video{display:block;width:100%;height:76px;object-fit:cover;transform:scaleX(-1)}
 .particle-camera span{display:block;text-align:center;font-size:10px;padding:4px;color:#e9d4a7}

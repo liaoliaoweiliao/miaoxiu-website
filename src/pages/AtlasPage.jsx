@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useReducer } from 'react';
+import { useEffect, useId, useMemo, useReducer, useState } from 'react';
 import { ATLAS_RECORDS } from '../data/atlas.js';
 import { BRANCHES, DISTRIBUTION_POINTS, DISTRIBUTION_SOURCES, INITIAL_DISTRIBUTION, PROVINCE_LABELS } from '../data/distribution.js';
 import { PROVINCE_PATHS } from '../data/atlasGeography.js';
@@ -32,6 +32,7 @@ function Motif({ kind = 'butterfly', className = '' }) {
 
 function DistributionMap({ state, points, focus, dispatch }) {
   const prefix = useId().replace(/:/g, '');
+  const [hoverPoint, setHoverPoint] = useState(null);
   const cells = useMemo(() => heatCells(points), [points]);
   const visibleIds = new Set(points.map((point) => point.id));
   const previous = DISTRIBUTION_POINTS.find((point) => point.id === state.visited.at(-2));
@@ -41,6 +42,29 @@ function DistributionMap({ state, points, focus, dispatch }) {
   // Move geography, heat and markers together; the selected county is the viewport center.
   const offset = focusPosition ? { x: 410 - focusPosition.x, y: 230 - focusPosition.y } : { x: 0, y: 0 };
 
+  function nearestPoint(event) {
+    let nearest = null, distance = 25;
+    for (const button of event.currentTarget.querySelectorAll('.thread-map-point:not(:disabled)')) {
+      const bounds = button.getBoundingClientRect();
+      const delta = Math.hypot(event.clientX - bounds.x - bounds.width / 2, event.clientY - bounds.y - bounds.height / 2);
+      if (delta < distance) { nearest = button; distance = delta; }
+    }
+    const pin = event.target.closest('.thread-selected-pin')?.closest('.thread-map-point');
+    return pin && distance > 8 ? pin : nearest;
+  }
+
+  function chooseNearbyPoint(event) {
+    // Keyboard activation keeps the button's own selection handler.
+    if (event.detail === 0) return;
+    const nearest = nearestPoint(event);
+    // Resolve overlapping enlarged buttons by their visible centers, including during map motion.
+    event.stopPropagation();
+    if (nearest) {
+      nearest.focus({ preventScroll: true });
+      dispatch({ type: 'point', value: nearest.dataset.point });
+    }
+  }
+
   return <div className="thread-map-panel">
     <div className="thread-map-toolbar">
       <div><span className="thread-kicker">01 / 支系分布地图</span><h3>每一处苗乡，都值得细看</h3></div>
@@ -48,7 +72,7 @@ function DistributionMap({ state, points, focus, dispatch }) {
     </div>
     <div className="thread-map-scroll">
       <div className="thread-map-canvas">
-        <div className="thread-map-geography">
+        <div className="thread-map-geography" onClickCapture={chooseNearbyPoint} onPointerMove={(event) => setHoverPoint(nearestPoint(event)?.dataset.point || null)} onPointerLeave={() => setHoverPoint(null)}>
         <svg className="thread-map-svg" viewBox="0 0 820 460" role="img" aria-label="苗族地域支系代表分布点地图，热度表示本页收录点的集中程度">
           <defs>
             <pattern id={`${prefix}-weave`} width="12" height="12" patternUnits="userSpaceOnUse"><path d="m3 3 6 6m0-6L3 9" stroke="#b1bfd2" strokeWidth=".4" opacity=".14" /></pattern>
@@ -75,7 +99,7 @@ function DistributionMap({ state, points, focus, dispatch }) {
           const visited = state.visited.includes(point.id);
           const near = !selected && focusPosition && Math.hypot(position.x - focusPosition.x, position.y - focusPosition.y) < 45;
           const label = selected || (!near && ['weining', 'junlian', 'malipo', 'huayuan', 'rongshui'].includes(point.id));
-          return <button key={point.id} type="button" className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${near ? 'is-near-selection' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%`, '--point-x': (position.x + offset.x) / 820 }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
+          return <button key={point.id} type="button" data-point={point.id} className={`thread-map-point ${selected ? 'is-selected' : ''} ${visited ? 'is-visited' : ''} ${visible ? '' : 'is-muted'} ${label ? 'has-label' : ''} ${near ? 'is-near-selection' : ''} ${hoverPoint === point.id ? 'is-hit-target' : ''}`} style={{ left: `${position.x / 820 * 100}%`, top: `${position.y / 460 * 100}%`, '--point-x': (position.x + offset.x) / 820 }} disabled={!visible} aria-label={`探访${point.name}，${point.province}，${branchFor(point).name}`} aria-pressed={selected} title={`${point.name} · ${point.province}`} onClick={() => dispatch({ type: 'point', value: point.id })}>
             {selected ? <svg className="thread-selected-pin" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 2 32 11v14L18 44 4 25V11Z" fill="#aa362d" stroke="#ffe0a6" strokeWidth="2" /><path d="m18 10 9 9-9 9-9-9Z" fill="none" stroke="#f7d5a0" strokeWidth="1.3" /><path d="m18 15 4 4-4 4-4-4Z" fill="#ffe7be" /></svg> : <span className="thread-pin-core" />}
             <span className="thread-point-label">{selected && <small>已选中</small>}{point.name}</span>
           </button>;

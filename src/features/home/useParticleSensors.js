@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { soundEnergy } from './particleModel.js';
+import { smoothSoundEnergy } from './particleModel.js';
 import { assetUrl } from '../../utils/assets.js';
 import { classifyHand, initialGesture, stabilizeGesture } from './handGestureModel.js';
 
@@ -7,13 +7,12 @@ const errors = (error, kind) => error.name === 'NotAllowedError'
   ? `${kind}权限未开启，可继续使用鼠标或触屏`
   : error.name === 'NotFoundError' ? `没有找到${kind}，可继续手动体验` : `${kind}暂不可用，请检查设备后重试`;
 
-export default function useParticleSensors(signal, onImpulse, onGesture) {
+export default function useParticleSensors(signal, onGesture) {
   const videoRef = useRef(null), resources = useRef({}), alive = useRef(false);
   const [camera, setCamera] = useState('off'), [microphone, setMicrophone] = useState('off');
   const [gesture,setGesture]=useState('请将手掌放入镜头');
   const gestureRef=useRef(onGesture);gestureRef.current=onGesture;
   const [notice, setNotice] = useState(''), [levels, setLevels] = useState({ camera: 0, microphone: 0 });
-  const impulseRef = useRef(onImpulse); impulseRef.current = onImpulse;
 
   function stop(kind) {
     const item = resources.current[kind];
@@ -46,7 +45,7 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(kind === 'camera'
         ? { video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false }
-        : { audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+        : { audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false }, video: false });
       if (!alive.current || resources.current[kind] !== item || document.hidden) { stream.getTracks().forEach(track => track.stop()); if (resources.current[kind] === item) stop(kind); return; }
       item.stream = stream;
       for (const track of stream.getTracks()) track.onended = () => {
@@ -104,7 +103,6 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
 
   useEffect(() => {
     alive.current = true;
-    let lastImpulse = 0;
     const interval = setInterval(() => {
       if (document.hidden) return;
       const cam = resources.current.camera, mic = resources.current.microphone;
@@ -116,9 +114,8 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
           cam.worker.postMessage({type:'frame',bitmap,timestamp:performance.now()},[bitmap]);
         }).catch(()=>{if(resources.current.camera===cam)cam.busy=false;});
       }
-      if (mic?.analyser) { mic.analyser.getByteTimeDomainData(mic.samples); audio=soundEnergy(mic.samples); }
+      if (mic?.analyser) { mic.analyser.getByteTimeDomainData(mic.samples); audio=smoothSoundEnergy(signal.current.audio,mic.samples); }
       signal.current.audio=audio;
-      if ((audio > .42) && performance.now()-lastImpulse > 2800) { lastImpulse=performance.now(); impulseRef.current(); }
       if (cam || mic) setLevels({ camera: signal.current.motion, microphone: audio });
     },100);
     const hide = () => { if (document.hidden) { stop('camera'); stop('microphone'); } };

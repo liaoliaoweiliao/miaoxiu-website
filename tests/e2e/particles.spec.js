@@ -247,6 +247,61 @@ test('butterfly entry stays lit without hover and both guides remain readable ac
   await expect(page.locator('.particle-sensor-intro')).toContainText('握拳，丝线重新织回传统纹样');
 });
 
+test('microphone volume continuously spreads silk without changing form, also alongside camera gestures',async({page})=>{
+  test.setTimeout(60000);
+  await page.addInitScript(hands=>{
+    window.pose='fist';window.audioConstraints=[];window.audioTracks=[];
+    const Original=window.Worker;
+    window.Worker=class {
+      constructor(url,options){if(!String(url).includes('handTracking.worker'))return new Original(url,options);}
+      postMessage(data){if(data.type==='init')setTimeout(()=>this.onmessage?.({data:{type:'ready'}}),10);
+        else {data.bitmap.close();setTimeout(()=>this.onmessage?.({data:{type:'landmarks',points:hands[window.pose]||null,worldPoints:window.pose==='fist'?hands.worldFist:window.pose==='open'?hands.worldOpen:null}}),5);}}
+      terminate(){this.onmessage=null;}
+    };
+    navigator.mediaDevices.getUserMedia=async constraints=>{
+      if(constraints.video){const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;canvas.getContext('2d').fillRect(0,0,640,480);return canvas.captureStream(10);}
+      window.audioConstraints.push(constraints);
+      const context=new AudioContext(),osc=context.createOscillator(),gain=context.createGain(),destination=context.createMediaStreamDestination();
+      gain.gain.value=0;osc.connect(gain);gain.connect(destination);osc.start();await context.resume();
+      window.volumeGain=gain;window.audioTracks.push(...destination.stream.getTracks());return destination.stream;
+    };
+  },hands);
+  await page.goto('/');await enter(page);
+  const canvas=page.locator('.particle-main-canvas'),section=page.locator('.particle-heritage');
+  await page.getByRole('button',{name:'开启麦克风',exact:true}).click();
+  const meter=page.getByRole('meter',{name:'麦克风音量'});
+  await expect(meter).toHaveAttribute('aria-valuenow','0');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeLessThan(.01);
+  await page.evaluate(()=>window.volumeGain.gain.value=.08);
+  await expect.poll(async()=>Number(await meter.getAttribute('aria-valuenow'))).toBeGreaterThan(10);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeGreaterThan(.1);
+  const medium=Number(await canvas.getAttribute('data-spread'));
+  await page.evaluate(()=>window.volumeGain.gain.value=.45);
+  await expect.poll(async()=>Number(await meter.getAttribute('aria-valuenow'))).toBeGreaterThan(85);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeGreaterThan(medium+.3);
+  await page.waitForTimeout(3000);
+  await expect(section).toHaveAttribute('data-form','motif');
+  await page.getByRole('button',{name:'开启摄像头',exact:true}).click();
+  await expect(section).toHaveAttribute('data-motion','motif');
+  await page.evaluate(()=>window.pose='open');await expect(section).toHaveAttribute('data-form','application');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeGreaterThan(.8);
+  await page.evaluate(()=>window.volumeGain.gain.value=0);
+  await expect.poll(async()=>Number(await meter.getAttribute('aria-valuenow'))).toBeLessThan(3);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeLessThan(.03);
+  await expect(section).toHaveAttribute('data-form','application');
+  await page.evaluate(()=>window.pose='none');await expect(section).toHaveAttribute('data-motion','held');
+  const quiet=await pixels(canvas),clock=await canvas.getAttribute('data-clock');
+  await page.evaluate(()=>window.volumeGain.gain.value=.45);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeGreaterThan(.8);
+  expect(await pixels(canvas)).not.toEqual(quiet);await expect(canvas).toHaveAttribute('data-clock',clock);
+  await page.getByRole('button',{name:'关闭麦克风',exact:true}).click();
+  await expect(meter).toHaveCount(0);
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.spread))).toBeLessThan(.01);
+  expect(await page.evaluate(()=>window.audioTracks.every(t=>t.readyState==='ended'))).toBe(true);
+  expect(await page.evaluate(()=>window.audioConstraints[0].audio.autoGainControl)).toBe(false);
+});
+
 test('cancelling local model initialization terminates the worker and stops already granted camera tracks',async({page})=>{
   await page.addInitScript(()=>{
     window.workerStops=0;

@@ -30,7 +30,7 @@ vec3 project(vec3 p){
   return vec3(p.x*perspective*uSize/uAspect,p.y*perspective*uSize,p.z*.06);
 }
 void main(){
-  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=sin(q*3.14159265),bead=mod(id,20.0)/20.0;
+  float id=aId,q=clamp(uProgress,0.0,1.0),envelope=max(sin(q*3.14159265),uScatter*.75),bead=mod(id,20.0)/20.0;
   float along=uLinePass>.5?aRibbon.x:(bead<.42?0.0:bead>.58?1.0:(bead-.42)/.16);
   float travelAlong=mix(smoothstep(.38,1.0,q),smoothstep(0.0,.62,q),along);
   float morph=mix(uSourceForm,uTargetForm,travelAlong);

@@ -27,7 +27,7 @@ export default function ParticleHeritage() {
     setMotionMode(pose==='open'?'application':pose==='fist'?'motif':pose==='waiting'?'waiting':pose==='off'?'manual':'held');
     setRevision(value=>value+1);
   }
-  const sensors=useParticleSensors(input,()=>{if(!input.current.fiber.controlled)regroup();},handGesture);
+  const sensors=useParticleSensors(input,handGesture);
 
   useEffect(() => {
     const query=matchMedia('(prefers-reduced-motion: reduce)');
@@ -42,7 +42,7 @@ export default function ParticleHeritage() {
     if (!started||!entered) return;
     setReady(false);setFallback('');
     let disposed=false, renderer, frame, visible=true, previous=0,lastDraw=0;
-    let rotation=input.current.frame?.rotation||{x:0,y:0},renderedRevision=-1,announced=false,lastWidth=0,lastHeight=0;
+    let rotation=input.current.frame?.rotation||{x:0,y:0},renderedRevision=-1,announced=false,lastWidth=0,lastHeight=0,lastAudio=-1;
     const controller=new AbortController();
     const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;}); observer.observe(stageRef.current);
     const sources=[particleMotifs[pair],particleMotifs[pair].modern];
@@ -58,18 +58,20 @@ export default function ParticleHeritage() {
           if(now-lastDraw<30)return;lastDraw=now;previous=now;
           const state=input.current;
           const width=canvasRef.current.clientWidth,height=canvasRef.current.clientHeight;
-          if((!state.fiber.running||state.reduced)&&renderedRevision===state.revision&&width===lastWidth&&height===lastHeight)return;
+          const audio=state.reduced?0:state.audio,audioChanged=audio!==lastAudio;
+          if((!state.fiber.running||state.reduced)&&!audioChanged&&renderedRevision===state.revision&&width===lastWidth&&height===lastHeight)return;
+          lastAudio=audio;
           lastWidth=width;lastHeight=height;
           const previousTarget=state.fiber.target;
           state.fiber=advanceFiberMotion(state.fiber,dt,state.reduced);
           const motion=state.fiber;
           if(previousTarget!==motion.target){setMotif(motion.target);setRevision(value=>value+1);}
-          if(motion.running||!state.frame){
+          if(motion.running||audioChanged||!state.frame){
             const smoothing=state.reduced?1:1-Math.exp(-dt*3);
             const rx=state.drag.x+(state.reduced?0:Math.sin(motion.time*.16)*.08),ry=state.drag.y;
-            rotation={x:rotation.x+(rx-rotation.x)*smoothing,y:rotation.y+(ry-rotation.y)*smoothing};
+            if(motion.running)rotation={x:rotation.x+(rx-rotation.x)*smoothing,y:rotation.y+(ry-rotation.y)*smoothing};
             state.frame={morph:motion.from+(motion.target-motion.from)*motion.progress,from:motion.from,target:motion.target,progress:motion.progress,
-              scatter:state.reduced?0:Math.max(motion.spread,motion.controlled?0:state.audio*.3),time:state.reduced?0:motion.time,rotation,pointer:state.pointer,seed:0};
+              scatter:state.reduced?0:Math.max(motion.spread,audio*.95),time:state.reduced?0:motion.time,rotation,pointer:state.pointer,seed:0};
           }
           renderer.draw(state.frame);
           renderedSource.current=sources[motion.target];
@@ -123,10 +125,11 @@ export default function ParticleHeritage() {
           <label>丝线密度<select aria-label="选择丝线粒子数量" value={density} onChange={event=>setDensity(Number(event.target.value))}>{silkDensities.map(number=><option key={number} value={number}>{number/10000} 万</option>)}</select></label>
           <span className="silk-count" aria-live="polite">{current.name} · {isReady?`${count/10000} 万丝线粒子`:'正在汇聚'}</span>
         </div>
-        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>开启摄像头后，张开手掌保持约半秒，绣纹便化为对应的现代应用；握拳，丝线重新织回传统纹样。保持手势即可停留在对应形态，未检测到手时暂停。也可手动选择纹样或应用，拖动查看空间层次。</p></div>
+        <div className="particle-sensors"><div className="particle-sensor-intro"><h4>让纹样，回应你</h4><p>开启摄像头后，张开手掌保持约半秒，绣纹便化为对应的现代应用；握拳，丝线重新织回传统纹样。保持手势即可停留在对应形态，未检测到手时暂停变换。开启麦克风，声音越大丝线越舒展，声音变小便收拢。也可手动选择纹样或应用，拖动查看空间层次。</p></div>
           <div className="particle-sensor-buttons">{[['camera','摄像头'],['microphone','麦克风']].map(([key,label])=><button key={key} type="button" aria-pressed={sensors[key]==='on'} onClick={()=>sensors.toggle(key)}>{sensors[key]==='pending'?`取消${label}请求`:sensors[key]==='on'?`关闭${label}`:`开启${label}`}<i aria-hidden="true" style={{'--level':sensors.levels[key]}} /></button>)}</div>
+          {sensors.microphone==='on'&&<div className="particle-volume" role="meter" aria-label="麦克风音量" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(sensors.levels.microphone*100)}><span>音量</span><i aria-hidden="true"><b style={{width:`${sensors.levels.microphone*100}%`}} /></i><strong>{Math.round(sensors.levels.microphone*100)}%</strong></div>}
           <p className="particle-privacy">仅在开启后使用设备，画面与声音只在本机处理，不录制、不上传。离开首页或切换标签页自动关闭。</p>
-          <p className="particle-device-status" role="status">{sensors.notice||[sensors.camera==='on'?sensors.gesture:'',sensors.microphone==='on'?'声音已开启':''].filter(Boolean).join(' · ')||'无需开启设备，也可拖动或点击体验。'}</p>
+          <p className="particle-device-status" role="status">{sensors.notice||[sensors.camera==='on'?sensors.gesture:'',sensors.microphone==='on'?'音量控制已开启，声音越大丝线越舒展':''].filter(Boolean).join(' · ')||'无需开启设备，也可拖动或点击体验。'}</p>
         </div>
         {reduced&&<p className="particle-motion-note">已遵循减少动态效果设置，纹样切换保持静态。</p>}
       </div>}

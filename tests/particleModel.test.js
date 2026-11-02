@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sampleMotif, sampleSilk, motionSignal, soundEnergy } from '../src/features/home/particleModel.js';
+import { sampleMotif, sampleSilk, motionSignal, soundEnergy, smoothSoundEnergy } from '../src/features/home/particleModel.js';
 import { introFrame, sampleWeaver, wovenCloth, clothPoint, weavingPose, butterflyPoint, WEAVER_CROP } from '../src/features/home/weavingModel.js';
 
 test('motif sampling excludes transparent background and retains source color deterministically', () => {
@@ -21,6 +21,22 @@ test('body motion ignores still frames and locates mirrored movement', () => {
   assert.equal(soundEnergy(new Uint8Array(512).fill(128)),0);
   assert.ok(soundEnergy(new Uint8Array(512).fill(160))>.3);
   assert.equal(soundEnergy(new Uint8Array(512).fill(255)),1);
+});
+
+test('microphone follows loudness continuously, rejects low noise and releases smoothly',()=>{
+  const noise=new Uint8Array(512).fill(129),quiet=new Uint8Array(512).fill(128);
+  const medium=new Uint8Array(512).fill(144),loud=new Uint8Array(512).fill(176);
+  assert.equal(smoothSoundEnergy(0,noise),0);
+  assert.ok(smoothSoundEnergy(0,medium)>0);
+  assert.ok(smoothSoundEnergy(0,loud)>smoothSoundEnergy(0,medium));
+  let level=0;
+  for(let i=0;i<20;i++)level=smoothSoundEnergy(level,loud);
+  assert.ok(level>.99&&level<=1);
+  const falling=smoothSoundEnergy(level,quiet);
+  assert.ok(falling>0&&falling<level);
+  for(let i=0;i<20;i++)level=smoothSoundEnergy(level,quiet);
+  assert.ok(level<.001);
+  assert.equal(smoothSoundEnergy(.5,loud,0),.5);
 });
 
 test('weaver sampling isolates bright figure pixels and cloth stays reproducible',()=>{

@@ -58,3 +58,9 @@ export function soundEnergy(samples) {
   for (const value of samples) sum += ((value - 128) / 128) ** 2;
   return clamp(Math.sqrt(sum / Math.max(1, samples.length)) * 3);
 }
+
+// Reject the noise floor, then follow loudness with a fast rise and a softer release.
+export function smoothSoundEnergy(previous, samples, dt = .1) {
+  const target = clamp((soundEnergy(samples) - .04) / .65);
+  return previous + (target - previous) * (1 - Math.exp(-Math.max(0, dt) * (target > previous ? 12 : 5)));
+}
