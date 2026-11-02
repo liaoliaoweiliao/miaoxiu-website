@@ -15,7 +15,7 @@ test('real hand landmarks classify open palm and fist regardless of mirroring or
   assert.equal(classifyHand(Array(21).fill({x:0,y:0,z:0})),'none');
   assert.equal(classifyHand(hands.open.map((p,i)=>i===3?{...p,x:NaN}:p)),'none');
 });
-test('open palm stabilizes before starting while a recognized fist stops immediately',()=>{
+test('open palm stabilizes before selecting an application while a recognized fist selects the motif immediately',()=>{
   let state=initialGesture(),events=[];
   const frame=(pose,time)=>{state=stabilizeGesture(state,pose,time);if(state.event)events.push(state.event);};
   frame('open',100);frame('fist',200);frame('open',300);frame('open',600);

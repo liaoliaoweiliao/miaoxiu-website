@@ -153,7 +153,9 @@ test('five supplied motifs pair with individual applications and render up to on
 });
 
 
-test('open palm unfolds the network, fist freezes its pixels and reopening continues the same transition',async({page})=>{
+for(const reducedMotion of ['no-preference','reduce']) test(`open palm shows the application and fist restores the motif (${reducedMotion})`,async({page})=>{
+  test.setTimeout(60000);
+  await page.emulateMedia({reducedMotion});
   await page.addInitScript(hands=>{
     window.handPose='none';window.workerStops=0;window.handTracks=[];
     const Original=window.Worker;
@@ -173,26 +175,76 @@ test('open palm unfolds the network, fist freezes its pixels and reopening conti
   await expect(page.getByRole('button',{name:'关闭摄像头',exact:true})).toBeVisible();
   const section=page.locator('.particle-heritage'),canvas=page.locator('.particle-main-canvas');
   await canvas.scrollIntoViewIfNeeded();
-  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','held');
-  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','flowing');
-  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull)>.1&&Number(c.dataset.pull)<.9)).toBe(true);
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','motif');
+  await expect(section).toHaveAttribute('data-form','motif');
+  const motif=await pixels(canvas);
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','application');
+  await expect(section).toHaveAttribute('data-form','application');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
   await expect(canvas).toHaveAttribute('data-layers','12');
-  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','held');
-  const frozen=await pixels(canvas),clock=await canvas.getAttribute('data-clock'),progress=Number(await canvas.getAttribute('data-pull'));
-  await page.mouse.move(200,300);await page.waitForTimeout(600);
-  expect(await pixels(canvas)).toEqual(frozen);
-  await expect(canvas).toHaveAttribute('data-clock',clock);
-  expect(Number(await canvas.getAttribute('data-pull'))).toBe(progress);
+  expect((await pixels(canvas)).hash).not.toBe(motif.hash);
+  await page.waitForTimeout(1200);
+  await expect(section).toHaveAttribute('data-form','application');
+  await expect(canvas).toHaveAttribute('data-pull','1.000');
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','motif');
+  await expect(section).toHaveAttribute('data-form','motif');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
+  await page.waitForTimeout(1000);
+  await expect(section).toHaveAttribute('data-form','motif');
   await expect(section).toHaveAttribute('data-pair','butterfly');
-  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','flowing');
-  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBeGreaterThan(progress);
-  expect(Number(await canvas.getAttribute('data-pull'))).toBeLessThan(progress+.35);
-  await expect.poll(()=>pixels(canvas)).not.toEqual(frozen);
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','application');
+  if(reducedMotion==='no-preference') {
+    await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull)>.1&&Number(c.dataset.pull)<.7)).toBe(true);
+    await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','motif');
+    await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
+    await expect(section).toHaveAttribute('data-form','motif');
+  }
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','motif');
+  // A different motif keeps its own application pairing under the same gestures.
+  await page.getByLabel('选择纹样与现代应用').selectOption('2');
+  await expect(canvas).toHaveAttribute('data-ready','true',{timeout:15000});
+  await page.evaluate(()=>window.handPose='open');await expect(section).toHaveAttribute('data-motion','application');
+  await expect(section).toHaveAttribute('data-pair','dragon');
+  await expect(section).toHaveAttribute('data-form','application');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
   await page.evaluate(()=>window.handPose='none');await expect(section).toHaveAttribute('data-motion','held');
-  const lost=await pixels(canvas);await page.waitForTimeout(350);expect(await pixels(canvas)).toEqual(lost);
+  const lost=await pixels(canvas),clock=await canvas.getAttribute('data-clock');
+  await page.mouse.move(200,300);await page.waitForTimeout(350);
+  expect(await pixels(canvas)).toEqual(lost);await expect(canvas).toHaveAttribute('data-clock',clock);
+  await page.evaluate(()=>window.handPose='fist');await expect(section).toHaveAttribute('data-motion','motif');
+  await expect(section).toHaveAttribute('data-form','motif');
+  await expect.poll(()=>canvas.evaluate(c=>Number(c.dataset.pull))).toBe(1);
   await page.getByRole('button',{name:'关闭摄像头',exact:true}).click();
   expect(await page.evaluate(()=>window.workerStops)).toBe(1);
   expect(await page.evaluate(()=>window.handTracks.every(t=>t.readyState==='ended'))).toBe(true);
+});
+
+test('butterfly entry stays lit without hover and both guides remain readable across screen sizes',async({page})=>{
+  await page.goto('/');
+  const button=page.getByRole('button',{name:'点击布上的粒子蝴蝶，开启互动',exact:true});
+  for(const width of [320,390,1440]) {
+    await page.setViewportSize({width,height:900});
+    await page.locator('.weaving-canvas').scrollIntoViewIfNeeded();
+    await expect(page.locator('.weaving-canvas')).toHaveAttribute('data-ready','true');
+    await page.mouse.move(0,0);
+    const style=await button.evaluate(element=>{
+      const ring=getComputedStyle(element),label=getComputedStyle(element.querySelector('span'));
+      return {border:parseFloat(ring.borderTopWidth),color:ring.borderTopColor,shadow:ring.boxShadow,font:parseFloat(label.fontSize),animation:ring.animationName};
+    });
+    expect(style.border).toBeGreaterThanOrEqual(2);expect(style.color).not.toBe('rgba(0, 0, 0, 0)');
+    expect(style.shadow).not.toBe('none');expect(style.animation).toBe('none');expect(style.font).toBeGreaterThanOrEqual(18);
+    const bounds=await button.locator('span').boundingBox(),stage=await page.locator('.particle-stage').boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(stage.x);expect(bounds.x+bounds.width).toBeLessThanOrEqual(stage.x+stage.width);
+    expect(bounds.y+bounds.height).toBeLessThanOrEqual(stage.y+stage.height);
+  }
+  await enter(page);
+  for(const width of [320,390,1440]) {
+    await page.setViewportSize({width,height:900});
+    expect(await page.locator('.particle-sensor-intro p').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(16);
+    expect(await page.locator('.particle-sensor-intro h4').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(20);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  await expect(page.locator('.particle-sensor-intro')).toContainText('握拳，丝线重新织回传统纹样');
 });
 
 test('cancelling local model initialization terminates the worker and stops already granted camera tracks',async({page})=>{

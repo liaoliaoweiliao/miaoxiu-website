@@ -9,14 +9,15 @@ export function selectFiberForm(state,target) {
 }
 
 export function controlFiberMotion(state,pose) {
-  if(pose==='open') {
-    const next=state.progress>=1?selectFiberForm(state,1-state.target):state;
+  if(pose==='open'||pose==='fist') {
+    const target=pose==='open'?1:0;
+    const next=state.target===target?state:selectFiberForm(state,target);
     return {...next,running:true,controlled:true};
   }
   return {...state,running:false,controlled:pose!=='off'};
 }
 
-// One shared clock drives every strand. Closing a fist never advances this clock.
+// One shared clock drives every strand; each gesture keeps its requested form.
 export function advanceFiberMotion(state,dt,reduced=false) {
   if(!state.running)return state;
   if(reduced)return {...state,progress:1,spread:0};
@@ -24,7 +25,6 @@ export function advanceFiberMotion(state,dt,reduced=false) {
   next.spread=Math.sin(next.progress*Math.PI)*.9;
   if(next.progress===1) {
     next.hold=state.progress===1?state.hold+dt:0;
-    if(state.controlled&&next.hold>=.8)next={...selectFiberForm(next,1-next.target),controlled:true};
   }
   return next;
 }

@@ -78,7 +78,7 @@ export default function useParticleSensors(signal, onImpulse, onGesture) {
               const now=performance.now(),pose=classifyHand(data.worldPoints||data.points);
               const previousPose=item.gesture.latched;
               item.gesture=stabilizeGesture(item.gesture,pose,now);
-              setGesture(pose==='open'?'已识别：张手，展开丝线':pose==='fist'?'已识别：握拳，保持当前画面':pose==='none'?'未检测到手，请将整只手放入镜头':'请握拳或张开手掌');
+              setGesture(pose==='open'?'张手：查看现代应用':pose==='fist'?'握拳：返回传统纹样':pose==='none'?'未检测到手，请将整只手放入镜头':'张手看应用，握拳看纹样');
               if(data.points){const wrist=data.points[0];signal.current.body={x:1-wrist.x*2,y:1-wrist.y*2};signal.current.motion=pose==='open'?.45:pose==='fist'?.08:.15;}
               else {signal.current.motion=0;signal.current.body={x:0,y:0};}
               if(item.gesture.event)gestureRef.current(item.gesture.event);
