@@ -3,15 +3,17 @@
 .thread-map-landscape,.thread-map-nodes{transition:transform .6s cubic-bezier(.22,.61,.36,1)}
 .thread-map-point{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border:0;padding:0;background:none;display:grid;place-items:center;pointer-events:none;z-index:2;touch-action:manipulation}
 .thread-map-point.is-hit-target{z-index:12;pointer-events:auto;opacity:1!important}
-.thread-map-point.is-hit-target:not(.is-selected)::before{content:'';position:absolute;inset:0;border:1px solid #f3ce8a77;border-radius:50%;background:#e4b56b18;pointer-events:none}
-.thread-pin-core{width:10px;height:10px;background:#d8b57e;border:1.5px solid #ffe1ac;transform:rotate(45deg);box-shadow:0 0 8px #efba7288;opacity:.95;transition:transform .2s,opacity .2s;pointer-events:auto}
+.thread-map-point.is-hit-target:not(.is-selected)::before{content:'';position:absolute;inset:0;border:1px solid #aabdc044;border-radius:50%;pointer-events:none}
+.thread-map-point.is-hit-target.is-visited:not(.is-selected)::before{border-color:#f3ce8a77;background:#e4b56b18}
+.thread-pin-core{width:10px;height:10px;background:#91a3a6;border:1.5px solid #b8c6c8;transform:rotate(45deg);box-shadow:none;opacity:.45;transition:transform .2s,opacity .2s;pointer-events:auto}
 .thread-map-point:hover,.thread-map-point:focus-visible{z-index:6}
-.thread-map-point:hover .thread-pin-core,.thread-map-point:focus-visible .thread-pin-core{transform:rotate(45deg) scale(1.4);opacity:1}
-.thread-map-point.is-visited .thread-pin-core{background:#efc88c;opacity:1}
-.thread-map-point.is-near-selection:not(:hover):not(:focus-visible){opacity:.7}
+.thread-map-point:hover .thread-pin-core,.thread-map-point:focus-visible .thread-pin-core{transform:rotate(45deg) scale(1.4)}
+.thread-map-point.is-visited .thread-pin-core{background:#efc88c;border-color:#ffe1ac;box-shadow:0 0 8px #efba72aa;opacity:1}
+.thread-map-point.is-near-selection:not(.is-visited):not(:hover):not(:focus-visible){opacity:.7}
 .thread-map-point.is-muted{opacity:.12;pointer-events:none}
 .thread-map-point.is-selected{z-index:10}
 .thread-selected-pin{position:absolute;left:50%;bottom:50%;width:36px;height:46px;transform:translateX(-50%);filter:drop-shadow(0 3px 4px #000a) drop-shadow(0 0 7px #f6ba6455);overflow:visible;pointer-events:auto;animation:thread-pin-arrive .35s ease-out both}
+.thread-map-point:not(.is-visited) .thread-selected-pin{opacity:.45;filter:drop-shadow(0 3px 4px #0006);animation:none}
 .thread-point-label{position:absolute;left:50%;top:32px;transform:translateX(-50%);padding:3px 6px;background:var(--surface-indigo-inset);color:#e8cba5;font-size:11px;line-height:1.4;white-space:nowrap;pointer-events:none;border:1px solid #ae895738;opacity:0;transition:opacity .2s}
 .thread-map-point.has-label .thread-point-label,.thread-map-point:hover .thread-point-label,.thread-map-point:focus-visible .thread-point-label{opacity:1}
 .thread-map-point.is-selected .thread-point-label{top:auto;bottom:calc(50% + 51px);display:flex;align-items:center;gap:7px;padding:6px 10px;background:#f4d09c;color:#06233a;border:1px solid #fff0c9;box-shadow:0 3px 12px #0008;font-size:15px;font-weight:700;letter-spacing:1px;opacity:1;pointer-events:none}
