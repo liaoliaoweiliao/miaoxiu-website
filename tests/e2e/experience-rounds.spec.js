@@ -66,6 +66,11 @@ for (const width of [1440, 820, 320]) {
     await page.addInitScript(() => { Math.random = () => 0; });
     await page.goto('/#experience');
     await discover(page, 0);
+    await expect(page.locator('.wardrobe-main .wardrobe-invitation [data-action="drawGender"]')).toHaveCount(2);
+    await expect(page.locator('.wardrobe-layout > .side-heading [data-action="drawGender"]')).toHaveCount(0);
+    const tabs = await page.locator('.motif-tabs').boundingBox();
+    const invitation = await page.locator('.wardrobe-invitation').boundingBox();
+    expect(invitation.y).toBeGreaterThanOrEqual(tabs.y + tabs.height);
     for (const gender of ['girl', 'boy']) {
       const choice = page.locator(`[data-action="drawGender"][data-id="${gender}"]`);
       await choice.click();
