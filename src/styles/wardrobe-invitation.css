@@ -1,20 +1,29 @@
-.experience-page .wardrobe-invitation { display: flex; justify-content: center; align-items: center; min-height: 340px; padding: 20px 0 36px; }
-.experience-page .wardrobe-invitation .gender-prompt { width: min(640px, 100%); padding: 30px clamp(16px, 3vw, 38px); margin: 0; background: radial-gradient(ellipse at top, #efd09b0a, transparent 75%); border: 1px solid #c9a37060; border-radius: 20px 4px; }
-.experience-page .wardrobe-invitation .gender-prompt h3 { font-size: 26px; margin: 10px 0 24px; letter-spacing: 2px; }
-.experience-page .wardrobe-invitation .character-choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; }
-.experience-page .wardrobe-invitation .character-choice > button { min-width: 0; min-height: 138px; padding: 14px; }
-.experience-page .wardrobe-invitation .choice-portrait { width: 66px; height: 108px; flex: 0 0 66px; }
-.experience-page .wardrobe-invitation .choice-text strong { font-size: 21px; }
-.experience-page .wardrobe-invitation .choice-text small { font-size: 11px; line-height: 1.7; }
+.experience-page .wardrobe-invitation { display: flex; justify-content: center; align-items: center; min-height: 340px; padding: 24px 12px; }
+.experience-page .wardrobe-invitation .gender-prompt { width: min(880px, 100%); padding: 30px clamp(16px, 2.5vw, 36px); margin: 0; text-align: center; background: radial-gradient(ellipse at top, #efd09b0a, transparent 75%); border: 1px solid #c9a37060; border-radius: 20px 4px; }
+.experience-page .wardrobe-invitation .gender-prompt h3 { font-size: clamp(24px, 2.2vw, 32px); margin: 10px 0 28px; letter-spacing: 2px; }
+.experience-page .wardrobe-invitation .character-choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2vw, 28px); margin: 0; }
+.experience-page .wardrobe-invitation .character-choice > button { min-width: 0; min-height: clamp(190px, 19vw, 250px); padding: 20px 16px; justify-content: center; gap: clamp(12px, 1.5vw, 22px); }
+.experience-page .wardrobe-invitation .choice-portrait { width: clamp(80px, 8vw, 112px); height: clamp(140px, 15vw, 205px); flex: 0 0 clamp(80px, 8vw, 112px); }
+.experience-page .wardrobe-invitation .choice-text { text-align: left; }
+.experience-page .wardrobe-invitation .choice-text strong { font-size: clamp(21px, 2vw, 28px); }
+.experience-page .wardrobe-invitation .choice-text small { font-size: 12px; line-height: 1.7; }
 .experience-page .landscape-art { width: 100%; height: auto; display: block; color: #dbbc7d; opacity: .9; }
+@media (min-width: 901px) {
+  .experience-page .wardrobe-layout.is-choosing { min-height: calc(var(--activity-height) - 2 * var(--activity-padding)); align-items: stretch; }
+  .experience-page .wardrobe-layout.is-choosing > .wardrobe-main { display: flex; flex-direction: column; }
+  .experience-page .wardrobe-layout.is-choosing .wardrobe-invitation { flex: 1; }
+}
 @media (max-width: 900px) {
   .experience-page .wardrobe-invitation { min-height: 280px; padding-bottom: 20px; }
   .experience-page .decode-landscape, .experience-page .wardrobe-landscape { display: none; }
 }
 @media (max-width: 600px) {
+  .experience-page .wardrobe-invitation { padding: 12px 0 20px; }
   .experience-page .wardrobe-invitation .gender-prompt { padding: 22px 12px; }
   .experience-page .wardrobe-invitation .gender-prompt h3 { font-size: 22px; }
   .experience-page .wardrobe-invitation .character-choice { gap: 10px; }
-  .experience-page .wardrobe-invitation .character-choice > button { padding: 10px 4px; }
+  .experience-page .wardrobe-invitation .character-choice > button { min-height: 150px; padding: 12px 4px; flex-direction: column; gap: 8px; }
+  .experience-page .wardrobe-invitation .choice-portrait { width: 64px; height: 104px; flex: 0 0 104px; }
+  .experience-page .wardrobe-invitation .choice-text { text-align: center; }
   .experience-page .wardrobe-invitation .choice-text strong { font-size: 17px; }
 }
