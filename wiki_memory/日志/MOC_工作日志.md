@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-11-04
+updated: 2026-11-06
 topic: work-log-index
 sources: []
 ---
@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-11-06 | ui | completed | [作品展览随绣线入场](UI%E4%BF%AE%E6%94%B9/2026-11-06-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E9%9A%8F%E7%BB%A3%E7%BA%BF%E5%85%A5%E5%9C%BA.md) |
 | 2026-11-04 | ui | completed | [衣橱选角区居中与放大](UI%E4%BF%AE%E6%94%B9/2026-11-04-%E8%A1%A3%E6%A9%B1%E9%80%89%E8%A7%92%E5%8C%BA%E5%B1%85%E4%B8%AD%E4%B8%8E%E6%94%BE%E5%A4%A7.md) |
 | 2026-11-03 | ui | completed | [衣橱选角位置与山寨线描细化](UI%E4%BF%AE%E6%94%B9/2026-11-03-%E8%A1%A3%E6%A9%B1%E9%80%89%E8%A7%92%E4%BD%8D%E7%BD%AE%E4%B8%8E%E5%B1%B1%E5%AF%A8%E7%BA%BF%E6%8F%8F%E7%BB%86%E5%8C%96.md) |
 | 2026-11-02 | ui | completed | [纹样档案发现后展示与配图替换](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E7%BA%B9%E6%A0%B7%E6%A1%A3%E6%A1%88%E5%8F%91%E7%8E%B0%E5%90%8E%E5%B1%95%E7%A4%BA%E4%B8%8E%E9%85%8D%E5%9B%BE%E6%9B%BF%E6%8D%A2.md) |

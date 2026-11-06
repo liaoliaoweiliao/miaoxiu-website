@@ -247,10 +247,6 @@
   text-align: left;
   grid-column: 1;
   grid-row: 1;
-  opacity: .84;
-  filter: saturate(.95);
-  transform: translateY(10px);
-  transition: opacity .75s ease, filter .75s ease, transform .75s ease, box-shadow .25s ease, border-color .25s ease;
 }
 
 .thread-story.is-left .jing-work,
@@ -265,12 +261,6 @@
 .thread-story.is-right .jing-work-copy {
   grid-column: 1;
   justify-self: end;
-}
-
-.jing-work.is-visible {
-  opacity: 1;
-  filter: none;
-  transform: translateY(0);
 }
 
 .jing-work:hover,
@@ -309,11 +299,6 @@
   object-fit: cover;
   object-position: center;
   filter: none;
-  transition: transform .7s ease;
-}
-
-.jing-work:hover .jing-work-photo img {
-  transform: scale(1.035);
 }
 
 .jing-work-copy {
@@ -380,11 +365,6 @@
 .jing-work-open i {
   font-size: 18px;
   font-style: normal;
-  transition: transform .2s ease;
-}
-
-.jing-work:hover .jing-work-open i {
-  transform: translate(2px, -2px);
 }
 
 .thread-story.is-featured {
@@ -830,6 +810,59 @@ body[data-page="gallery"] .footer .motto span {
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .jing-work-photo {
+    transition: transform .66s cubic-bezier(.22,.68,.28,1), opacity .58s ease-out;
+  }
+
+  .jing-work-copy {
+    transition: transform .6s cubic-bezier(.22,.68,.28,1) .12s;
+  }
+
+  .jing-work:not(.is-visible, :focus-within) .jing-work-photo {
+    opacity: .64;
+    transform: translate(var(--photo-enter-x, 0px), 14px);
+  }
+
+  .jing-work:not(.is-visible, :focus-within) .jing-work-copy {
+    transform: translate(var(--copy-enter-x, 0px), 12px);
+  }
+
+  .jing-work:focus-within :is(.jing-work-photo, .jing-work-copy) {
+    transition: none;
+  }
+}
+
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  .jing-work {
+    --photo-enter-x: -24px;
+    --copy-enter-x: 18px;
+  }
+
+  .thread-story.is-right .jing-work {
+    --photo-enter-x: 24px;
+    --copy-enter-x: -18px;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .jing-work-photo img {
+    transition: transform .7s ease;
+  }
+
+  .jing-work:hover .jing-work-photo img {
+    transform: scale(1.035);
+  }
+
+  .jing-work-open i {
+    transition: transform .2s ease;
+  }
+
+  .jing-work:hover .jing-work-open i {
+    transform: translate(2px, -2px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html:has(body[data-page="gallery"]) {
     scroll-behavior: auto;
@@ -847,13 +880,6 @@ body[data-page="gallery"] .footer .motto span {
     animation: none !important;
   }
 
-  .jing-work {
-    opacity: 1;
-    filter: none;
-    transform: none;
-    transition: none;
-  }
-
   .stitch-weave,
   .stitch-weave-light,
   .stitch-center,
@@ -868,8 +894,7 @@ body[data-page="gallery"] .footer .motto span {
   .stitch-center,
   .stitch-frame,
   .knot-tail,
-  .closing-knot,
-  .jing-work-open i {
+  .closing-knot {
     transition: none;
   }
 
