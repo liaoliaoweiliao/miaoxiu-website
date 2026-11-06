@@ -821,11 +821,11 @@ body[data-page="gallery"] .footer .motto span {
 
   .jing-work:not(.is-visible, :focus-within) .jing-work-photo {
     opacity: .64;
-    transform: translate(var(--photo-enter-x, 0px), 14px);
+    transform: translate(var(--photo-enter-x, 0px), var(--photo-enter-y, -12px));
   }
 
   .jing-work:not(.is-visible, :focus-within) .jing-work-copy {
-    transform: translate(var(--copy-enter-x, 0px), 12px);
+    transform: translate(var(--copy-enter-x, 0px), var(--copy-enter-y, 16px));
   }
 
   .jing-work:focus-within :is(.jing-work-photo, .jing-work-copy) {
@@ -835,13 +835,15 @@ body[data-page="gallery"] .footer .motto span {
 
 @media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
   .jing-work {
-    --photo-enter-x: -24px;
-    --copy-enter-x: 18px;
+    --photo-side: -1;
+    --photo-enter-x: calc(var(--photo-side) * clamp(38px, 5vw, 64px));
+    --copy-enter-x: calc(-1 * var(--photo-side) * clamp(24px, 3.2vw, 48px));
+    --photo-enter-y: 14px;
+    --copy-enter-y: 12px;
   }
 
   .thread-story.is-right .jing-work {
-    --photo-enter-x: 24px;
-    --copy-enter-x: -18px;
+    --photo-side: 1;
   }
 }
 
