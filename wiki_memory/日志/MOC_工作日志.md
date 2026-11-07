@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-11-02
+updated: 2026-11-07
 topic: work-log-index
 sources: []
 ---
@@ -12,10 +12,23 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-11-07 | maintenance | completed | [嘉玲体验展览与静涛探源合入主线](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-07-%E5%98%89%E7%8E%B2%E4%BD%93%E9%AA%8C%E5%B1%95%E8%A7%88%E4%B8%8E%E9%9D%99%E6%B6%9B%E6%8E%A2%E6%BA%90%E5%90%88%E5%85%A5%E4%B8%BB%E7%BA%BF.md) |
+| 2026-11-06 | ui | completed | [作品展览随绣线入场](UI%E4%BF%AE%E6%94%B9/2026-11-06-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E9%9A%8F%E7%BB%A3%E7%BA%BF%E5%85%A5%E5%9C%BA.md) |
+| 2026-11-04 | ui | completed | [衣橱选角区居中与放大](UI%E4%BF%AE%E6%94%B9/2026-11-04-%E8%A1%A3%E6%A9%B1%E9%80%89%E8%A7%92%E5%8C%BA%E5%B1%85%E4%B8%AD%E4%B8%8E%E6%94%BE%E5%A4%A7.md) |
+| 2026-11-03 | ui | completed | [衣橱选角位置与山寨线描细化](UI%E4%BF%AE%E6%94%B9/2026-11-03-%E8%A1%A3%E6%A9%B1%E9%80%89%E8%A7%92%E4%BD%8D%E7%BD%AE%E4%B8%8E%E5%B1%B1%E5%AF%A8%E7%BA%BF%E6%8F%8F%E7%BB%86%E5%8C%96.md) |
 | 2026-11-02 | feature | completed | [首页入口跳转与地图居中](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-02-%E9%A6%96%E9%A1%B5%E5%85%A5%E5%8F%A3%E8%B7%B3%E8%BD%AC%E4%B8%8E%E5%9C%B0%E5%9B%BE%E5%B1%85%E4%B8%AD.md) |
 | 2026-11-02 | feature | completed | [蝴蝶入口常亮与手势形态切换](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-02-%E8%9D%B4%E8%9D%B6%E5%85%A5%E5%8F%A3%E5%B8%B8%E4%BA%AE%E4%B8%8E%E6%89%8B%E5%8A%BF%E5%BD%A2%E6%80%81%E5%88%87%E6%8D%A2.md) |
 | 2026-11-02 | feature | completed | [地图扩大点击与麦克风连续音量控制](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-02-%E5%9C%B0%E5%9B%BE%E6%89%A9%E5%A4%A7%E7%82%B9%E5%87%BB%E4%B8%8E%E9%BA%A6%E5%85%8B%E9%A3%8E%E8%BF%9E%E7%BB%AD%E9%9F%B3%E9%87%8F%E6%8E%A7%E5%88%B6.md) |
+| 2026-11-02 | ui | completed | [纹样档案发现后展示与配图替换](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E7%BA%B9%E6%A0%B7%E6%A1%A3%E6%A1%88%E5%8F%91%E7%8E%B0%E5%90%8E%E5%B1%95%E7%A4%BA%E4%B8%8E%E9%85%8D%E5%9B%BE%E6%9B%BF%E6%8D%A2.md) |
+| 2026-11-02 | ui | completed | [恢复档案常显并缩小衣橱纹样图](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E6%81%A2%E5%A4%8D%E6%A1%A3%E6%A1%88%E5%B8%B8%E6%98%BE%E5%B9%B6%E7%BC%A9%E5%B0%8F%E8%A1%A3%E6%A9%B1%E7%BA%B9%E6%A0%B7%E5%9B%BE.md) |
 | 2026-11-02 | ui | completed | [地图标记探访后常亮](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E5%9C%B0%E5%9B%BE%E6%A0%87%E8%AE%B0%E6%8E%A2%E8%AE%BF%E5%90%8E%E5%B8%B8%E4%BA%AE.md) |
+| 2026-11-02 | ui | completed | [作品展览适度放宽间距](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E9%80%82%E5%BA%A6%E6%94%BE%E5%AE%BD%E9%97%B4%E8%B7%9D.md) |
+| 2026-11-02 | ui | completed | [作品展览图文逐行交替](UI%E4%BF%AE%E6%94%B9/2026-11-02-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E5%9B%BE%E6%96%87%E9%80%90%E8%A1%8C%E4%BA%A4%E6%9B%BF.md) |
+| 2026-11-01 | feature | completed | [张手散开、握拳聚拢与平滑牵引](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-01-%E5%BC%A0%E6%89%8B%E6%95%A3%E5%BC%80%E6%8F%A1%E6%8B%B3%E8%81%9A%E6%8B%A2%E4%B8%8E%E5%B9%B3%E6%BB%91%E7%89%B5%E5%BC%95.md) |
+| 2026-11-01 | ui | completed | [苗绣衣橱参考图排版](UI%E4%BF%AE%E6%94%B9/2026-11-01-%E8%8B%97%E7%BB%A3%E8%A1%A3%E6%A9%B1%E5%8F%82%E8%80%83%E5%9B%BE%E6%8E%92%E7%89%88.md) |
+| 2026-11-01 | ui | completed | [故事区对齐与针法提示字号](UI%E4%BF%AE%E6%94%B9/2026-11-01-%E6%95%85%E4%BA%8B%E5%8C%BA%E5%AF%B9%E9%BD%90%E4%B8%8E%E9%92%88%E6%B3%95%E6%8F%90%E7%A4%BA%E5%AD%97%E5%8F%B7.md) |
+| 2026-11-01 | ui | completed | [寻纹参考排版交付嘉玲](UI%E4%BF%AE%E6%94%B9/2026-11-01-%E5%AF%BB%E7%BA%B9%E5%8F%82%E8%80%83%E6%8E%92%E7%89%88%E4%BA%A4%E4%BB%98%E5%98%89%E7%8E%B2.md) |
+| 2026-11-01 | ui | completed | [作品展览收紧作品间距](UI%E4%BF%AE%E6%94%B9/2026-11-01-%E4%BD%9C%E5%93%81%E5%B1%95%E8%A7%88%E6%94%B6%E7%B4%A7%E4%BD%9C%E5%93%81%E9%97%B4%E8%B7%9D.md) |
 | 2026-10-31 | maintenance | completed | [本地main同步GitHub更新](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-31-%E6%9C%AC%E5%9C%B0main%E5%90%8C%E6%AD%A5GitHub%E6%9B%B4%E6%96%B0.md) |
 | 2026-10-29 | feature | completed | [最新网站桌面便携版交付](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-10-29-%E6%9C%80%E6%96%B0%E7%BD%91%E7%AB%99%E6%A1%8C%E9%9D%A2%E4%BE%BF%E6%90%BA%E7%89%88%E4%BA%A4%E4%BB%98.md) |
 | 2026-10-28 | maintenance | completed | [静涛分支合并到main](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-10-28-%E9%9D%99%E6%B6%9B%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6%E5%88%B0main.md) |

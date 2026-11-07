@@ -137,9 +137,9 @@
 .stitch-moving-needle{opacity:0;animation:stitchNeedleVisible .52s linear var(--needle-delay) both;filter:drop-shadow(0 0 1px #ffeab0)}
 @keyframes stitchNeedleVisible{0%,100%{opacity:0}10%,90%{opacity:1}}
 .stitch-demo-heading,.stitch-demo-footer{position:absolute;z-index:5;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fce4b2;pointer-events:none;text-shadow:0 1px 3px #031427}
-.stitch-demo-heading{top:14px;font-size:14px}.stitch-demo-heading small{font-size:11px;color:#dbe4e9}
-.stitch-demo-footer{bottom:13px;font-size:11px;color:#e7d4af}.stitch-demo-footer span:last-child{color:#fad18b;white-space:nowrap}
-@media(max-width:640px){.stitch-demo-heading{font-size:12px}.stitch-demo-heading small,.stitch-demo-footer{font-size:9px}}
+.stitch-demo-heading{top:14px;font-size:14px}.stitch-demo-heading small{font-size:14px;line-height:1.5;text-align:right;color:#dbe4e9}
+.stitch-demo-footer{bottom:13px;font-size:14px;line-height:1.5;color:#e7d4af}.stitch-demo-footer span:last-child{color:#fad18b;white-space:nowrap}
+@media(max-width:640px){.stitch-demo-heading{font-size:12px}.stitch-demo-heading small,.stitch-demo-footer{font-size:12px}}
 
 /* 六大针法演示局部微调：放大绣面、针线同步、成品惊喜弹出；不改变其他区域。 */
 .stitch-stage .stitch-crafted-svg{inset:5% 1% 5%;width:98%;height:90%;overflow:visible}
@@ -165,7 +165,7 @@
 @keyframes stitchFinishHalo{0%{opacity:0;transform:scale(.25)}26%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
 
 /* 苗绣探源 · 苗绣小故事：三个故事卡片统一为等宽等高，其他模块保持原样。 */
-.history-story .story-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.history-story .story-grid{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1320px;margin:0 auto}
 .history-story .story-grid>.story-card{min-width:0;min-height:350px;height:350px;grid-column:auto}
 @media(max-width:900px){
   .history-story .story-grid{grid-template-columns:repeat(2,minmax(0,1fr))}

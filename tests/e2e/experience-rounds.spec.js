@@ -45,9 +45,10 @@ for (const width of [1440, 390]) {
       await expect(page.locator('.decode-board')).toBeFocused();
       await expect(page.locator('.level-label')).toContainText(`第 ${index + 2} 轮`);
       await expect(page.locator('.decode-board img')).not.toHaveAttribute('src', photograph);
-      await expect(page.locator('.decode-counter')).toHaveText('寻找 1 处');
+      await expect(page.locator('.decode-progress > strong')).toHaveText('0/1');
       await expect(page.locator('[data-action="collectionFilter"][data-id="all"]')).toHaveAttribute('aria-pressed', 'true');
       await expect(page.locator('[data-action="finishLoop"]')).toHaveCount(0);
+      await expect(page.locator('.decode-archive')).toBeVisible();
       expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')))).toEqual(saved);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
@@ -65,6 +66,11 @@ for (const width of [1440, 820, 320]) {
     await page.addInitScript(() => { Math.random = () => 0; });
     await page.goto('/#experience');
     await discover(page, 0);
+    await expect(page.locator('.wardrobe-main .wardrobe-invitation [data-action="drawGender"]')).toHaveCount(2);
+    await expect(page.locator('.wardrobe-layout > .side-heading [data-action="drawGender"]')).toHaveCount(0);
+    const tabs = await page.locator('.motif-tabs').boundingBox();
+    const invitation = await page.locator('.wardrobe-invitation').boundingBox();
+    expect(invitation.y).toBeGreaterThanOrEqual(tabs.y + tabs.height);
     for (const gender of ['girl', 'boy']) {
       const choice = page.locator(`[data-action="drawGender"][data-id="${gender}"]`);
       await choice.click();
@@ -106,7 +112,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
       await expect(page.locator('.wardrobe-draw')).toBeFocused();
       for (const selector of ['.draw-card', '.draw-btn']) {
         const box = await page.locator(selector).boundingBox();
-        const header = await page.locator('header').boundingBox();
+        const header = await page.getByRole('banner').boundingBox();
         expect(box.y).toBeGreaterThanOrEqual(header.y + header.height);
         expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
       }
@@ -151,7 +157,7 @@ test('only discoveries unlock themes, removed fill content stays absent and the 
   expect(hint.y - image.y - image.height).toBeLessThanOrEqual(10);
   await page.locator('[data-action="pool"][data-id="peony"]').click();
   await expect(page.locator('.pool-locked h3')).toHaveText('牡丹花纹卡池尚未解锁');
-  await expect(page.locator('.pool-locked>span')).toHaveText('♙');
+  await expect(page.locator('.wardrobe-lock-symbol .wardrobe-peony-icon')).toBeVisible();
   await expect(page.locator('.pool-locked>small')).toHaveCount(0);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('miao-wardrobe-v4')).unlocked)).toEqual([]);
   await discover(page, 0);

@@ -1,0 +1,3 @@
+.theme-motif-image { display: block; width: 48px; height: 48px; max-width: 100%; overflow: hidden; }
+.experience-page .wardrobe-motif-picture { width: min(72%, 320px); height: auto; max-height: 360px; object-fit: contain; margin: 18px auto; padding: 0; }
+.experience-page .decode-mission { grid-template-columns: minmax(0, 1fr) auto; }

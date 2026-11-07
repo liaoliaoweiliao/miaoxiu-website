@@ -260,6 +260,7 @@ export default function GalleryPage({ state = {}, onAction }) {
                   type="button"
                   className="jing-work"
                   ref={(node) => { cardRefs.current[index] = node; }}
+                  onFocus={() => revealCard(index)}
                   onClick={() => onAction('modal', 0, { src: work.src, title: `${work.kind ? `${work.kind}｜` : ''}${work.title}`, description: work.catalogue ? work.desc : '' })}
                   aria-label={`放大观赏${work.title}${work.kind ? `，${work.kind}` : ''}`}
                 >
