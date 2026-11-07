@@ -3,7 +3,7 @@
   --thread-dark: #b8443d;
   --ink: #f0dfc0;
   --muted-ink: #becbd0;
-  --gallery-photo-size: clamp(236px, 22vw, 320px);
+  --gallery-photo-size: clamp(260px, 26vw, 380px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -213,7 +213,7 @@
   position: relative;
   z-index: 1;
   display: flex;
-  max-width: 1120px;
+  max-width: 1240px;
   flex-direction: column;
   margin: 0 auto;
   padding: 0;
@@ -227,7 +227,7 @@
   min-height: 0;
   align-items: center;
   grid-template-columns: minmax(0, 1fr);
-  padding: 28px 0;
+  padding: clamp(48px, 4.5vw, 64px) 0;
 }
 
 .jing-work {
@@ -238,7 +238,7 @@
   min-width: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  gap: clamp(64px, 7vw, 112px);
+  gap: clamp(112px, 12vw, 184px);
   padding: 0;
   border: 0;
   background: transparent;
@@ -304,7 +304,7 @@
 .jing-work-copy {
   display: flex;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   min-width: 0;
   grid-column: 2;
   grid-row: 1;
@@ -365,10 +365,6 @@
 .jing-work-open i {
   font-size: 18px;
   font-style: normal;
-}
-
-.thread-story.is-featured {
-  padding-block: 28px;
 }
 
 .thread-stitch {
@@ -625,7 +621,7 @@ body[data-page="gallery"] .footer .motto span {
   .thread-story.is-featured {
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
-    padding: 20px 0 20px 62px;
+    padding: 44px 0 44px 62px;
   }
 
   .thread-story.is-left .jing-work,
@@ -633,7 +629,7 @@ body[data-page="gallery"] .footer .motto span {
     grid-column: 1;
     justify-self: start;
     max-width: none;
-    gap: 28px;
+    gap: 48px;
   }
 
   .thread-stitch {
@@ -696,11 +692,6 @@ body[data-page="gallery"] .footer .motto span {
     font-size: 14px;
   }
 
-  .thread-story.is-left .jing-work,
-  .thread-story.is-right .jing-work {
-    gap: 22px;
-  }
-
   .work-title {
     font-size: 34px;
   }
@@ -735,14 +726,14 @@ body[data-page="gallery"] .footer .motto span {
 
   .thread-story,
   .thread-story.is-featured {
-    padding: 18px 0 22px 34px;
+    padding: 40px 0 48px 34px;
   }
 
   .thread-story.is-left .jing-work,
   .thread-story.is-right .jing-work {
     grid-template-columns: minmax(0, 1fr);
     max-width: 520px;
-    gap: 18px;
+    gap: 28px;
   }
 
   .jing-work-copy {
@@ -812,20 +803,21 @@ body[data-page="gallery"] .footer .motto span {
 
 @media (prefers-reduced-motion: no-preference) {
   .jing-work-photo {
-    transition: transform .66s cubic-bezier(.22,.68,.28,1), opacity .58s ease-out;
+    transition: transform .95s cubic-bezier(.22,.68,.28,1), opacity .8s ease-out;
   }
 
   .jing-work-copy {
-    transition: transform .6s cubic-bezier(.22,.68,.28,1) .12s;
+    transition: transform .85s cubic-bezier(.22,.68,.28,1) .24s, opacity .72s ease-out .24s;
   }
 
   .jing-work:not(.is-visible, :focus-within) .jing-work-photo {
-    opacity: .64;
-    transform: translate(var(--photo-enter-x, 0px), var(--photo-enter-y, -12px));
+    opacity: 0;
+    transform: translate(var(--photo-enter-x, 0px), var(--photo-enter-y, 28px));
   }
 
   .jing-work:not(.is-visible, :focus-within) .jing-work-copy {
-    transform: translate(var(--copy-enter-x, 0px), var(--copy-enter-y, 16px));
+    opacity: 0;
+    transform: translate(var(--copy-enter-x, 0px), var(--copy-enter-y, 24px));
   }
 
   .jing-work:focus-within :is(.jing-work-photo, .jing-work-copy) {
@@ -836,10 +828,10 @@ body[data-page="gallery"] .footer .motto span {
 @media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
   .jing-work {
     --photo-side: -1;
-    --photo-enter-x: calc(var(--photo-side) * clamp(38px, 5vw, 64px));
-    --copy-enter-x: calc(-1 * var(--photo-side) * clamp(24px, 3.2vw, 48px));
-    --photo-enter-y: 14px;
-    --copy-enter-y: 12px;
+    --photo-enter-x: calc(var(--photo-side) * clamp(64px, 7.2vw, 104px));
+    --copy-enter-x: calc(-1 * var(--photo-side) * clamp(40px, 4.5vw, 64px));
+    --photo-enter-y: 24px;
+    --copy-enter-y: 20px;
   }
 
   .thread-story.is-right .jing-work {
