@@ -1,7 +1,7 @@
 ---
 type: moc
 status: active
-updated: 2026-11-07
+updated: 2026-11-10
 topic: work-log-index
 sources: []
 ---
@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-11-10 | maintenance | completed | [本地工程同步GitHub主线](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-10-%E6%9C%AC%E5%9C%B0%E5%B7%A5%E7%A8%8B%E5%90%8C%E6%AD%A5GitHub%E4%B8%BB%E7%BA%BF.md) |
 | 2026-11-07 | maintenance | completed | [嘉玲体验展览与静涛探源合入主线](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-07-%E5%98%89%E7%8E%B2%E4%BD%93%E9%AA%8C%E5%B1%95%E8%A7%88%E4%B8%8E%E9%9D%99%E6%B6%9B%E6%8E%A2%E6%BA%90%E5%90%88%E5%85%A5%E4%B8%BB%E7%BA%BF.md) |
 | 2026-11-07 | ui | completed | [撤销展览间距与动效强化](UI%E4%BF%AE%E6%94%B9/2026-11-07-%E6%92%A4%E9%94%80%E5%B1%95%E8%A7%88%E9%97%B4%E8%B7%9D%E4%B8%8E%E5%8A%A8%E6%95%88%E5%BC%BA%E5%8C%96.md) |
 | 2026-11-07 | ui | completed | [展览交替留白与入场动效强化](UI%E4%BF%AE%E6%94%B9/2026-11-07-%E5%B1%95%E8%A7%88%E4%BA%A4%E6%9B%BF%E7%95%99%E7%99%BD%E4%B8%8E%E5%85%A5%E5%9C%BA%E5%8A%A8%E6%95%88%E5%BC%BA%E5%8C%96.md) |
