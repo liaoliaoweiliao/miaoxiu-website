@@ -2,8 +2,6 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  // Playwright clears this directory before each run.
-  outputDir: './test-results/playwright-artifacts',
   fullyParallel: false,
   workers: 1,
   reporter: 'list',

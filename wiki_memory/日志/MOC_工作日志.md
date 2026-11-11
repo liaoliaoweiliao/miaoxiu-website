@@ -12,6 +12,7 @@ sources: []
 
 | 日期 | 类型 | 任务结果 | 日志 |
 | --- | --- | --- | --- |
+| 2026-11-11 | maintenance | completed | [撤销合并之后全部改动](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-11-%E6%92%A4%E9%94%80%E5%90%88%E5%B9%B6%E4%B9%8B%E5%90%8E%E5%85%A8%E9%83%A8%E6%94%B9%E5%8A%A8.md) |
 | 2026-11-11 | maintenance | completed | [授权同步原工程展览文件](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-11-%E6%8E%88%E6%9D%83%E5%90%8C%E6%AD%A5%E5%8E%9F%E5%B7%A5%E7%A8%8B%E5%B1%95%E8%A7%88%E6%96%87%E4%BB%B6.md) |
 | 2026-11-11 | feature | completed | [展览减少动态下主动播放](%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0/2026-11-11-%E5%B1%95%E8%A7%88%E5%87%8F%E5%B0%91%E5%8A%A8%E6%80%81%E4%B8%8B%E4%B8%BB%E5%8A%A8%E6%92%AD%E6%94%BE.md) |
 | 2026-11-10 | maintenance | completed | [本地工程同步GitHub主线](%E5%B7%A5%E7%A8%8B%E7%BB%B4%E6%8A%A4/2026-11-10-%E6%9C%AC%E5%9C%B0%E5%B7%A5%E7%A8%8B%E5%90%8C%E6%AD%A5GitHub%E4%B8%BB%E7%BA%BF.md) |
