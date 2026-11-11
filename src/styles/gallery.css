@@ -157,6 +157,28 @@
   background: linear-gradient(90deg, transparent, #e97f65);
 }
 
+.gallery-motion-toggle {
+  min-height: 36px;
+  margin-top: 10px;
+  padding: 6px 16px;
+  border: 1px solid #c9a67580;
+  border-radius: 18px;
+  background: rgb(var(--surface-indigo-rgb) / .65);
+  color: #edc895;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.gallery-motion-toggle:hover {
+  border-color: #f4ce96;
+}
+
+.gallery-motion-toggle:focus-visible {
+  outline: 2px solid #f4ce96;
+  outline-offset: 4px;
+}
+
 .thread-exhibition {
   position: relative;
   z-index: 1;
@@ -810,31 +832,29 @@ body[data-page="gallery"] .footer .motto span {
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .jing-work-photo {
-    transition: transform .66s cubic-bezier(.22,.68,.28,1), opacity .58s ease-out;
-  }
-
-  .jing-work-copy {
-    transition: transform .6s cubic-bezier(.22,.68,.28,1) .12s;
-  }
-
-  .jing-work:not(.is-visible, :focus-within) .jing-work-photo {
-    opacity: .64;
-    transform: translate(var(--photo-enter-x, 0px), var(--photo-enter-y, -12px));
-  }
-
-  .jing-work:not(.is-visible, :focus-within) .jing-work-copy {
-    transform: translate(var(--copy-enter-x, 0px), var(--copy-enter-y, 16px));
-  }
-
-  .jing-work:focus-within :is(.jing-work-photo, .jing-work-copy) {
-    transition: none;
-  }
+.jing-gallery.is-entry-animated .jing-work-photo {
+  transition: transform .66s cubic-bezier(.22,.68,.28,1), opacity .58s ease-out;
 }
 
-@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
-  .jing-work {
+.jing-gallery.is-entry-animated .jing-work-copy {
+  transition: transform .6s cubic-bezier(.22,.68,.28,1) .12s;
+}
+
+.jing-gallery.is-entry-animated .jing-work:not(.is-visible, :focus-within) .jing-work-photo {
+  opacity: .64;
+  transform: translate(var(--photo-enter-x, 0px), var(--photo-enter-y, -12px));
+}
+
+.jing-gallery.is-entry-animated .jing-work:not(.is-visible, :focus-within) .jing-work-copy {
+  transform: translate(var(--copy-enter-x, 0px), var(--copy-enter-y, 16px));
+}
+
+.jing-gallery.is-entry-animated .jing-work:focus-within :is(.jing-work-photo, .jing-work-copy) {
+  transition: none;
+}
+
+@media (min-width: 761px) {
+  .jing-gallery.is-entry-animated .jing-work {
     --photo-side: -1;
     --photo-enter-x: calc(var(--photo-side) * clamp(38px, 5vw, 64px));
     --copy-enter-x: calc(-1 * var(--photo-side) * clamp(24px, 3.2vw, 48px));
@@ -842,7 +862,7 @@ body[data-page="gallery"] .footer .motto span {
     --copy-enter-y: 12px;
   }
 
-  .thread-story.is-right .jing-work {
+  .jing-gallery.is-entry-animated .thread-story.is-right .jing-work {
     --photo-side: 1;
   }
 }

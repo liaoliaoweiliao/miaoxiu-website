@@ -1,6 +1,15 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { assetUrl } from '../utils/assets.js';
 import { galleryDisplayWorks } from '../data/gallery.js';
+
+const motionPreferenceKey = 'miao-gallery-motion';
+
+function readMotionPreference() {
+  try {
+    const value = window.localStorage.getItem(motionPreferenceKey);
+    return value === 'play' || value === 'pause' ? value : null;
+  } catch { return null; }
+}
 
 function routeThrough(points) {
   if (points.length < 2) return '';
@@ -59,6 +68,9 @@ function ThreadKnot({ closing = false }) {
 
 export default function GalleryPage({ state = {}, onAction }) {
   const works = galleryDisplayWorks();
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [motionPreference, setMotionPreference] = useState(readMotionPreference);
+  const entryMotion = motionPreference === 'play' || motionPreference !== 'pause' && !reducedMotion;
   const stageRef = useRef(null);
   const startRef = useRef(null);
   const railEntryRef = useRef(null);
@@ -67,8 +79,20 @@ export default function GalleryPage({ state = {}, onAction }) {
   const endRef = useRef(null);
   const cardRefs = useRef([]);
   const revealedRef = useRef(new Set());
-  const reducedMotionRef = useRef(false);
   const handledSearch = useRef(null);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  function toggleEntryMotion() {
+    const preference = entryMotion ? 'pause' : 'play';
+    setMotionPreference(preference);
+    try { window.localStorage.setItem(motionPreferenceKey, preference); } catch { /* 本次选择仍可用。 */ }
+  }
 
   const revealCard = useCallback((index) => {
     const card = cardRefs.current[index];
@@ -96,6 +120,17 @@ export default function GalleryPage({ state = {}, onAction }) {
     const glint = stage?.querySelector('.thread-glint');
     const svg = stage?.querySelector('.thread-drawing');
     if (!stage || !route || !glint || !svg) return undefined;
+
+    // 从静态阅读切回播放时，重新等待绣线触发，而不是沿用全部已展示记录。
+    if (entryMotion) {
+      revealedRef.current.clear();
+      cardRefs.current.forEach((card, index) => {
+        card?.classList.remove('is-visible');
+        if (card?.matches(':focus-within')) revealCard(index);
+      });
+      markerRefs.current.forEach((marker) => marker?.classList.remove('is-stitched', 'is-active'));
+      stage.classList.remove('is-finished');
+    }
 
     let geometry = null;
     let frame = 0;
@@ -144,7 +179,7 @@ export default function GalleryPage({ state = {}, onAction }) {
 
     const updateProgress = () => {
       if (!geometry) return;
-      if (reducedMotionRef.current) {
+      if (!entryMotion) {
         targetProgress = 1;
         currentProgress = 1;
         if (frame) window.cancelAnimationFrame(frame);
@@ -204,17 +239,10 @@ export default function GalleryPage({ state = {}, onAction }) {
       paint(currentProgress);
     };
 
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const onMotionChange = () => {
-      reducedMotionRef.current = motionQuery.matches;
-      updateProgress();
-    };
-    reducedMotionRef.current = motionQuery.matches;
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', measure);
-    motionQuery.addEventListener?.('change', onMotionChange);
     measure();
     document.fonts?.ready?.then(() => { if (!disposed) measure(); });
 
@@ -224,12 +252,11 @@ export default function GalleryPage({ state = {}, onAction }) {
       observer.disconnect();
       window.removeEventListener('scroll', updateProgress);
       window.removeEventListener('resize', measure);
-      motionQuery.removeEventListener?.('change', onMotionChange);
     };
-  }, [revealCard, works.length]);
+  }, [entryMotion, revealCard, works.length]);
 
   return (
-    <main className="jing-gallery" ref={stageRef}>
+    <main className={`jing-gallery${entryMotion ? ' is-entry-animated' : ''}`} ref={stageRef}>
       <svg className="thread-drawing" aria-hidden="true" preserveAspectRatio="none">
         <path className="thread-route" />
         <path className="thread-glint" />
@@ -241,12 +268,13 @@ export default function GalleryPage({ state = {}, onAction }) {
           <span className="jing-title-caption">以针代笔 · 以线传情</span>
         </div>
         <span className="jing-scroll-prompt"><i aria-hidden="true" />循线入卷 · 向下观绣</span>
+        <button type="button" className="gallery-motion-toggle" aria-pressed={entryMotion} aria-controls="gallery-works" onClick={toggleEntryMotion}>{entryMotion ? '暂停入场动效' : '播放入场动效'}</button>
         <NeedleScene anchorRef={startRef} />
       </header>
 
       <section className="thread-exhibition" aria-label="苗绣作品长卷">
         <span className="thread-rail-entry" ref={railEntryRef} aria-hidden="true" />
-        <ol className="jing-artworks">
+        <ol className="jing-artworks" id="gallery-works">
           {works.map((work, index) => {
             const featured = [0, 4, 10, 15].includes(index);
             return (
